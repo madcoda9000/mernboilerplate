@@ -1,0 +1,39 @@
+{
+  "name": "pwteamapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "prod": "npm run build && node ./build/server.js"
+  },
+  "keywords": [],
+  "author": "Sascha Heimann",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-jsdoc-swagger": "^1.8.0",
+    "express-rate-limit": "^7.1.4",
+    "helmet": "^7.1.0",
+    "hi-base32": "^0.5.1",
+    "joi": "^17.11.0",
+    "joi-password-complexity": "^5.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^6.12.3",
+    "mongoose-paginate": "^5.0.3",
+    "nodemailer": "^6.9.7",
+    "nodemailer-express-handlebars": "^6.1.0",
+    "npm-update": "^3.0.1",
+    "otpauth": "^9.2.1",
+    "winston": "^3.11.0",
+    "winston-mongodb": "^5.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

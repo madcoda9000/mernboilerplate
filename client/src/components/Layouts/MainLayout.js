@@ -1,0 +1,149 @@
+import { useState, useContext, useEffect } from "react";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
+import { Box, Drawer, DrawerContent, useDisclosure, useColorModeValue } from "@chakra-ui/react";
+import AuthContext from "../shared/Auth/AuthContext";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  Button,
+  Text,
+} from '@chakra-ui/react';
+import { useIdleTimer } from 'react-idle-timer';
+import { Outlet } from "react-router-dom";
+
+const timeout = 120_000;
+const promptBeforeIdle = 30_000
+
+export default function Layout({ children }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [ml, setMl] = useState({ base: 0, md: 60 });
+  const [sideBarDisplay, setSideBarDisplay] = useState('block');
+  const { logout } = useContext(AuthContext);
+  const [state, setState] = useState('Active');
+  const [remaining, setRemaining] = useState(timeout);
+  const [open, setOpen] = useState(false);
+
+  const onIdle = () => {
+    setState('Idle')
+    setOpen(false)
+    logout()
+  }
+
+  const onActive = () => {
+    setState('Active')
+    setOpen(false)
+  }
+
+  const onPrompt = () => {
+    setState('Prompted')
+    setOpen(true)
+  }  
+
+  const { getRemainingTime, activate } = useIdleTimer({
+    onIdle,
+    onActive,
+    onPrompt,
+    timeout,
+    promptBeforeIdle,
+    throttle: 500
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      let remainingSeconds = Math.ceil(getRemainingTime() / 1000);
+      let remainingDisplayString = '';
+      if(remainingSeconds>60) {
+        let secs = remainingSeconds % 60;
+        let secStr = secs;
+        if (secs < 10) { secStr = '0' + secs; }
+        remainingDisplayString = Math.floor(remainingSeconds / 60) + ':' + secStr;
+      } else {
+        remainingDisplayString = "00:" + remainingSeconds;
+      }
+      setRemaining(remainingDisplayString);
+    }, 500)
+
+    return () => {
+      clearInterval(interval);
+    }
+  })
+
+  const handleStillHere = () => {
+    activate()
+  }
+
+  const timeTillPrompt = Math.max(remaining - promptBeforeIdle / 1000, 0);
+  const seconds = timeTillPrompt > 1 ? 'seconds' : 'second';
+
+  const ToggleSidebar = () => {
+    if (ml.md === 60) {
+      setMl({ base: 0, md: 0 });
+      setSideBarDisplay('none');
+    } else {
+      setMl({ base: 0, md: 60 });
+      setSideBarDisplay('block');
+    }
+  }
+
+  return (
+    <Box minH="100vh" bg={useColorModeValue('white', 'gray.800')}>
+      {/*= SIDEBAR =*/}
+      <Sidebar
+        remaining={remaining}
+        onClose={() => onClose}
+        display={{ base: "none", md: sideBarDisplay }}
+      />
+      <Drawer
+        autoFocus={false}
+        isOpen={isOpen}
+        placement="left"
+        onClose={onClose}
+        returnFocusOnClose={false}
+        onOverlayClick={onClose}
+        size="full"
+      >
+        <DrawerContent>
+          <Sidebar onClose={onClose} />
+        </DrawerContent>
+      </Drawer>
+
+      {/*= HEADER =*/}
+      <Header onOpen={onOpen} ml={ml} toggleSidebar={ToggleSidebar} bg={useColorModeValue('#fcfcfc', 'gray.800')} />
+      <Box ml={ml} p="7" bg={useColorModeValue('white', 'gray.800')}>
+        {/*= CONTENT =*/}
+        <Outlet></Outlet>
+      </Box>
+
+      <AlertDialog isOpen={open} closeOnOverlayClick={false} isCentered motionPreset='slideInTop'>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold' backgroundColor={'red.500'} color={"white"}>
+              Session Timeout
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              <Text>
+                Your session is about to expire soon. Due to security reasons your session will be terminated automatiically in a few seconds.
+              </Text>
+              <Text mt={3}>Automatic logout in: <span style={{ color: '#E53E3E', fontWeight:'bold' }} id="dtime">{remaining}</span></Text>
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button onClick={handleStillHere}>
+                No, retain my session!
+              </Button>
+              <Button colorScheme='red' onClick={logout} ml={3}>
+                Yes, please Logout
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </Box>
+  );
+}
