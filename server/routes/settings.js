@@ -4,9 +4,7 @@ import roleCheck from "../middleware/roleCheck.js";
 import Setting from "../models/Setting.js";
 import crypto from "crypto";
 import doHttpLog from "../utils/httpLogger.js";
-import {
-    updateAppSettingsValidation
-} from "../utils/validationSchema.js";
+import { updateAppSettingsValidation } from "../utils/validationSchema.js";
 import logger from "../services/logger.service.js";
 
 const router = Router();
@@ -35,35 +33,34 @@ const router = Router();
 }
  */
 router.get("/getAppSettings", async (req, res) => {
-    const mid = crypto.randomBytes(16).toString("hex");
-    try {
+  const mid = crypto.randomBytes(16).toString("hex");
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
-        doHttpLog('REQ', mid, req.method, req.originalUrl, req.ip);
-
-        var sett = await Setting.find({ scope: 'app' });
-        if (sett) {
-            const jsonData = {};
-            sett.forEach(item => {
-                jsonData[item.name] = item.value;
-            });
-            doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "returned app settings list..", 200);
-            return res.status(200).json({
-                error: false,
-                message: "returned appsettings list..",
-                settings: jsonData
-            })
-        } else {
-            doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, 'No Data from query!', 400);
-            return res.status(400).json({
-                error: true,
-                message: 'No data from query!',
-            });
-        }
-    } catch (err) {
-        doHttpLog('RES', mid, req.method, req.originalUrl, err.message, 500);
-        logger.error("API|settings.js|/getAppSettings|" + err.message);
-        res.status(500).json({ message: err.message });
+    var sett = await Setting.find({ scope: "app" });
+    if (sett) {
+      const jsonData = {};
+      sett.forEach((item) => {
+        jsonData[item.name] = item.value;
+      });
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned app settings list..", 200);
+      return res.status(200).json({
+        error: false,
+        message: "returned appsettings list..",
+        settings: jsonData,
+      });
+    } else {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "No Data from query!", 400);
+      return res.status(400).json({
+        error: true,
+        message: "No data from query!",
+      });
     }
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
+    logger.error("API|settings.js|/getAppSettings|" + err.message);
+    res.status(500).json({ message: err.message });
+  }
 });
 
 /**
@@ -91,48 +88,39 @@ router.get("/getAppSettings", async (req, res) => {
  * }
  */
 router.put("/updateAppSettings", auth, roleCheck("admins"), async (req, res) => {
-    const mid = crypto.randomBytes(16).toString("hex");
-  
-    try {
-      doHttpLog('REQ', mid, req.method, req.originalUrl, req.ip);
-  
-      const { error } = updateAppSettingsValidation(req.body);
-      if (error) {
-        doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400);
-        return res
-          .status(400)
-          .json({ error: true, message: error.details[0].message });
-      }
-  
-      const settingNames = ['showMfaEnableBanner', 'showRegisterLink', 'showResetPasswordLink'];
-      const settings = await Promise.all(settingNames.map(name => Setting.findOne({ name })));
-  
-      if (settings.some(setting => !setting)) {
-        doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Setting not found", 400);
-        return res
-          .status(400)
-          .json({ error: true, message: "Setting not found" });
-      }
-  
-      const updates = settingNames.map((name, index) => ({
-        name,
-        value: req.body[name],
-      }));
-  
-      await Promise.all(updates.map(update => Setting.updateOne({ name: update.name }, { $set: { value: update.value } })));
-  
-      doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Application settings updated successfully", 200);
-      res
-        .status(200)
-        .json({ error: false, message: "Application settings updated successfully" });
-  
-    } catch (err) {
-      doHttpLog('RES', mid, req.method, req.originalUrl, err.message, 500);
-      logger.error("API|settings.js|/updateAppSettings|" + err.message);
-      res.status(500).json({ message: err.message });
-    }
-  });
-  
+  const mid = crypto.randomBytes(16).toString("hex");
 
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+
+    const { error } = updateAppSettingsValidation(req.body);
+    if (error) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400);
+      return res.status(400).json({ error: true, message: error.details[0].message });
+    }
+
+    const settingNames = ["showMfaEnableBanner", "showRegisterLink", "showResetPasswordLink", "showQuoteOfTheDay"];
+    const settings = await Promise.all(settingNames.map((name) => Setting.findOne({ name })));
+
+    if (settings.some((setting) => !setting)) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Setting not found", 400);
+      return res.status(400).json({ error: true, message: "Setting not found" });
+    }
+
+    const updates = settingNames.map((name, index) => ({
+      name,
+      value: req.body[name],
+    }));
+
+    await Promise.all(updates.map((update) => Setting.updateOne({ name: update.name }, { $set: { value: update.value } })));
+
+    doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Application settings updated successfully", 200);
+    res.status(200).json({ error: false, message: "Application settings updated successfully" });
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
+    logger.error("API|settings.js|/updateAppSettings|" + err.message);
+    res.status(500).json({ message: err.message });
+  }
+});
 
 export default router;
