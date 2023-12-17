@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import UserService from "../../../Services/UsersService";
-import {isMobile} from 'react-device-detect';
+import { isMobile } from "react-device-detect";
 import AuthContext from "./AuthContext";
 
 const ProtectedRoute = ({ children, accessBy, request }) => {
-    const { user } = useContext(AuthContext);
-    const [mfaVerify, setMfaVerify] = useState(false);
-    const [doLogout, setDoLogout] = useState(false);
-  
+  const { user } = useContext(AuthContext);
+  //const [mfaVerify, setMfaVerify] = useState(false);
+  //const [doLogout, setDoLogout] = useState(false);
+
+  /*
     useEffect(() => {         
         if (user && user.mfaEnabled===true && sessionStorage.getItem("acc")) {
           console.log('ProtectedRoute : useEffect : ' + user.username);
@@ -41,11 +42,16 @@ const ProtectedRoute = ({ children, accessBy, request }) => {
           checkMfaToken();
         }
     },);
-  
-    if (accessBy === "non-authenticated") {
-      return children
-    } else if (accessBy === "authenticated") {
-      if (user) {
+    */
+
+  if (accessBy === "non-authenticated") {
+    return children;
+  } else if (accessBy === "authenticated") {
+    if (user) {
+      console.log("ProtectedRoute: REQUEST: " + request);
+      console.log("ProtectedRoute: AUTH:true | ACTION:" + request);
+      return children;
+      /*
         if(doLogout===true && user.mfaEnabled==='True') {
           console.log('dologout');
           if(isMobile) {return <Navigate to="/Mobile/Mlogin"></Navigate>;} else {return <Navigate to="/login"></Navigate>;}
@@ -85,12 +91,13 @@ const ProtectedRoute = ({ children, accessBy, request }) => {
           console.log('Protectedroute: no rule matched. returning login');
           window.location.href = "/login";
         }
-      } else {
-        console.log('Protectedroute: no user object');
-        window.location.href = "/login";
-      }
+        */
+    } else {
+      console.log("Protectedroute: no user object");
+      window.location.href = "/login";
     }
-    //return <Navigate to="/login"></Navigate>;
-  };
-  
-  export default ProtectedRoute;
+  }
+  //return <Navigate to="/login"></Navigate>;
+};
+
+export default ProtectedRoute;

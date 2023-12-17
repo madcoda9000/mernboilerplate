@@ -2,8 +2,8 @@ import axios from "axios";
 import { createContext, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { isMobile } from 'react-device-detect';
-import {makeAuditEntry} from "../Utils";
+import { isMobile } from "react-device-detect";
+import { makeAuditEntry } from "../Utils";
 
 const apiurl = window.BASE_URL;
 const AuthContext = createContext();
@@ -18,8 +18,8 @@ export const AuthContextProvider = ({ children }) => {
       console.log("AuthContext: AUTH:true");
       return decodedToken;
     }
-    console.log('AuthContext: no accessToken | ACTION: logout');
-    navigate('/login');
+    console.log("AuthContext: no accessToken | ACTION: logout");
+    navigate("/login");
   });
 
   const handleUserAction = (apiResponse, action) => {
@@ -27,49 +27,60 @@ export const AuthContextProvider = ({ children }) => {
     sessionStorage.setItem("refreshToken", JSON.stringify(apiResponse.data.refreshToken));
     setUser(jwtDecode(apiResponse.data.accessToken));
 
-    if(action!==null && action==='login') {
+    if (action !== null && action === "login") {
       var us = jwtDecode(apiResponse.data.accessToken);
-      var logonType = us.ldapEnabled===true ? 'ldap' : 'db';
-      makeAuditEntry(us.userName, 'info', us.userName + ' ' + logonType + ' login in successfully.');
+      var logonType = us.ldapEnabled === true ? "ldap" : "db";
+      makeAuditEntry(us.userName, "info", us.userName + " " + logonType + " login in successfully.");
+      if (us.mfaEnforced === true) {
+        console.log("AuthContext: login:success | ACTION: MfaSetup");
+        navigate("/MfaSetup");
+      } else if (us.mfaEnabled === true) {
+        console.log("AuthContext: login:success | ACTION: MfaLogin");
+        navigate("/MfaLogin");
+      } else if (us.mfaEnforced === false && us.mfaEnabled === false) {
+        console.log("AuthContext: login:success | ACTION: /Home");
+        navigate("/Home");
+      }
+    } else {
+      console.log("AuthContext: login:success | ACTION: /Home");
+      navigate(isMobile ? "/Mobile/MHome" : "/Home");
     }
-
-    navigate( isMobile ? "/Mobile/MHome" : "/Home");
   };
-
 
   const login = async (payload) => {
     try {
       const apiResponse = await axios.post(apiurl + "/v1/auth/login", payload);
-      if (apiResponse.data.error === false) {   
-        handleUserAction(apiResponse, 'login');
+      if (apiResponse.data.error === false) {
+        handleUserAction(apiResponse, "login");
       } else if (apiResponse.data.error === true) {
         return apiResponse.data.message;
       }
     } catch (error) {
-      return error.response.data.message;     
+      return error.response.data.message;
     }
   };
 
   const logout = async () => {
     if (sessionStorage.getItem("refreshToken")) {
       const payload = {
-        refreshToken: JSON.parse(sessionStorage.getItem("refreshToken"))
-      }
+        refreshToken: JSON.parse(sessionStorage.getItem("refreshToken")),
+      };
       await axios.post(apiurl + "/v1/auth/logout", payload);
     }
 
     sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("refreshToken");     
+    sessionStorage.removeItem("refreshToken");
 
     setUser(null);
     navigate("/login?msg=lgo");
   };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const refreshContext = () => {
+    var tok = sessionStorage.getItem("accessToken");
+    setUser(jwtDecode(tok));
+  };
+
+  return <AuthContext.Provider value={{ user, login, logout, refreshContext }}>{children}</AuthContext.Provider>;
 };
 
 export default AuthContext;
