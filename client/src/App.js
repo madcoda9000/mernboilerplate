@@ -2,9 +2,6 @@
 import { Center, ChakraProvider, CircularProgress, ColorModeScript } from "@chakra-ui/react";
 import theme from "./components/Layouts/Theme";
 
-// own css
-import "./css/App.css";
-
 // main imports
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
