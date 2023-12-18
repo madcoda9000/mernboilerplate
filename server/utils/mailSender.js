@@ -1,85 +1,88 @@
-import hbs  from 'nodemailer-express-handlebars';
-import nodemailer from 'nodemailer';
-import path from 'path';
-import dotenv from "dotenv";
+import hbs from "nodemailer-express-handlebars";
+import nodemailer from "nodemailer";
+import path from "path";
 import logger from "../services/logger.service.js";
-
-// load enviroment variables
-dotenv.config();
+import { enviromentConfig } from "../config/enviromentConfig.js";
+import { handlebarsConfig } from "../config/handlebarsConfig.js";
 
 // create nodemailer transport
 const ms_transporter = nodemailer.createTransport({
-    host: process.env.SMTP_SERVER,
-    port: process.env.SMTP_PORT,
-    secure: false, // use TLS
-    auth: {
-    user: process.env.SMTP_USERNAME,
-    pass: process.env.SMTP_PASSWORD,
-    },
+  host: enviromentConfig.smtp.server,
+  port: enviromentConfig.smtp.port,
+  secure: false, // use TLS
+  auth: {
+    user: enviromentConfig.smtp.userName,
+    pass: enviromentConfig.smtp.password,
+  },
 });
 
-// point to the template folder
-const ms_handlebarOptions = {
-    viewEngine: {
-        partialsDir: path.resolve('./mailTemplates/'),
-        defaultLayout: false,
-    },
-    viewPath: path.resolve('./mailTemplates/'),
-};
-
 // use a template file with nodemailer
-ms_transporter.use('compile', hbs(ms_handlebarOptions));
+ms_transporter.use("compile", hbs(handlebarsConfig));
 
-export async function SendConfirmMail(User) {
-    const ms_mailOptions = {
-        from: process.env.SMTP_SENDERADDRESS, // sender address
-        template: "confirmEmail", // the name of the template file, i.e., email.handlebars
-        to: User.email,
-        subject: `Please verify your email address...`,
-        context: {
-            confirmUrl: process.env.SMTP_CONFIRM_CLIENTURL + '?email=' + User.email + '&token=' + User.emailVerifyToken + '&_id=' + User._id,
-            appName: process.env.APPLICATION_SWAGGER_APPNAME,
-            companyName: process.env.APPLICATION_COMPANYNAME,
-            companyStreet: process.env.APPLICATION_COMPANYSTREET,
-            companyTown: process.env.APPLICATION_COMPANYTOWN,
-            privacyPolicyUrl: process.env.APPLICATION_PRIVACYPOLICY_URL,
-            firstName: User.firstName,
-            lastName: User.lastName
-        },
-        attachments: [{
-            filename: 'email_blue.png',
-            path: 'mailImages/email_blue.png',
-            cid: 'logo' 
-       }],
-    };
+export async function sendConfirmMail(User) {
+  const ms_mailOptions = {
+    from: enviromentConfig.smtp.senderAddress, // sender address
+    template: "confirmEmail", // the name of the template file, i.e., email.handlebars
+    to: User.email,
+    subject: `Please verify your email address...`,
+    context: {
+      confirmUrl: enviromentConfig.app.confirmUrl + "?email=" + User.email + "&token=" + User.emailVerifyToken + "&_id=" + User._id,
+      appName: enviromentConfig.app.appName,
+      companyName: enviromentConfig.app.companyName,
+      companyStreet: enviromentConfig.app.companyStreet,
+      companyTown: enviromentConfig.app.companyTown,
+      privacyPolicyUrl: enviromentConfig.app.privacyPolicyUrl,
+      firstName: User.firstName,
+      lastName: User.lastName,
+    },
+    attachments: [
+      {
+        filename: "email_blue.png",
+        path: "mailImages/email_blue.png",
+        cid: "logo",
+      },
+    ],
+  };
 
+  try {
     await ms_transporter.sendMail(ms_mailOptions);
-    logger.info("MAIL | Successfully send Confirm mail to " + User.email);
+    logger.info("MAIL | Successfully sent Confirm mail to " + User.email);
+  } catch (error) {
+    logger.error("MAIL | Error sending Confirm mail to " + User.email + ": " + error.message);
+    throw error; // Re-throw the error to propagate it further if needed
+  }
 }
 
 export async function sendPwResetMail(user, token) {
-    const ms_mailOptions = {
-        from: process.env.SMTP_SENDERADDRESS, // sender address
-        template: "resetPw1", // the name of the template file, i.e., email.handlebars
-        to: user.email,
-        subject: `Please complete your password reset...`,
-        context: {
-            confirmUrl: process.env.APPLICATION_CLIENT_URL + '/ForgotPw2?email=' + user.email + '&token=' + token,
-            appName: process.env.APPLICATION_SWAGGER_APPNAME,
-            companyName: process.env.APPLICATION_COMPANYNAME,
-            companyStreet: process.env.APPLICATION_COMPANYSTREET,
-            companyTown: process.env.APPLICATION_COMPANYTOWN,
-            privacyPolicyUrl: process.env.APPLICATION_PRIVACYPOLICY_URL,
-            firstName: user.firstName,
-            lastName: user.lastName
-        },
-        attachments: [{
-            filename: 'email_blue.png',
-            path: 'mailImages/email_blue.png',
-            cid: 'logo' 
-       }],
-    };
+  const ms_mailOptions = {
+    from: enviromentConfig.smtp.senderAddress, // sender address
+    template: "resetPw1", // the name of the template file, i.e., email.handlebars
+    to: user.email,
+    subject: `Please complete your password reset...`,
+    context: {
+      confirmUrl: enviromentConfig.app.confirmUrl + "/ForgotPw2?email=" + user.email + "&token=" + token,
+      appName: enviromentConfig.app.appName,
+      companyName: enviromentConfig.app.companyName,
+      companyStreet: enviromentConfig.app.companyStreet,
+      companyTown: enviromentConfig.app.companyTown,
+      privacyPolicyUrl: enviromentConfig.app.privacyPolicyUrl,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    },
+    attachments: [
+      {
+        filename: "email_blue.png",
+        path: "mailImages/email_blue.png",
+        cid: "logo",
+      },
+    ],
+  };
 
+  try {
     await ms_transporter.sendMail(ms_mailOptions);
-    logger.info("MAIL | Successfully send password reset to " + user.email);
+    logger.info("MAIL | Successfully send password reset mail to " + user.email);
+  } catch (error) {
+    logger.error("MAIL | Error sending password reset mail to " + User.email + ": " + error.message);
+    throw error; // Re-throw the error to propagate it further if needed
+  }
 }

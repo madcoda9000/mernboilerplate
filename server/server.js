@@ -17,11 +17,9 @@ import SeedUsers from "./seeders/usersSeeder.js";
 import SeedRoles from "./seeders/rolesSeeder.js";
 import SeedSettings from "./seeders/settingsSeeder.js";
 import SeedQuotes from "./seeders/quotesSeeder.js";
+import { enviromentConfig } from "./config/enviromentConfig.js";
 
 const app = express();
-
-// load enviroment variables
-dotenv.config();
 
 // connect to database
 dbConnect();
@@ -33,7 +31,7 @@ await SeedSettings();
 await SeedQuotes();
 
 // set cors options
-const originWhiteList = process.env.ALLOWED_ORIGINS.split(",");
+const originWhiteList = enviromentConfig.cors.allowedOrigins.split(",");
 var corsOptions = {
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
@@ -46,7 +44,7 @@ var corsOptions = {
     }
   },
 };
-logger.info("SERVER | Activated cors. Allowed origins: " + process.env.ALLOWED_ORIGINS);
+logger.info("SERVER | Activated cors. Allowed origins: " + enviromentConfig.cors.allowedOrigins);
 
 // Set CSP headers
 app.use(
@@ -68,9 +66,9 @@ logger.info("SERVER | Activated content security policy: script-src:self");
 app.use(express.json());
 
 // Set up rate limiter if enabled in dotenv
-if (process.env.RATELIMIT_ENABLED === "true") {
-  let timespan = process.env.RATELIMIT_MEASURE_TIMESPAN_INMINUTES || 1;
-  let allowedRequests = process.env.RATELIMIT_ALLOWED_REQUESTS_INTMEASURETIMESPAN || 30;
+if (enviromentConfig.rateLimiter.enabled === "true") {
+  let timespan = enviromentConfig.rateLimiter.measureTimespan || 1;
+  let allowedRequests = enviromentConfig.rateLimiter.allowdRequestsInTimespan || 30;
   const limiter = RateLimit({
     windowMs: timespan * 60 * 1000,
     limit: allowedRequests,
@@ -79,24 +77,24 @@ if (process.env.RATELIMIT_ENABLED === "true") {
   });
   app.use(limiter);
   logger.info("SERVER | Ratelimiter enabled. Max. " + allowedRequests + " requests in " + timespan + " minutes allowed.");
-} else if (process.env.RATELIMIT_ENABLED === "false") {
+} else if (enviromentConfig.rateLimiter.enabled === "false") {
   logger.info("SERVER | Ratelimiter disabled by dotenv.");
 }
 
 // publish documentation
-if (process.env.ENABLE_SWAGGER_ENDPOINT === "true") {
+if (enviromentConfig.app.enableSwaggerEndpoint === "true") {
   const swaggerOptions = {
     info: {
       version: "1.0.0",
-      title: process.env.APPLICATION_SWAGGER_APPNAME + " API",
-      description: "Backend API for " + process.env.APPLICATION_SWAGGER_APPNAME + " frontend.",
+      title: enviromentConfig.app.appName + " API",
+      description: "Backend API for " + enviromentConfig.app.appName + " frontend.",
       license: {
-        name: process.env.APPLICATION_SWAGGER_LICENSE,
+        name: enviromentConfig.app.license,
       },
       contact: {
-        name: process.env.APPLICATION_SWAGGER_CONTACT_NAME,
-        url: process.env.APPLICATION_SWAGGER_CONTACT_URL,
-        email: process.env.APPLICATION_SWAGGER_CONTACT_EMAIL,
+        name: enviromentConfig.app.companyName,
+        url: enviromentConfig.app.clientUrl,
+        email: enviromentConfig.app.contactUrl,
       },
     },
     baseDir: "./",
@@ -130,7 +128,7 @@ if (process.env.ENABLE_SWAGGER_ENDPOINT === "true") {
   };
   expressJSDocSwagger(app)(swaggerOptions);
   logger.info("SERVER | Swagger published at /v1/doc");
-} else if (process.env.ENABLE_SWAGGER_ENDPOINT === "true") {
+} else if (enviromentConfig.app.enableSwaggerEndpoint === "true") {
   logger.info("SERVER | Swagger disabled by dotenv variable!");
 }
 
@@ -150,5 +148,5 @@ app.use("/v1/quotes", cors(corsOptions), quoteRoutes);
 logger.info("SERVER | published quote routes..");
 
 // start server
-const port = process.env.SERVER_PORT || 8080;
+const port = enviromentConfig.app.serverPort || 8080;
 app.listen(port, () => logger.info("SERVER | Listening on port " + port));

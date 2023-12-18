@@ -6,7 +6,7 @@ import { signUpBodyValidation, logInBodyValidation, confirmEmailValidation } fro
 import doHttpLog from "../utils/httpLogger.js";
 import auth from "../middleware/auth.js";
 import crypto from "crypto";
-import { SendConfirmMail } from "../utils/mailSender.js";
+import { sendConfirmMail } from "../utils/mailSender.js";
 import logger from "../services/logger.service.js";
 import * as OTPAuth from "otpauth";
 import * as base32 from "hi-base32";
@@ -385,7 +385,7 @@ router.post("/signUp", async (req, res) => {
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body.email + " created sucessfully", 201);
     logger.info("AUDIT | " + req.body.userName + " | registered a new account sucessfully");
     const createdUser = await User.findOne({ email: req.body.email });
-    await SendConfirmMail(createdUser);
+    await sendConfirmMail(createdUser);
 
     res.status(201).json({ error: false, message: "Account " + req.body.email + " created sucessfully" });
   } catch (err) {
