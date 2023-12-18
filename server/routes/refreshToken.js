@@ -7,6 +7,7 @@ import { refreshTokenBodyValidation } from "../utils/validationSchema.js";
 import doHttpLog from "../utils/httpLogger.js";
 import crypto from "crypto";
 import logger from "../services/logger.service.js";
+import { enviromentConfig } from "../config/enviromentConfig.js";
 
 const router = Router();
 
@@ -64,7 +65,7 @@ router.post("/createNewAccessToken", async (req, res) => {
         mfaEnforced: tokenDetails.mfaEnforced,
         mfaVerified: verifyMfaState,
       };
-      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_PRIVATE_KEY, { expiresIn: "1m" });
+      const accessToken = jwt.sign(payload, enviromentConfig.jwt.accessTokenPrivateKey, { expiresIn: "1m" });
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Access token created successfully", 200);
       res.status(200).json({
         error: false,
