@@ -4,6 +4,7 @@ import DarkModeSwitcher from "../../components/shared/UI/DarkModeSwitcher";
 import AuthContext from "../../components/shared/Auth/AuthContext";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import RoleBadges from "../shared/UI/RoleBadges";
 
 export default function UserProfile() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function UserProfile() {
                   {user.firstName} {user.lastName}
                 </Text>
                 <Text fontSize="md" color={useColorModeValue("gray.500", "gray.500")}>
-                  {user.roles}
+                  {RoleBadges(user.roles)}
                 </Text>
               </VStack>
               <Box display={{ base: "none", md: "flex" }}>
