@@ -7,7 +7,7 @@ import RoleChecker from "../components/shared/Auth/RoleChecker";
 import axios from "axios";
 import { makeAuditEntry } from "../components/shared/Utils";
 
-const MfaLogin = () => {
+export const MfaLogin = () => {
   const { user, refreshContext } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -31,29 +31,33 @@ const MfaLogin = () => {
         makeAuditEntry(user.userName, "warn", user.userName + " otp verification failed! " + response.data.message);
       } else {
         let refTok = JSON.parse(sessionStorage.getItem("refreshToken"));
-        axios.post(window.BASE_URL + "/v1/auth/createNewAccessToken", { refreshToken: refTok }).then((apiResponse) => {
-          if (apiResponse.data.error === false) {
-            sessionStorage.removeItem("accessToken");
-            sessionStorage.setItem("accessToken", JSON.stringify(apiResponse.data.accessToken));
-            refreshContext();
-            setIsLoading(false);
-            setErrMsg(null);
-            setActivatedSuccessfully(true);
-            setSuccMsg(response.data.message);
-            makeAuditEntry(user.userName, "info", user.userName + " verified otp successfully!");
-            var mcount = 1;
-            var inv = setInterval(() => {
-              if (mcount > 0) {
-                mcount = mcount - 1;
-              } else {
-                goHome(inv);
-              }
-            }, 1000);
-          } else if (apiResponse.data.error === true) {
-            setErrMsg(apiResponse.data.message);
-            setIsLoading(false);
-          }
-        });
+        axios
+          .post(window.BASE_URL + "/v1/auth/createNewAccessToken", {
+            refreshToken: refTok,
+          })
+          .then((apiResponse) => {
+            if (apiResponse.data.error === false) {
+              sessionStorage.removeItem("accessToken");
+              sessionStorage.setItem("accessToken", JSON.stringify(apiResponse.data.accessToken));
+              refreshContext();
+              setIsLoading(false);
+              setErrMsg(null);
+              setActivatedSuccessfully(true);
+              setSuccMsg(response.data.message);
+              makeAuditEntry(user.userName, "info", user.userName + " verified otp successfully!");
+              var mcount = 1;
+              var inv = setInterval(() => {
+                if (mcount > 0) {
+                  mcount = mcount - 1;
+                } else {
+                  goHome(inv);
+                }
+              }, 1000);
+            } else if (apiResponse.data.error === true) {
+              setErrMsg(apiResponse.data.message);
+              setIsLoading(false);
+            }
+          });
       }
     });
     setIsLoading(false);
@@ -152,4 +156,3 @@ const MfaLogin = () => {
     );
   }
 };
-export default MfaLogin;
