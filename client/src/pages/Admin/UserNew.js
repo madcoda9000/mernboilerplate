@@ -33,6 +33,7 @@ import { MdOutlinePeople, MdOutlineWarning, MdRefresh, MdRemoveRedEye } from "re
 import ToastBox from "../../components/shared/UI/ToastBox.js";
 import AuthContext from "../../components/shared/Auth/AuthContext";
 import { makeAuditEntry } from "../../components/shared/Utils";
+import MfaChecker from "../../components/shared/Auth/MfaChecker.js";
 
 const UserNew = () => {
   const [btnPwIsloading, setbtnPwIsloading] = useState(false);
@@ -258,6 +259,7 @@ const UserNew = () => {
 
   return (
     <>
+      <MfaChecker />
       <RoleChecker requiredRole="admins" />
       {!newUser && !allRoles ? (
         <Center width={"100%"} mt={40}>
@@ -265,6 +267,8 @@ const UserNew = () => {
         </Center>
       ) : (
         <>
+          <MfaChecker />
+          <RoleChecker requiredRole="admins" />
           {isLargerThan500 ? (
             <>
               <HStack>

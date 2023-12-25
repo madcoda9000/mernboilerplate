@@ -2,6 +2,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+/**
+ * @description Module to hold enviroment settings
+ * @type {{app: {clientUrl: *, appName: *, contactName: *, enableFileLog: *, companyName: *, enableSwaggerEndpoint: *, serverPort: *, privacyPolicyUrl: *, companyStreet: *, license: *, enableDbLog: *, contactUrl: *, confirmUrl: *, companyTown: *, enableConsoleLog: *}, database: {password: *, authSource: *, port: *, dbName: *, host: *, userName: *}, smtp: {server: *, password: *, senderAddress: *, port: *, userName: *}, cors: {allowedOrigins: *}, rateLimiter: {allowdRequestsInTimespan: *, measureTimespan: *, enabled: string}, jwt: {accessTokenPrivateKey: *, refreshTokenPrivateKey: *}}}
+ */
 export const enviromentConfig = {
   smtp: {
     server: process.env.SMTP_SERVER,
@@ -22,7 +26,6 @@ export const enviromentConfig = {
     contactUrl: process.env.APPLICATION_SWAGGER_CONTACT_URL,
     contactName: process.env.APPLICATION_SWAGGER_CONTACT_NAME,
     clientUrl: process.env.APPLICATION_CLIENT_URL,
-    privacyPolicyUrl: process.env.APPLICATION_PRIVACYPOLICY_URL,
     serverPort: process.env.SERVER_PORT,
     enableConsoleLog: process.env.ENABLE_CONSOLE_LOG,
     enableFileLog: process.env.ENABLE_FILE_LOG,
@@ -39,7 +42,7 @@ export const enviromentConfig = {
   rateLimiter: {
     enabled: process.env.ATELIMIT_ENABLED,
     measureTimespan: process.env.RATELIMIT_MEASURE_TIMESPAN_INMINUTES,
-    allowdRequestsInTimespan: process.env.RATELIMIT_ALLOWED_REQUESTS_INTMEASURETIMESPAN,
+    allowedRequestsInTimespan: process.env.RATELIMIT_ALLOWED_REQUESTS_INTMEASURETIMESPAN,
   },
   database: {
     dbName: process.env.MONGO_DB_NAME,

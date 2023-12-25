@@ -23,6 +23,7 @@ import password from "secure-random-password";
 import { PasswordChecker } from "react-password-strengthbar-ui";
 import RoleChecker from "../components/shared/Auth/RoleChecker.js";
 import LogsService from "../Services/LogsService.js";
+import MfaChecker from "../components/shared/Auth/MfaChecker.js";
 
 const Profile = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -166,6 +167,7 @@ const Profile = () => {
 
   return (
     <>
+      <MfaChecker />
       <RoleChecker requiredRole="any" />
       <>
         {currUser ? (

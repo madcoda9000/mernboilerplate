@@ -32,7 +32,7 @@ await SeedQuotes();
 
 // set cors options
 const originWhiteList = enviromentConfig.cors.allowedOrigins.split(",");
-var corsOptions = {
+let corsOptions = {
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   origin: (origin, callback) => {
@@ -68,7 +68,7 @@ app.use(express.json());
 // Set up rate limiter if enabled in dotenv
 if (enviromentConfig.rateLimiter.enabled === "true") {
   let timespan = enviromentConfig.rateLimiter.measureTimespan || 1;
-  let allowedRequests = enviromentConfig.rateLimiter.allowdRequestsInTimespan || 30;
+  let allowedRequests = enviromentConfig.rateLimiter.allowedRequestsInTimespan || 30;
   const limiter = RateLimit({
     windowMs: timespan * 60 * 1000,
     limit: allowedRequests,

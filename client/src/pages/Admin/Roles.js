@@ -41,6 +41,7 @@ import { MdOutlinePeople, MdDelete, MdOutlineSearch } from "react-icons/md";
 import ToastBox from "../../components/shared/UI/ToastBox";
 import AuthContext from "../../components/shared/Auth/AuthContext";
 import { makeAuditEntry } from "../../components/shared/Utils";
+import MfaChecker from "../../components/shared/Auth/MfaChecker";
 
 const Roles = () => {
   const [RolesData, setRolesData] = useState(null);
@@ -153,6 +154,7 @@ const Roles = () => {
     <>
       {isLoading && !RolesData ? (
         <>
+          <MfaChecker />
           <RoleChecker requiredRole="admins" />
           <Center width={"100%"} mt={40}>
             <CircularProgress isIndeterminate color="blue.500" />
@@ -162,6 +164,7 @@ const Roles = () => {
         <>
           {isLargerThan500 ? (
             <>
+              <MfaChecker />
               <RoleChecker requiredRole="admins" />
               <HStack>
                 <Flex width={"100%"}>

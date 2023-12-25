@@ -37,6 +37,7 @@ import { MdArrowBack, MdArrowForward, MdError, MdInfo, MdOutlineListAlt, MdOutli
 import AuthContext from "../../components/shared/Auth/AuthContext";
 import { makeAuditEntry } from "../../components/shared/Utils";
 import MAlertDialog from "../../components/shared/Dialogs/Alert";
+import MfaChecker from "../../components/shared/Auth/MfaChecker";
 
 const RequestLogs = () => {
   const [LogData, setLogData] = useState(null);
@@ -134,6 +135,7 @@ const RequestLogs = () => {
     <>
       {isLoading && !LogData ? (
         <>
+          <MfaChecker />
           <RoleChecker requiredRole="admins" />
           <Center width={"100%"} mt={40}>
             <CircularProgress isIndeterminate color="blue.500" />
@@ -143,6 +145,7 @@ const RequestLogs = () => {
         <>
           {isLargerThan500 ? (
             <>
+              <MfaChecker />
               <RoleChecker requiredRole="admins" />
               <HStack>
                 <Flex width={"100%"}>
