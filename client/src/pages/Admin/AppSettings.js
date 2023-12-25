@@ -25,6 +25,7 @@ import { makeAuditEntry } from "../../components/shared/Utils";
 import SettingsService from "../../Services/SettingsService";
 import { useNavigate } from "react-router-dom";
 import ToastBox from "../../components/shared/UI/ToastBox";
+import MfaChecker from "../../components/shared/Auth/MfaChecker";
 
 const AppSettings = () => {
   const [isLoading, SetIsLoading] = useState(true);
@@ -95,6 +96,7 @@ const AppSettings = () => {
     <>
       {isLoading && !settings ? (
         <>
+          <MfaChecker />
           <RoleChecker requiredRole="admins" />
           <Center width={"100%"} mt={40}>
             <CircularProgress isIndeterminate color="blue.500" />

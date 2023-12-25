@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FormControl, FormLabel, Input, Button, Stack, Heading, InputGroup, InputRightElement, InputLeftElement } from "@chakra-ui/react";
+import { FormControl, FormLabel, Input, Button, Stack, Heading} from "@chakra-ui/react";
 import AuthLayout from "../components/Layouts/AuthLayout";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";

@@ -34,6 +34,7 @@ import {
 import { MdError, MdInfo, MdOutlineListAlt, MdOutlineSearch, MdOutlineWarning } from "react-icons/md";
 import AuthContext from "../../components/shared/Auth/AuthContext";
 import { makeAuditEntry } from "../../components/shared/Utils";
+import MfaChecker from "../../components/shared/Auth/MfaChecker";
 
 const AuditLogs = () => {
   const [LogData, setLogData] = useState(null);
@@ -106,6 +107,7 @@ const AuditLogs = () => {
     <>
       {isLoading && !LogData ? (
         <>
+          <MfaChecker />
           <RoleChecker requiredRole="admins" />
           <Center width={"100%"} mt={40}>
             <CircularProgress isIndeterminate color="blue.500" />
@@ -115,6 +117,7 @@ const AuditLogs = () => {
         <>
           {isLargerThan500 ? (
             <>
+              <MfaChecker />
               <RoleChecker requiredRole="admins" />
               <HStack>
                 <Flex width={"100%"}>

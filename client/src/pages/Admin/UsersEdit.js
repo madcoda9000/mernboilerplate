@@ -31,6 +31,7 @@ import {
 import { MdOutlinePeople, MdOutlineWarning, MdRefresh, MdRemoveRedEye } from "react-icons/md";
 import AuthContext from "../../components/shared/Auth/AuthContext";
 import { makeAuditEntry } from "../../components/shared/Utils";
+import MfaChecker from "../../components/shared/Auth/MfaChecker.js";
 
 const UsersEdit = () => {
   const props = useParams();
@@ -214,6 +215,7 @@ const UsersEdit = () => {
 
   return (
     <>
+      <MfaChecker />
       <RoleChecker requiredRole="admins" />
       {!currUser && !allRoles ? (
         <Center width={"100%"} mt={40}>
@@ -221,6 +223,8 @@ const UsersEdit = () => {
         </Center>
       ) : (
         <>
+          <MfaChecker />
+          <RoleChecker requiredRole="admins" />
           {isLargerThan500 && currUser && allRoles ? (
             <>
               <HStack>

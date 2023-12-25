@@ -52,6 +52,7 @@ import {
 import AuthContext from "../../components/shared/Auth/AuthContext";
 import { makeAuditEntry } from "../../components/shared/Utils";
 import ToastBox from "../../components/shared/UI/ToastBox.js";
+import MfaChecker from "../../components/shared/Auth/MfaChecker.js";
 
 const Users = () => {
   const [usersData, setUsersData] = useState(null);
@@ -152,6 +153,54 @@ const Users = () => {
         } else {
           LoadData(1, 10, "");
           makeAuditEntry(user.userName, "info", "disabled 2fa authentication for user " + userName);
+
+          toastIdRef.current = toast({
+            position: "bottom-right",
+            render: () => <ToastBox alertBgColor={"green.500"} alertTextColor={"white"} alertMessage={response.data.message} onClose={() => closeToast()} />,
+          });
+        }
+      });
+    }
+  };
+
+  const EnableLdap = (userId, userName) => {
+    if (userId && userName) {
+      let payload = {
+        _id: userId,
+      };
+      UsersService.enableLdap(payload).then((response) => {
+        if (response.data.error) {
+          toastIdRef.current = toast({
+            position: "bottom-right",
+            render: () => <ToastBox alertBgColor={"red.500"} alertTextColor={"white"} alertMessage={response.data.message} onClose={() => closeToast()} />,
+          });
+        } else {
+          LoadData(1, 10, "");
+          makeAuditEntry(user.userName, "info", "enabled ldap authentication for user " + userName);
+
+          toastIdRef.current = toast({
+            position: "bottom-right",
+            render: () => <ToastBox alertBgColor={"green.500"} alertTextColor={"white"} alertMessage={response.data.message} onClose={() => closeToast()} />,
+          });
+        }
+      });
+    }
+  };
+
+  const DisableLdap = (userId, userName) => {
+    if (userId && userName) {
+      let payload = {
+        _id: userId,
+      };
+      UsersService.disableLdap(payload).then((response) => {
+        if (response.data.error) {
+          toastIdRef.current = toast({
+            position: "bottom-right",
+            render: () => <ToastBox alertBgColor={"red.500"} alertTextColor={"white"} alertMessage={response.data.message} onClose={() => closeToast()} />,
+          });
+        } else {
+          LoadData(1, 10, "");
+          makeAuditEntry(user.userName, "info", "disabled ldap authentication for user " + userName);
 
           toastIdRef.current = toast({
             position: "bottom-right",
@@ -282,6 +331,7 @@ const Users = () => {
     <>
       {isLoading && !usersData ? (
         <>
+          <MfaChecker />
           <RoleChecker requiredRole="admins" />
           <Center width={"100%"} mt={40}>
             <CircularProgress isIndeterminate color="blue.500" />
@@ -291,6 +341,7 @@ const Users = () => {
         <>
           {isLargerThan500 ? (
             <>
+              <MfaChecker />
               <RoleChecker requiredRole="admins" />
               {errMsg && (
                 <Alert status="error" colorScheme={"red"} variant={"left-accent"}>
@@ -348,6 +399,7 @@ const Users = () => {
                       <Th>Mail</Th>
                       <Th>2FA</Th>
                       <Th>2fa Enf</Th>
+                      <Th>Ldap</Th>
                       <Th>Username</Th>
                       <Th>Roles</Th>
                       <Th>Actions</Th>
@@ -432,7 +484,7 @@ const Users = () => {
                           )}
                         </Td>
                         {user.userName === "super.admin" ? (
-                          <Td>
+                          <Td width={"30px"}>
                             <Tooltip label="2FA Authentication not enforced! Cannot be enforced for super.admin." fontSize="sm">
                               <ComponentWithForwardRef>
                                 <Icon as={MdDoDisturbOn} color="gray.400" />
@@ -467,6 +519,31 @@ const Users = () => {
                                   ) : (
                                     <Icon onClick={() => EnforceMfa(user._id, user.userName)} as={MdCircle} style={{ cursor: "pointer" }} color="gray.500" />
                                   )}
+                                </ComponentWithForwardRef>
+                              </Tooltip>
+                            )}
+                          </Td>
+                        )}
+                        {user.userName === "super.admin" ? (
+                          <Td width={"30px"}>
+                            <Tooltip label="Ldap not enabled! Cannot be enabled for super.admin." fontSize="sm">
+                              <ComponentWithForwardRef>
+                                <Icon as={MdDoDisturbOn} color="gray.400" />
+                              </ComponentWithForwardRef>
+                            </Tooltip>
+                          </Td>
+                        ) : (
+                          <Td width={"30px"}>
+                            {user.ldapEnabled ? (
+                              <Tooltip label="Ldap Authentication enabled! Click to disable." fontSize="sm">
+                                <ComponentWithForwardRef>
+                                  <Icon onClick={() => DisableLdap(user._id, user.userName)} as={MdCircle} style={{ cursor: "pointer" }} color="green.500" />
+                                </ComponentWithForwardRef>
+                              </Tooltip>
+                            ) : (
+                              <Tooltip label="Ldap Authentication disabled! Click to enable." fontSize="sm">
+                                <ComponentWithForwardRef>
+                                  <Icon onClick={() => EnableLdap(user._id, user.userName)} as={MdCircle} style={{ cursor: "pointer" }} color="gray.500" />
                                 </ComponentWithForwardRef>
                               </Tooltip>
                             )}

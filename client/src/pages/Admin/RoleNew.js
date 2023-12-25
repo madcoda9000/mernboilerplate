@@ -23,6 +23,7 @@ import { MdOutlinePeople, MdOutlineWarning } from "react-icons/md";
 import ToastBox from "../../components/shared/UI/ToastBox.js";
 import AuthContext from "../../components/shared/Auth/AuthContext";
 import { makeAuditEntry } from "../../components/shared/Utils";
+import MfaChecker from "../../components/shared/Auth/MfaChecker.js";
 
 const RoleNew = () => {
   const [btnPwIsloading, setbtnPwIsloading] = useState(false);
@@ -104,6 +105,7 @@ const RoleNew = () => {
 
   return (
     <>
+      <MfaChecker />
       <RoleChecker requiredRole="admins" />
       {!newRole ? (
         <Center width={"100%"} mt={40}>
@@ -113,6 +115,8 @@ const RoleNew = () => {
         <>
           {isLargerThan500 ? (
             <>
+              <MfaChecker />
+              <RoleChecker requiredRole="admins" />
               <HStack>
                 <Icon as={MdOutlinePeople} display={"inline"} mr={"10px"} w={10} h={10} />
                 <Heading fontSize={"2xl"} display={"inline"}>
