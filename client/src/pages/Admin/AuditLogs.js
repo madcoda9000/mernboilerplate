@@ -48,7 +48,6 @@ const AuditLogs = () => {
 
   useEffect(() => {
     SetIsLoading(true);
-    makeAuditEntry(user.userName, "info", "viewed Audit logs");
     var pSize = 100;
     var searchStr;
     if (search === null || search.trim() === "" || search.trim().length === 0) {
@@ -68,6 +67,7 @@ const AuditLogs = () => {
       } else {
         SetErrMsg(response.data.message);
         SetIsLoading(false);
+        makeAuditEntry(user.userName, "info", "viewed Audit logs");
       }
     });
   }, [search, user.userName]);
@@ -133,15 +133,7 @@ const AuditLogs = () => {
                       <InputLeftElement pointerEvents="none" children={<MdOutlineSearch color="gray.600" />} />
                       <Input type="text" placeholder={search ? search : "search..."} onChange={(e) => setSearch(e.target.value)} />
                       <InputRightAddon p={0} border="none">
-                        <Button
-                          size="sm"
-                          borderLeftRadius={0}
-                          borderRightRadius={0}
-                          type="button"
-                          colorScheme={"gray"}
-                          variant={"solid"}
-                          onClick={() => setSearch("")}
-                        >
+                        <Button size="sm" borderLeftRadius={0} borderRightRadius={0} type="button" variant={"solid"} onClick={() => setSearch("")}>
                           {search ? "reset" : "search"}
                         </Button>
                       </InputRightAddon>

@@ -1,11 +1,11 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { Box, Drawer, DrawerContent, useDisclosure, useColorModeValue } from "@chakra-ui/react";
-import AuthContext from "../shared/Auth/AuthContext";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Text } from "@chakra-ui/react";
 import { useIdleTimer } from "react-idle-timer";
 import { Outlet, useNavigate } from "react-router-dom";
+import AuthContext from "../../components/shared/Auth/AuthContext";
 
 const timeout = 120_000;
 const promptBeforeIdle = 30_000;
@@ -14,27 +14,24 @@ export default function Layout({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [ml, setMl] = useState({ base: 0, md: 60 });
   const [sideBarDisplay, setSideBarDisplay] = useState("block");
-  const { logout } = useContext(AuthContext);
-  const [state, setState] = useState("Active");
   const [remaining, setRemaining] = useState(timeout);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
 
-  const onIdle = () => {
-    setState("Idle");
+  // Memoized callback functions
+  const onIdle = useCallback(() => {
     setOpen(false);
-    navigate("/login?msg=sess");
-  };
+    logout();
+  }, [logout]);
 
-  const onActive = () => {
-    setState("Active");
+  const onActive = useCallback(() => {
     setOpen(false);
-  };
+  }, []);
 
-  const onPrompt = () => {
-    setState("Prompted");
+  const onPrompt = useCallback(() => {
     setOpen(true);
-  };
+  }, []);
 
   const { getRemainingTime, activate } = useIdleTimer({
     onIdle,
@@ -45,34 +42,36 @@ export default function Layout({ children }) {
     throttle: 500,
   });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      let remainingSeconds = Math.ceil(getRemainingTime() / 1000);
-      let remainingDisplayString = "";
-      if (remainingSeconds > 60) {
-        let secs = remainingSeconds % 60;
-        let secStr = secs;
-        if (secs < 10) {
-          secStr = "0" + secs;
-        }
-        remainingDisplayString = Math.floor(remainingSeconds / 60) + ":" + secStr;
-      } else {
-        remainingDisplayString = "00:" + remainingSeconds;
+  // Memoized interval function
+  const updateRemainingTime = useCallback(() => {
+    let remainingSeconds = Math.ceil(getRemainingTime() / 1000);
+    let remainingDisplayString = "";
+    if (remainingSeconds > 60) {
+      let secs = remainingSeconds % 60;
+      let secStr = secs;
+      if (secs < 10) {
+        secStr = "0" + secs;
       }
-      setRemaining(remainingDisplayString);
-    }, 500);
+      let mins = Math.floor(remainingSeconds / 60);
+      let minsStr = mins;
+      if (mins < 10) {
+        minsStr = "0" + mins;
+      }
+      remainingDisplayString = minsStr + ":" + secStr;
+    } else {
+      remainingDisplayString = "00:" + remainingSeconds;
+    }
+    setRemaining(remainingDisplayString);
+  }, [getRemainingTime]);
 
-    return () => {
-      clearInterval(interval);
-    };
-  });
+  useEffect(() => {
+    const interval = setInterval(updateRemainingTime, 500);
+    return () => clearInterval(interval);
+  }, [updateRemainingTime]);
 
   const handleStillHere = () => {
     activate();
   };
-
-  const timeTillPrompt = Math.max(remaining - promptBeforeIdle / 1000, 0);
-  const seconds = timeTillPrompt > 1 ? "seconds" : "second";
 
   const ToggleSidebar = () => {
     if (ml.md === 60) {

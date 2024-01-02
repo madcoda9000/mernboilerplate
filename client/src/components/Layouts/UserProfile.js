@@ -25,9 +25,9 @@ export default function UserProfile() {
                 <Text fontSize="lg">
                   {user.firstName} {user.lastName}
                 </Text>
-                <Text fontSize="md" color={useColorModeValue("gray.500", "gray.500")}>
+                <div fontSize="md" color={useColorModeValue("gray.500", "gray.500")}>
                   {RoleBadges(user.roles)}
-                </Text>
+                </div>
               </VStack>
               <Box display={{ base: "none", md: "flex" }}>
                 <FiChevronDown />

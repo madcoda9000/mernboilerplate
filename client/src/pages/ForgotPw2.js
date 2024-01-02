@@ -1,7 +1,5 @@
-import { useContext, useRef, useState, useEffect } from "react";
-import { Link as ReactRouterLink, useSearchParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import AuthContext from "../components/shared/Auth/AuthContext";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Button,
   FormControl,
@@ -9,14 +7,10 @@ import {
   Heading,
   Input,
   Stack,
-  Alert,
-  Link as ChakraLink,
-  AlertIcon,
   InputGroup,
   InputLeftElement,
   InputRightElement,
 } from "@chakra-ui/react";
-import SettingsService from "../Services/SettingsService";
 import { MdRefresh, MdRemoveRedEye } from "react-icons/md";
 import password from "secure-random-password";
 import { PasswordChecker } from "react-password-strengthbar-ui";
@@ -37,7 +31,10 @@ const ForgotPw2 = () => {
   };
 
   useEffect(() => {
-    if (searchParams.get("email") === null || searchParams.get("token") === null) {
+    if (
+      searchParams.get("email") === null ||
+      searchParams.get("token") === null
+    ) {
       setErrMsg({ __html: "Invalid email and /or token!" });
       setBtnDisabled(true);
     } else {
@@ -54,7 +51,15 @@ const ForgotPw2 = () => {
   };
 
   const handleGeneratePassword = () => {
-    const generatedPassword = password.randomPassword({ length: 16, characters: [password.lower, password.upper, password.digits, password.symbols] });
+    const generatedPassword = password.randomPassword({
+      length: 16,
+      characters: [
+        password.lower,
+        password.upper,
+        password.digits,
+        password.symbols,
+      ],
+    });
     setNewPw(generatedPassword);
   };
 
@@ -127,7 +132,11 @@ const ForgotPw2 = () => {
           className="chakra-alert"
           data-status="error"
           role="alert"
-          style={{ backgroundColor: "var(--chakra-colors-red-600)", padding: "10px", color: "var(--chakra-colors-white)" }}
+          style={{
+            backgroundColor: "var(--chakra-colors-red-600)",
+            padding: "10px",
+            color: "var(--chakra-colors-white)",
+          }}
         >
           <div dangerouslySetInnerHTML={errMsg}></div>
         </div>
@@ -154,7 +163,12 @@ const ForgotPw2 = () => {
                 title="generate password..."
                 onClick={handleGeneratePassword}
               />
-              <Input type={passwordVisible ? "text" : "password"} name="password" value={newPw} onChange={handleChange} />
+              <Input
+                type={passwordVisible ? "text" : "password"}
+                name="password"
+                value={newPw}
+                onChange={handleChange}
+              />
               <InputRightElement
                 color={passwordVisible ? "blue.500" : "grey.500"}
                 fontSize="1.2em"

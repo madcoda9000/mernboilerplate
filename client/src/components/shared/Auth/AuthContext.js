@@ -23,12 +23,11 @@ export const AuthContextProvider = ({ children }) => {
   });
 
   const handleUserAction = (apiResponse, action) => {
-    sessionStorage.setItem("accessToken", JSON.stringify(apiResponse.data.accessToken));
-    sessionStorage.setItem("refreshToken", JSON.stringify(apiResponse.data.refreshToken));
-    setUser(jwtDecode(apiResponse.data.accessToken));
+    sessionStorage.setItem("user", JSON.stringify(apiResponse.data.user));
+    setUser(apiResponse.data.user);
 
     if (action !== null && action === "login") {
-      var us = jwtDecode(apiResponse.data.accessToken);
+      var us = apiResponse.data.user;
       var logonType = us.ldapEnabled === true ? "ldap" : "db";
       makeAuditEntry(us.userName, "info", us.userName + " " + logonType + " login in successfully.");
       if (us.mfaEnforced === true) {
@@ -49,35 +48,30 @@ export const AuthContextProvider = ({ children }) => {
 
   const login = async (payload) => {
     try {
-      const apiResponse = await axios.post(apiurl + "/v1/auth/login", payload);
+      const apiResponse = await axios.post(apiurl + "/v1/auth/login", payload, { headers: { "Content-Type": "application/json" }, withCredentials: true });
       if (apiResponse.data.error === false) {
         handleUserAction(apiResponse, "login");
       } else if (apiResponse.data.error === true) {
         return apiResponse.data.message;
       }
     } catch (error) {
+      console.log(error);
       return error.response.data.message;
     }
   };
 
   const logout = async () => {
-    if (sessionStorage.getItem("refreshToken")) {
-      const payload = {
-        refreshToken: JSON.parse(sessionStorage.getItem("refreshToken")),
-      };
-      await axios.post(apiurl + "/v1/auth/logout", payload);
-    }
+    await axios.get(apiurl + "/v1/auth/logout", { withCredentials: true });
 
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("user");
 
     setUser(null);
     navigate("/login?msg=lgo");
   };
 
   const refreshContext = () => {
-    var tok = sessionStorage.getItem("accessToken");
-    setUser(jwtDecode(tok));
+    var tok = sessionStorage.getItem("user");
+    setUser(JSON.parse(tok));
   };
 
   return <AuthContext.Provider value={{ user, login, logout, refreshContext }}>{children}</AuthContext.Provider>;

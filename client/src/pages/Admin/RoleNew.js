@@ -150,13 +150,12 @@ const RoleNew = () => {
                   </VStack>
                   <HStack mt={"30px"}>
                     <Spacer />
-                    <Button mr={"30px"} onClick={() => navigate("/Admin/Roles")}>
+                    <Button mr={"30px"} onClick={() => navigate("/Admin/Roles")} colorScheme="gray">
                       Cancel
                     </Button>
 
                     <Button
                       type="button"
-                      colorScheme={"gray"}
                       variant={"solid"}
                       isLoading={btnPwIsloading}
                       disabled={btnPwIsloading}

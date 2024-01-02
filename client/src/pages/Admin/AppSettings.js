@@ -159,13 +159,12 @@ const AppSettings = () => {
             </Stack>
             <HStack mt={"60px"}>
               <Spacer />
-              <Button mr={"30px"} onClick={() => navigate("/Home")}>
+              <Button mr={"30px"} onClick={() => navigate("/Home")} colorScheme={"gray"}>
                 Cancel
               </Button>
 
               <Button
                 type="button"
-                colorScheme={"gray"}
                 variant={"solid"}
                 isLoading={btnPwIsloading}
                 disabled={btnPwIsloading}

@@ -280,7 +280,7 @@ const UserNew = () => {
 
               <Flex>
                 <Box w={"60%"} borderRight={"1px"} borderColor={"blue.500"} paddingRight={"30px"} mt={"30px"}>
-                  <Alert status={succMsgType} colorScheme={"gray"} variant={"left-accent"}>
+                  <Alert status={succMsgType} variant={"left-accent"}>
                     <AlertIcon />
                     {succMsg}
                   </Alert>
@@ -352,13 +352,12 @@ const UserNew = () => {
                   </Stack>
                   <HStack mt={"30px"}>
                     <Spacer />
-                    <Button mr={"30px"} onClick={() => navigate("/Admin/Users")}>
+                    <Button mr={"30px"} onClick={() => navigate("/Admin/Users")} colorScheme={"gray"}>
                       Cancel
                     </Button>
 
                     <Button
                       type="button"
-                      colorScheme={"gray"}
                       variant={"solid"}
                       isLoading={btnPwIsloading}
                       disabled={btnPwIsloading}
@@ -374,7 +373,7 @@ const UserNew = () => {
                     Please select one or more roles
                   </Heading>
                   {hintText && (
-                    <Alert status="warning" colorScheme={"gray"} variant={"left-accent"}>
+                    <Alert status="warning" variant={"left-accent"}>
                       <AlertIcon />
                       {hintText}
                     </Alert>
