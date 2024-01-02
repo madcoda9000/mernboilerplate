@@ -10,6 +10,7 @@ import { sendConfirmMail } from "../utils/mailSender.js";
 import logger from "../services/logger.service.js";
 import * as OTPAuth from "otpauth";
 import * as base32 from "hi-base32";
+import { serialize } from "v8";
 
 const router = Router();
 
@@ -57,7 +58,10 @@ router.post("/startMfaSetup", auth, async (req, res) => {
 
     if (!user) {
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "No user with id " + req.body._id + " exist!", 400);
-      return res.status(400).json({ error: true, message: "No user with id " + req.body._id + " exist!" });
+      return res.status(400).json({
+        error: true,
+        message: "No user with id " + req.body._id + " exist!",
+      });
     }
 
     const base32_secret = generateRandomBase32();
@@ -135,7 +139,10 @@ router.post("/finishMfaSetup", auth, async (req, res) => {
 
     if (!user) {
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "No user with id " + req.body._id + " exist!", 400);
-      return res.status(400).json({ error: true, message: "No user with id " + req.body._id + " exist!" });
+      return res.status(400).json({
+        error: true,
+        message: "No user with id " + req.body._id + " exist!",
+      });
     }
 
     let totp = new OTPAuth.TOTP({
@@ -220,7 +227,10 @@ router.post("/validateOtp", auth, async (req, res) => {
 
     if (!user) {
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "No user with id " + req.body._id + " exist!", 400);
-      return res.status(400).json({ error: true, message: "No user with id " + req.body._id + " exist!" });
+      return res.status(400).json({
+        error: true,
+        message: "No user with id " + req.body._id + " exist!",
+      });
     }
 
     let totp = new OTPAuth.TOTP({
@@ -321,7 +331,10 @@ router.post("/confirmEmail", async (req, res) => {
     await User.findByIdAndUpdate({ _id: req.body._id }, update);
     logger.info("AUDIT | " + req.body.email + " | confirmed email sucessfully");
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body.email + " confirmed email sucessfully", 200);
-    res.status(200).json({ error: false, message: "Account " + req.body.email + " confirmed email sucessfully" });
+    res.status(200).json({
+      error: false,
+      message: "Account " + req.body.email + " confirmed email sucessfully",
+    });
   } catch (err) {
     console.log(err);
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
@@ -375,19 +388,30 @@ router.post("/signUp", async (req, res) => {
     const nameuser = await User.findOne({ userName: req.body.userName });
     if (nameuser) {
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "User with given username already exist", 400);
-      return res.status(400).json({ error: true, message: "User with given username already exist" });
+      return res.status(400).json({
+        error: true,
+        message: "User with given username already exist",
+      });
     }
 
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-    await new User({ ...req.body, password: hashPassword, emailVerifyToken: crypto.randomUUID(), accountLocked: true }).save();
+    await new User({
+      ...req.body,
+      password: hashPassword,
+      emailVerifyToken: crypto.randomUUID(),
+      accountLocked: true,
+    }).save();
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body.email + " created sucessfully", 201);
     logger.info("AUDIT | " + req.body.userName + " | registered a new account sucessfully");
     const createdUser = await User.findOne({ email: req.body.email });
     await sendConfirmMail(createdUser);
 
-    res.status(201).json({ error: false, message: "Account " + req.body.email + " created sucessfully" });
+    res.status(201).json({
+      error: false,
+      message: "Account " + req.body.email + " created sucessfully",
+    });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, err, 500);
     logger.error("API|auth.js|/signUp|" + err.message);
@@ -464,7 +488,10 @@ router.post("/logIn", async (req, res) => {
 
     if (user.accountLocked === true) {
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account locked.", 401);
-      return res.status(401).json({ error: true, message: "Your account is locked! Please contact your administrator." });
+      return res.status(401).json({
+        error: true,
+        message: "Your account is locked! Please contact your administrator.",
+      });
     }
 
     const verifiedPassword = await bcrypt.compare(req.body.password, user.password);
@@ -477,9 +504,29 @@ router.post("/logIn", async (req, res) => {
       mfaVerified: false,
     };
     await User.findByIdAndUpdate({ _id: user._id }, update);
+    user.password = "";
+    user.mfaToken = "";
 
     const { accessToken, refreshToken } = await generateTokens(user);
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, req.body.userName + " logged in sucessfully", 200);
+
+    // Set HTTP-only cookie with the access token
+    let mdate = new Date();
+    let rDate = new Date();
+    mdate.setTime(mdate.getTime() + 1 * 60 * 1000);
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false, // Set to true in production if using HTTPS
+      sameSite: "strict", // Adjust as needed based on your application's requirements
+      expires: mdate,
+    });
+    rDate.setDate(rDate.getDate() + 1);
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false, // Set to true in production if using HTTPS
+      sameSite: "strict", // Adjust as needed based on your application's requirements
+      expires: rDate,
+    });
     res.status(200).json({
       error: false,
       accessToken,

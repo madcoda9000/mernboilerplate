@@ -7,11 +7,10 @@ import RoleChecker from "../components/shared/Auth/RoleChecker";
 import axios from "axios";
 import { makeAuditEntry } from "../components/shared/Utils";
 
-export const MfaLogin = () => {
-  const { user, refreshContext } = useContext(AuthContext);
+const MfaLogin = () => {
+  const { user, logout, refreshContext } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [pageIsLoading, setPageIsLoading] = useState(false);
   const [otpToken, setOtpToken] = useState("");
   const [errMsg, setErrMsg] = useState(null);
   const [succMsg, setSuccMsg] = useState(null);
@@ -30,15 +29,14 @@ export const MfaLogin = () => {
         setErrMsg(response.data.message);
         makeAuditEntry(user.userName, "warn", user.userName + " otp verification failed! " + response.data.message);
       } else {
-        let refTok = JSON.parse(sessionStorage.getItem("refreshToken"));
         axios
-          .post(window.BASE_URL + "/v1/auth/createNewAccessToken", {
-            refreshToken: refTok,
+          .get(window.BASE_URL + "/v1/auth/createNewAccessToken", {
+            withCredentials: true,
           })
           .then((apiResponse) => {
             if (apiResponse.data.error === false) {
-              sessionStorage.removeItem("accessToken");
-              sessionStorage.setItem("accessToken", JSON.stringify(apiResponse.data.accessToken));
+              sessionStorage.removeItem("user");
+              sessionStorage.setItem("user", JSON.stringify(apiResponse.data.reqUser));
               refreshContext();
               setIsLoading(false);
               setErrMsg(null);
@@ -60,7 +58,6 @@ export const MfaLogin = () => {
           });
       }
     });
-    setIsLoading(false);
   };
 
   function goHome(intervalId) {
@@ -74,16 +71,11 @@ export const MfaLogin = () => {
   };
 
   const cancelMfaLogin = () => {
-    if (sessionStorage.getItem("accessToken")) {
-      sessionStorage.removeItem("accessToken");
-    }
-    if (sessionStorage.getItem("refreshToken")) {
-      sessionStorage.removeItem("acc");
-    }
+    logout();
     navigate("/login");
   };
 
-  if (pageIsLoading) {
+  if (isLoading) {
     return (
       <>
         <RoleChecker requiredRole="any" />
@@ -113,7 +105,7 @@ export const MfaLogin = () => {
 
         <form onSubmit={verifyOtp}>
           <HStack mt={"20px"} mb={"20px"}>
-            <PinInput otp colorScheme="blue" autoFocus={true} onChange={(e) => handleChange(e)}>
+            <PinInput otp colorScheme="blue" autoFocus={true} onChange={(e) => handleChange(e)} isDisabled={isLoading}>
               <PinInputField mr={"30px"} ml={"10px"} />
               <PinInputField mr={"30px"} />
               <PinInputField mr={"30px"} />
@@ -156,3 +148,4 @@ export const MfaLogin = () => {
     );
   }
 };
+export default MfaLogin;

@@ -201,7 +201,6 @@ const Profile = () => {
                   <Button
                     width={300}
                     type="button"
-                    colorScheme={"gray"}
                     variant={"solid"}
                     isLoading={btnMailIsloading}
                     disabled={btnMailIsloading}
@@ -273,7 +272,6 @@ const Profile = () => {
                   <Button
                     width={300}
                     type="button"
-                    colorScheme={"gray"}
                     variant={"solid"}
                     isLoading={btnPwIsloading}
                     disabled={btnPwIsloading}

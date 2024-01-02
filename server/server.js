@@ -18,8 +18,12 @@ import SeedRoles from "./seeders/rolesSeeder.js";
 import SeedSettings from "./seeders/settingsSeeder.js";
 import SeedQuotes from "./seeders/quotesSeeder.js";
 import { enviromentConfig } from "./config/enviromentConfig.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
+
+// cookie parser
+app.use(cookieParser());
 
 // connect to database
 dbConnect();
@@ -34,6 +38,7 @@ await SeedQuotes();
 const originWhiteList = enviromentConfig.cors.allowedOrigins.split(",");
 let corsOptions = {
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+  credentials: true,
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   origin: (origin, callback) => {
     if (originWhiteList.indexOf(origin) !== -1) {

@@ -333,13 +333,12 @@ const UsersEdit = () => {
                   </Stack>
                   <HStack mt={"30px"}>
                     <Spacer />
-                    <Button mr={"30px"} onClick={() => navigate("/Admin/Users")}>
+                    <Button mr={"30px"} onClick={() => navigate("/Admin/Users")} colorScheme={"gray"}>
                       Cancel
                     </Button>
 
                     <Button
                       type="button"
-                      colorScheme={"gray"}
                       variant={"solid"}
                       isLoading={btnPwIsloading}
                       disabled={btnPwIsloading}

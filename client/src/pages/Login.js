@@ -1,8 +1,7 @@
 import { useContext, useRef, useState, useEffect } from "react";
 import { Link as ReactRouterLink, useSearchParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import AuthContext from "../components/shared/Auth/AuthContext";
-import { Button, FormControl, FormLabel, Heading, Input, Stack, Alert, Link as ChakraLink, AlertIcon } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Heading, Input, Stack, Alert, Link as ChakraLink, AlertIcon, Center } from "@chakra-ui/react";
 import SettingsService from "../Services/SettingsService";
 
 /**
@@ -11,7 +10,6 @@ import SettingsService from "../Services/SettingsService";
  * @returns html output for login page
  */
 const Login = () => {
-  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const userName = useRef("");
   const password = useRef("");
@@ -64,15 +62,10 @@ const Login = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      // remove all tokens
-      if (sessionStorage.getItem("accessToken")) {
-        sessionStorage.removeItem("accessToken");
-      }
-      if (sessionStorage.getItem("refreshToken")) {
-        sessionStorage.removeItem("refreshToken");
-      }
+      // remove all settings
       if (localStorage.getItem("AppSettings")) {
         localStorage.removeItem("AppSettings");
+        sessionStorage.removeItem("showBanner");
       }
 
       SettingsService.getApplicationSettings().then((response) => {
@@ -95,54 +88,56 @@ const Login = () => {
   return (
     <>
       <>
-        <Heading fontSize={"2xl"}>Sign in to your account</Heading>
+        <Center>
+          <Heading fontSize={"2xl"} style={{ marginTop: "20px" }}>
+            Sign in to your account
+          </Heading>
+        </Center>
         {searchParams.get("msg") === "sess" && (
-          <Alert status="info" colorScheme={"gray"} variant={"left-accent"}>
+          <Alert status="info" variant={"left-accent"} style={{ marginTop: "20px" }}>
             <AlertIcon />
             <span>Due to security reasons, your session was terminated automatically.</span>
           </Alert>
         )}
         {searchParams.get("msg") === "lgo" && (
-          <Alert status="info" colorScheme={"gray"} variant={"left-accent"}>
+          <Alert status="info" variant={"left-accent"} style={{ marginTop: "20px" }}>
             <AlertIcon />
             <span>You're logged out successfully.</span>
           </Alert>
         )}
         {searchParams.get("msg") === "reg" && (
-          <Alert status="info" colorScheme={"gray"} variant={"left-accent"}>
+          <Alert status="info" cvariant={"left-accent"} style={{ marginTop: "20px" }}>
             <AlertIcon />
             <span>Your account was created successfully. Please take a look into your inbox to verify your email addres.</span>
           </Alert>
         )}
         {searchParams.get("msg") === "conf" && (
-          <Alert status="info" colorScheme={"gray"} variant={"left-accent"}>
+          <Alert status="info" c variant={"left-accent"} style={{ marginTop: "20px" }}>
             <AlertIcon />
             <span>Your email address is confirmed successfully and your account is activated. You can login now using your credentials.</span>
           </Alert>
         )}
         {searchParams.get("msg") === "res" && (
-          <Alert status="info" colorScheme={"gray"} variant={"left-accent"}>
+          <Alert status="info" variant={"left-accent"} style={{ marginTop: "20px" }}>
             <AlertIcon />
             <span>Your password was resetted successfully. You can login now using your new password.</span>
           </Alert>
         )}
         {errMsg && (
-          <Alert status="error" colorScheme={"red"} variant={"left-accent"}>
+          <Alert status="error" variant={"left-accent"} style={{ marginTop: "20px" }}>
             <AlertIcon />
             {errMsg}
           </Alert>
         )}
-        <form onSubmit={loginSubmit}>
+        <form onSubmit={loginSubmit} style={{ marginTop: "30px" }}>
           <FormControl id="username">
-            <FormLabel>Username</FormLabel>
-            <Input type="text" ref={userName} />
+            <Input type="text" ref={userName} placeholder="Username" />
           </FormControl>
-          <FormControl id="password">
-            <FormLabel>Password</FormLabel>
-            <Input type="password" ref={password} />
+          <FormControl id="password" mt={"10px"}>
+            <Input type="password" ref={password} placeholder="Password" />
           </FormControl>
           <Stack spacing={6}>
-            <Button type="submit" colorScheme={"gray"} variant={"solid"} isLoading={isLoading} loadingText="Submitting" marginTop={"10"}>
+            <Button type="submit" variant={"solid"} isLoading={isLoading} loadingText="Submitting" marginTop={"10"}>
               Sign in
             </Button>
           </Stack>
@@ -153,7 +148,7 @@ const Login = () => {
             justifyContent={"center"}
             marginTop={"20"}
           >
-            <ChakraLink as={ReactRouterLink} to="/ForgotPw1" color={"gary.500"}>
+            <ChakraLink as={ReactRouterLink} to="/ForgotPw1">
               Forgot password?
             </ChakraLink>
           </Stack>
@@ -164,7 +159,7 @@ const Login = () => {
             justifyContent={"center"}
             marginTop={aSettings && aSettings.showResetPasswordLink === "true" ? "5" : "20"}
           >
-            <ChakraLink as={ReactRouterLink} to="/register" color={"gary.500"}>
+            <ChakraLink as={ReactRouterLink} to="/register">
               Register new Account?
             </ChakraLink>
           </Stack>

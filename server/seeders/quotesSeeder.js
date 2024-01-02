@@ -15,9 +15,21 @@ const SeedQuotes = async () => {
       const data = await readFileAsync("./data/quotes.json", "utf8");
       const jsonData = JSON.parse(data);
 
-      for (const p of jsonData) {
-        let qt = new Quote(p);
-        await qt.save();
+      const totalQuotes = jsonData.length;
+      const batchSize = 100; // Adjust the batch size as needed
+      const numBatches = Math.ceil(totalQuotes / batchSize);
+
+      logger.info(`SEEDER | Total quotes to import: ${totalQuotes}`);
+
+      for (let i = 0; i < numBatches; i++) {
+        const startIndex = i * batchSize;
+        const endIndex = Math.min((i + 1) * batchSize, totalQuotes);
+        const batchQuotes = jsonData.slice(startIndex, endIndex);
+
+        await Quote.insertMany(batchQuotes);
+        logger.info(
+          `SEEDER | Imported ${endIndex} quotes out of ${totalQuotes}`,
+        );
       }
 
       logger.info("SEEDER | Quotes seeded successfully!");

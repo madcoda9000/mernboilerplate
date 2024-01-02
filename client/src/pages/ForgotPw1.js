@@ -5,17 +5,12 @@ import {
   AlertTitle,
   Box,
   Button,
-  CloseButton,
-  Flex,
   FormControl,
   FormLabel,
   HStack,
   Heading,
   Input,
   Spacer,
-  Stack,
-  Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import UsersService from "../Services/UsersService";
@@ -102,12 +97,14 @@ const ForgotPw1 = () => {
             <br />
             Enter your email address and click on "reset my password".
             <br />
-            After doing so, you'r account will become deactivated until you complete Step 2.
+            After doing so, you'r account will become deactivated until you
+            complete Step 2.
             <br />
             <br />
             <b>Step 2</b>
             <br />
-            You'll receive an email with an link to an page where you can provide an new password for your account.
+            You'll receive an email with an link to an page where you can
+            provide an new password for your account.
           </AlertDescription>
         </Box>
       </Alert>
@@ -121,7 +118,14 @@ const ForgotPw1 = () => {
           <Button type="Button" onClick={() => navigate("/login")} mr={"3"}>
             Cancel
           </Button>
-          <Button type="Button" colorScheme={"gray"} variant={"solid"} isLoading={isLoading} loadingText="Submitting..." onClick={() => submitForm()}>
+          <Button
+            type="Button"
+            colorScheme={"gray"}
+            variant={"solid"}
+            isLoading={isLoading}
+            loadingText="Submitting..."
+            onClick={() => submitForm()}
+          >
             Reset my password!
           </Button>
         </HStack>

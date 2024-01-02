@@ -190,7 +190,7 @@ const MfaSetup = () => {
               </Box>
             </Alert>
             <HStack spacing={6} mt={"30px"}>
-              <Button type="Button" onClick={() => navigate("/Home")} mr={"3"}>
+              <Button type="Button" onClick={() => navigate("/Home")} mr={"3"} isDisabled={isLoading} colorScheme={"gray"}>
                 Back
               </Button>
               <Button
@@ -312,13 +312,14 @@ const MfaSetup = () => {
                       onClick={() => cancelMfaLogin()}
                       mr={"3"}
                       display={activatedSuccessfully === false ? "block" : "none"}
+                      isDisabled={isLoading}
+                      colorScheme={"gray"}
                     >
                       Cancel
                     </Button>
                     <Button
                       width={"100%"}
                       type="submit"
-                      colorScheme={"gray"}
                       variant={"solid"}
                       isLoading={isLoading}
                       isDisabled={isLoading}
@@ -436,13 +437,14 @@ const MfaSetup = () => {
                       onClick={() => navigate("/Home")}
                       mr={"3"}
                       display={activatedSuccessfully === false ? "block" : "none"}
+                      isDisabled={isLoading}
+                      colorScheme={"gray"}
                     >
                       Cancel
                     </Button>
                     <Button
                       width={"100%"}
                       type="submit"
-                      colorScheme={"gray"}
                       variant={"solid"}
                       isLoading={isLoading}
                       isDisabled={isLoading}

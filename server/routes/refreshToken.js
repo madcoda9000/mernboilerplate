@@ -12,16 +12,11 @@ import { enviromentConfig } from "../config/enviromentConfig.js";
 const router = Router();
 
 /**
- * POST /v1/auth/createNewAccessToken
+ * GET /v1/auth/createNewAccessToken
  * @summary method to create a new acess token
  * @tags Athentication (Authenticated:false) - authentication related api endpoints
- * @param {object} request.body.required - password, email
  * @return {object} 200 - success response - application/json
  * @return {object} 400 - Bad request response - application/json
- * @example request - example payload
- * {
- *   "refreshToken": "541t6ver7zc2974tes4erzz6+er4zrt3"
- * }
  * @example response - 200 - example success response
  * {
  * 	"error": false,
@@ -34,25 +29,29 @@ const router = Router();
  *   "message": "error message goes here..."
  * }
  */
-router.post("/createNewAccessToken", async (req, res) => {
+router.get("/createNewAccessToken", async (req, res) => {
   const mid = crypto.randomBytes(16).toString("hex");
   doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
-  const { error } = refreshTokenBodyValidation(req.body);
-  if (error) {
-    doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400);
-    return res.status(400).json({ error: true, message: error.details[0].message });
+
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Access Denied: No refreshToken cookie provided", 401);
+    return res.status(401).json({ error: true, message: "Access Denied: No refreshToken cookie provided" });
   }
 
   let verifyMfaState = false;
-  const checkTok = await UserToken.findOne({ token: req.body.refreshToken });
+  let reqUser = null;
+  const checkTok = await UserToken.findOne({ token: refreshToken });
   if (checkTok) {
-    const checkUs = await User.findById({ _id: checkTok.userId });
-    if (checkUs) {
-      verifyMfaState = checkUs.mfaVerified;
+    reqUser = await User.findById({ _id: checkTok.userId });
+    reqUser.password = "";
+    reqUser.mfaToken = "";
+    if (reqUser) {
+      verifyMfaState = reqUser.mfaVerified;
     }
   }
 
-  verifyRefreshToken(req.body.refreshToken)
+  verifyRefreshToken(refreshToken)
     .then(({ tokenDetails }) => {
       const payload = {
         _id: tokenDetails._id,
@@ -67,9 +66,20 @@ router.post("/createNewAccessToken", async (req, res) => {
       };
       const accessToken = jwt.sign(payload, enviromentConfig.jwt.accessTokenPrivateKey, { expiresIn: "1m" });
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Access token created successfully", 200);
+
+      // Set HTTP-only cookie with the access token
+      let mdate = new Date();
+      mdate.setTime(mdate.getTime() + 1 * 60 * 1000);
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: false, // Set to true in production if using HTTPS
+        sameSite: "strict", // Adjust as needed based on your application's requirements
+        expires: mdate,
+      });
+
       res.status(200).json({
         error: false,
-        accessToken,
+        reqUser,
         message: "Access token created successfully",
       });
     })
@@ -81,16 +91,11 @@ router.post("/createNewAccessToken", async (req, res) => {
 });
 
 /**
- * POST /v1/auth/logout
+ * GET /v1/auth/logout
  * @summary method to logout
  * @tags Athentication (Authenticated:false) - authentication related api endpoints
- * @param {object} request.body.required - password, email
  * @return {object} 200 - success response - application/json
  * @return {object} 400 - Bad request response - application/json
- * @example request - example payload
- * {
- *   "refreshToken": "sdg4ed8hr6d1bd6fz7hr4edf4hbdf4bn9df4"
- * }
  * @example response - 200 - example success response
  * {
  * 	"error": false,
@@ -102,17 +107,17 @@ router.post("/createNewAccessToken", async (req, res) => {
  *   "message": "error message goes here..."
  * }
  */
-router.post("/logout", async (req, res) => {
+router.get("/logout", async (req, res) => {
   const mid = crypto.randomBytes(16).toString("hex");
   try {
     doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
-    const { error } = refreshTokenBodyValidation(req.body);
-    if (error) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400);
-      return res.status(400).json({ error: true, message: error.details[0].message });
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Access Denied: No refreshToken cookie provided", 401);
+      return res.status(401).json({ error: true, message: "Access Denied: No refreshToken cookie provided" });
     }
 
-    const userToken = await UserToken.findOne({ token: req.body.refreshToken });
+    const userToken = await UserToken.findOne({ token: refreshToken });
     if (!userToken) {
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Logged Out Sucessfully", 200);
       return res.status(200).json({ error: false, message: "Logged Out Sucessfully" });
@@ -128,7 +133,7 @@ router.post("/logout", async (req, res) => {
       await User.findByIdAndUpdate({ _id: us._id }, upd);
       logger.info("AUDIT | " + us.userName + " | Logged out sucessfully");
     }
-    res.status(200).json({ error: false, message: "Logged Out Sucessfully" });
+    res.status(200).clearCookie("accessToken").clearCookie("refreshToken").json({ error: false, message: "Logged Out Sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, err, 500);
     logger.error("API|refreshToken.js|/logout|" + err.message);

@@ -32,13 +32,13 @@ const Paginator = (props) => {
         </HStack>
         <Spacer />
         <Box>
-          <Button mr={"20px"} size={"sm"} colorScheme="gray" variant={"solid"} isDisabled={currentPage === "1" ? true : false} onClick={prevPageMethod}>
+          <Button mr={"20px"} size={"sm"} variant={"solid"} isDisabled={currentPage === "1" ? true : false} onClick={prevPageMethod}>
             Prev
           </Button>
           <Text display={"inline"} mr={"20px"}>
             Page {currentPage} of {totalPages}
           </Text>
-          <Button mr={"21px"} size={"sm"} colorScheme="gray" variant={"solid"} isDisabled={totalPages > currentPage ? false : true} onClick={nextPageMethod}>
+          <Button mr={"21px"} size={"sm"} variant={"solid"} isDisabled={totalPages > currentPage ? false : true} onClick={nextPageMethod}>
             Next
           </Button>
         </Box>

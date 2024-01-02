@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Box, CloseButton, Flex, Text, VStack, useColorModeValue, useBoolean } from "@chakra-ui/react";
 import { MdSettings, MdOutlineKey, MdImportExport, MdPerson2, MdPeople, MdOutlineMarkEmailRead, MdHome, MdOutlineListAlt, MdOutlineList } from "react-icons/md";
 import NavLink from "./NavLink";
@@ -142,25 +141,11 @@ export default function Sidebar({ remaining, onClose, ...rest }) {
     },
   ];
 
-  useEffect(() => {
-    /*
-    if(window.location.pathname.indexOf("Admin") > -1) {
-      setHideSubmenu2.toggle();
-    }
-    if(window.location.pathname.indexOf("Settings") > -1) {
-      setHideSubmenu3.toggle();
-    }
-    if(window.location.pathname.indexOf("Logs") > -1) {
-      setHideSubmenu4.toggle();
-    }
-    */
-  }, [setHideSubmenu2, setHideSubmenu3, setHideSubmenu4]);
-
   return (
     <Box
       id="mSidebar"
       transition="0.5s ease"
-      bg={useColorModeValue("gray.500", "gray.500")}
+      bg={"defaultBg"}
       color={useColorModeValue("white", "gray.800")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}

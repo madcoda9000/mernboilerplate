@@ -1,15 +1,13 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 
 const MfaChecker = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (sessionStorage.getItem("accessToken")) {
-      const tokens = JSON.parse(sessionStorage.getItem("accessToken"));
-      const decodedToken = jwtDecode(tokens);
-      console.log("MFACHECK: fetched user from token");
+    if (sessionStorage.getItem("user")) {
+      const decodedToken = JSON.parse(sessionStorage.getItem("user"));
+      console.log("MFACHECK: fetched user from session storage");
       console.log(
         "MFACHECK: mfaEnabled:" + decodedToken.mfaEnabled + " | mfaEnforced:" + decodedToken.mfaEnforced + " | mfaVerified: " + decodedToken.mfaVerified
       );
@@ -26,7 +24,7 @@ const MfaChecker = () => {
         navigate("/MfaSetup");
       }
     } else {
-      console.log("MFACHECK: fetching user from token failed!");
+      console.log("MFACHECK: fetching user from session storage failed!");
       navigate("/login");
     }
   }, [navigate]);

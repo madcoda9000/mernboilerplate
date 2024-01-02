@@ -31,9 +31,8 @@ import {
   Input,
   CloseButton,
   useDisclosure,
-  Link,
 } from "@chakra-ui/react";
-import { MdArrowBack, MdArrowForward, MdError, MdInfo, MdOutlineListAlt, MdOutlineSearch, MdOutlineWarning } from "react-icons/md";
+import { MdArrowBack, MdArrowForward, MdInfo, MdOutlineListAlt, MdOutlineSearch } from "react-icons/md";
 import AuthContext from "../../components/shared/Auth/AuthContext";
 import { makeAuditEntry } from "../../components/shared/Utils";
 import MAlertDialog from "../../components/shared/Dialogs/Alert";
@@ -54,7 +53,6 @@ const RequestLogs = () => {
 
   useEffect(() => {
     SetIsLoading(true);
-    makeAuditEntry(user.userName, "info", "viewed Request logs");
     var pSize = 100;
     var searchStr;
     if (search === null || search.trim() === "" || search.trim().length === 0) {
@@ -74,6 +72,7 @@ const RequestLogs = () => {
       } else {
         SetErrMsg(response.data.message);
         SetIsLoading(false);
+        makeAuditEntry(user.userName, "info", "viewed Request logs");
       }
     });
   }, [search, user.userName]);
@@ -161,15 +160,7 @@ const RequestLogs = () => {
                       <InputLeftElement pointerEvents="none" children={<MdOutlineSearch color="gray.600" />} />
                       <Input type="text" placeholder={"search..."} onChange={(e) => setSearch(e.target.value)} />
                       <InputRightAddon p={0} border="none">
-                        <Button
-                          size="sm"
-                          borderLeftRadius={0}
-                          borderRightRadius={0}
-                          type="button"
-                          colorScheme={"gray"}
-                          variant={"solid"}
-                          onClick={() => setSearch("")}
-                        >
+                        <Button size="sm" borderLeftRadius={0} borderRightRadius={0} type="button" variant={"solid"} onClick={() => setSearch("")}>
                           {search ? "reset" : "search"}
                         </Button>
                       </InputRightAddon>

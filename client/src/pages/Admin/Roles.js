@@ -61,7 +61,7 @@ const Roles = () => {
 
   useEffect(() => {
     SetIsLoading(true);
-    makeAuditEntry(user.userName, "info", "viewed user roles listing");
+
     var pSize = 100;
     var searchStr;
     if (search === null || search.trim() === "" || search.trim().length === 0) {
@@ -75,6 +75,7 @@ const Roles = () => {
         setRolesData(response.data.paginatedResult);
         SetIsLoading(false);
         setSelectedPage(response.data.paginatedResult.page);
+        makeAuditEntry(user.userName, "info", "viewed user roles listing");
       } else {
         SetErrMsg(response.data.message);
         SetIsLoading(false);

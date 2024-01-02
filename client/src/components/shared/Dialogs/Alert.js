@@ -65,7 +65,7 @@ const MAlertDialog = (props) => {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={props.onClose}>
+              <Button ref={cancelRef} onClick={props.onClose} colorScheme="gray">
                 {props.cancelButtonText}
               </Button>
               {showActionButton === true && (

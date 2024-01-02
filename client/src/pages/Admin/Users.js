@@ -78,7 +78,6 @@ const Users = () => {
 
   useEffect(() => {
     SetIsLoading(true);
-    makeAuditEntry(user.userName, "info", "viewed all users listing");
     var pSize = 100;
     var searchStr = "";
     if (search === null || search.trim() === "" || search.trim().length === 0) {
@@ -91,6 +90,7 @@ const Users = () => {
         setUsersData(response.data.paginatedResult);
         SetIsLoading(false);
         setSelectedPage(response.data.paginatedResult.page);
+        makeAuditEntry(user.userName, "info", "viewed all users listing");
       } else {
         SetErrMsg(response.data.message);
         SetIsLoading(false);
@@ -364,15 +364,7 @@ const Users = () => {
                       <InputLeftElement pointerEvents="none" children={<MdOutlineSearch color="gray.600" />} />
                       <Input type="text" placeholder={search ? search : "search..."} onChange={(e) => setSearch(e.target.value)} />
                       <InputRightAddon p={0} border="none">
-                        <Button
-                          size="sm"
-                          borderLeftRadius={0}
-                          borderRightRadius={0}
-                          type="button"
-                          colorScheme={"gray"}
-                          variant={"solid"}
-                          onClick={() => setSearch("")}
-                        >
+                        <Button size="sm" borderLeftRadius={0} borderRightRadius={0} type="button" variant={"solid"} onClick={() => setSearch("")}>
                           {search ? "reset" : "search"}
                         </Button>
                         <Button
