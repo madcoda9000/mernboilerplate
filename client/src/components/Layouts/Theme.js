@@ -1,10 +1,9 @@
 // 1. import `extendTheme` function
 import { extendTheme, withDefaultColorScheme } from "@chakra-ui/react";
 
-const themeName = "brand.tertiary";
+const themeName = "brand.primary";
 const themeLightBgColor = themeName + ".500";
-const themeDarkBgColor = themeName + ".900";
-const themeHover = themeName + ".700";
+const themeDarkBgColor = themeName + ".200";
 
 // 2. Add your color mode config
 const config = {
@@ -13,13 +12,17 @@ const config = {
   initialColorScheme: themeName,
   semanticTokens: {
     colors: {
+      hoverBg: {
+        default: themeName + ".200",
+        _dark: themeName + ".500",
+      },
       defaultBg: {
         default: themeLightBgColor,
         _dark: themeDarkBgColor,
       },
       sidebarBg: {
-        default: "brand.primary.900",
-        _dark: "brand.primary.400",
+        default: themeLightBgColor,
+        _dark: themeDarkBgColor,
       },
       btnText: {
         default: "white",
@@ -32,6 +35,10 @@ const config = {
       btnSecondary: {
         default: "brand.secondary.900",
         _dark: "brand.secondary.500",
+      },
+      btnTertiary: {
+        default: "brand.tertiary.900",
+        _dark: "brand.tertiary.500",
       },
     },
   },
