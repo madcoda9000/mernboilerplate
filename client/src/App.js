@@ -1,5 +1,5 @@
 // 1. import `ChakraProvider` component
-import { Center, ChakraProvider, CircularProgress, ColorModeScript, extendTheme } from "@chakra-ui/react";
+import { Center, ChakraProvider, CircularProgress, ColorModeScript } from "@chakra-ui/react";
 import theme from "./components/Layouts/Theme";
 
 // main imports

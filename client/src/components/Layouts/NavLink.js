@@ -14,9 +14,9 @@ export default function NavLink({ link, ...rest }) {
         borderRadius="lg"
         role="group"
         cursor="pointer"
-        color={useColorModeValue("white", "gray.200")}
+        color={useColorModeValue("white", "gray.800")}
         _hover={{
-          bg: "gray.600",
+          bg: "hoverBg",
           color: "white",
         }}
         {...rest}

@@ -145,7 +145,7 @@ export default function Sidebar({ remaining, onClose, ...rest }) {
     <Box
       id="mSidebar"
       transition="0.5s ease"
-      bg={"defaultBg"}
+      bg={"sidebarBg"}
       color={useColorModeValue("white", "gray.800")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
