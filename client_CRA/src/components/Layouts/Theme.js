@@ -1,9 +1,9 @@
 // 1. import `extendTheme` function
-import { extendTheme, withDefaultColorScheme } from "@chakra-ui/react";
+import { extendTheme, withDefaultColorScheme } from "@chakra-ui/react"
 
-const themeName = "brand.primary";
-const themeLightBgColor = themeName + ".500";
-const themeDarkBgColor = themeName + ".200";
+const themeName = "brand.primary"
+const themeLightBgColor = themeName + ".500"
+const themeDarkBgColor = themeName + ".200"
 
 // 2. Add your color mode config
 const config = {
@@ -130,9 +130,9 @@ const config = {
       },
     },
   },
-};
+}
 
 // 3. extend the theme
-const theme = extendTheme(config, withDefaultColorScheme({ colorScheme: themeName }));
+const theme = extendTheme(config, withDefaultColorScheme({ colorScheme: themeName }))
 
-export default theme;
+export default theme
