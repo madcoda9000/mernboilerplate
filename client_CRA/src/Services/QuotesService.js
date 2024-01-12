@@ -7,7 +7,7 @@ class QuotesService {
   }
 
   /**
-   * method to fetch a quote of the day
+   * @description method to fetch a quote of the day
    * @returns a ajax response object
    */
   getQuoteOfTheDay() {
