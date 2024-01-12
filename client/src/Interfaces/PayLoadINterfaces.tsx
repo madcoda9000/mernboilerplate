@@ -1,0 +1,71 @@
+export interface LoginPayload {
+  userName: string | undefined
+  password: string | undefined
+}
+export interface AuditEntryPayload {
+  user: string | undefined
+  level: string | undefined
+  message: string | undefined
+}
+export interface validateOtpPayload {
+  _id: string | undefined
+  token: string | undefined
+}
+export interface finishMfaSetupPayload {
+  _id: string | undefined
+  token: string | undefined
+}
+export interface startMfaSetupPayload {
+  _id: string | undefined
+}
+export interface forgotPw1Payload {
+  email: string | undefined
+}
+export interface forgotPw2Payload {
+  email: string | undefined
+  token: string | undefined
+  password: string | undefined
+}
+export interface userIdPayload {
+  _id: string | undefined
+}
+export interface changePasswordPayload {
+  _id: string | undefined
+  oldPassword: string | undefined
+  newPassword: string | undefined
+}
+export interface changeEmailPayload {
+  _id: string | undefined
+  email: string | undefined
+}
+export interface newUserPayload {
+  userName: string | undefined
+  firstName: string | undefined
+  lastName: string | undefined
+  email: string | undefined
+  password: string | undefined
+  emailVerified: boolean
+  accountLocked: boolean
+  ldapEnabled: boolean
+  mfaEnabled: boolean
+  mfaEnforced: boolean
+  roles: Array<string> | undefined
+}
+export interface roleIdPayload {
+  _id: string | undefined
+}
+export interface newRolePayload {
+  roleName: string | undefined
+}
+export interface appSettingsPayload {
+  scope: string | undefined
+  name: string | undefined
+  value: string | undefined
+}
+export interface registerPayload {
+  userName: string | undefined
+  firstName: string | undefined
+  lastName: string | undefined
+  email: string | undefined
+  password: string | undefined
+}
