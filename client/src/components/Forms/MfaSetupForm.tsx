@@ -107,11 +107,15 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
   }
 
   const cancelMfaLogin = () => {
-    if (sessionStorage.getItem("user")) {
-      sessionStorage.removeItem("user")
+    if (user?.mfaEnforced) {
+      if (sessionStorage.getItem("user")) {
+        sessionStorage.removeItem("user")
+      }
+      logout()
+      navigate("/Login")
+    } else {
+      navigate("/Home")
     }
-    logout()
-    navigate("/Login")
   }
 
   const disableMfa = () => {
@@ -328,7 +332,134 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
                 </form>
               </>
             ) : (
-              <></>
+              <>
+                {errMsg && (
+                  <Alert className="mb-5" variant="destructive">
+                    <InfoCircledIcon className="h-4 w-4" />
+                    <AlertTitle>Error!</AlertTitle>
+                    <AlertDescription>{errMsg}</AlertDescription>
+                  </Alert>
+                )}
+                {succMsg && (
+                  <Alert>
+                    <InfoCircledIcon className="h-4 w-4" />
+                    <AlertTitle>Success!</AlertTitle>
+                    {succMsg}
+                  </Alert>
+                )}
+                <Alert>
+                  <AlertDescription>
+                    <b>Great that you're willing to enable 2FA Authentication!</b>
+                    <br /> <br />
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="item-1" className="border-none">
+                        <AccordionTrigger style={{ color: "#2b90ef" }}>
+                          <Icons.infoCircle className="inline mt-[-2px]" />
+                          &nbsp;Enable 2FA AUthentication in three steps:
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <ul>
+                            <li>
+                              1. Donwload an OTP App like Google Authenticator&nbsp;
+                              <a
+                                href="https://play.google.com/store/search?q=google%20authenticator&c=apps&hl=de&gl=US"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <Icons.playStore
+                                  className="h-[16px] w-[16px]"
+                                  style={{ display: "inline", color: "#25c281" }}
+                                />
+                              </a>
+                              &nbsp;
+                              <a
+                                href="https://apps.apple.com/de/app/google-authenticator/id388497605"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <Icons.apple
+                                  className="h-[16px] w-[16px]"
+                                  style={{ display: "inline" }}
+                                />
+                              </a>
+                              &nbsp; or Microsoft Authenticator&nbsp;
+                              <a
+                                href="https://play.google.com/store/search?q=microsoft%20authenticator&c=apps&hl=de&gl=US"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <Icons.playStore
+                                  className="h-[16px] w-[16px]"
+                                  style={{ display: "inline", color: "#25c281" }}
+                                />
+                              </a>
+                              &nbsp;
+                              <a
+                                href="https://apps.apple.com/de/app/microsoft-authenticator/id983156458"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <Icons.apple
+                                  className="h-[16px] w-[16px]"
+                                  style={{ display: "inline" }}
+                                />
+                              </a>
+                            </li>
+                            <br></br>
+                            <li>
+                              2. Scan the barcode, shown below, with your OTP Authenticator app or
+                              enter the the secret manually in your Authenticator app
+                            </li>
+                            <br></br>
+                            <li>
+                              3. Insert the OTP Code shown by your Authenticator App into the number
+                              fields below and click the "Verfify my code" button. NOTE: After
+                              enableing 2FA you'll be logged out and have to login again!
+                            </li>
+                          </ul>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </AlertDescription>
+                </Alert>
+                <div className="flex w-full max-w-sm items-start space-x-2 mt-1">
+                  <QRCode value={qrcodeUrl} size={128} className="mr-2" />
+                  {totpSecret ? totpSecret : "secret here.."}
+                </div>
+                <form onSubmit={verifyOtp}>
+                  <div className="grid gap-3">
+                    <div className="grid gap-1">
+                      <Otp length={6} otp={otpToken} onOtpChange={handleChange} />
+                    </div>
+                  </div>
+                  <div className="flex w-full max-w-sm items-center space-x-2 mt-5">
+                    <Button
+                      type="button"
+                      onClick={() => cancelMfaLogin()}
+                      variant={"outline"}
+                      style={{ display: activatedSuccessfully === false ? "block" : "none" }}
+                    >
+                      Cancel
+                    </Button>
+                    {activatedSuccessfully === true && (
+                      <Button type="button" onClick={() => navigate("/Home")}>
+                        {activatedSuccessfully && (
+                          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                        )}
+                        loading...
+                      </Button>
+                    )}
+                    <Button
+                      type="submit"
+                      disabled={isLoading || activatedSuccessfully}
+                      className="w-[100%]"
+                    >
+                      {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+                      Verify Code
+                    </Button>
+                  </div>
+                </form>
+              </>
             )}
           </>
         )}
