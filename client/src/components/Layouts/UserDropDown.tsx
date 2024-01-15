@@ -7,10 +7,10 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuthContext } from "../Auth/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 const UserNav = () => {
   const { user, logout } = useAuthContext()
@@ -18,6 +18,7 @@ const UserNav = () => {
     ?.split(" ")
     .map((name) => name[0].toUpperCase())
     .join("")
+  const nav = useNavigate()
 
   return (
     <DropdownMenu>
@@ -38,24 +39,21 @@ const UserNav = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">New Team</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+
+          {user?.mfaEnabled ? (
+            <DropdownMenuItem onClick={() => nav("/MfaSetup")} className="cursor-pointer">
+              Disable 2FA Auth
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => nav("/MfaSetup")} className="cursor-pointer">
+              Enable 2FA Auth
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => logout()} className="cursor-pointer">
           Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

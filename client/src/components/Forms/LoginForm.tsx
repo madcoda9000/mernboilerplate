@@ -172,7 +172,12 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         )}
 
         {aSettings && aSettings.showResetPasswordLink === "true" && (
-          <Button variant="outline" type="button" className="mt-3 w-[100%]">
+          <Button
+            variant="outline"
+            type="button"
+            className="mt-3 w-[100%]"
+            onClick={() => nav("/ForgotPw1")}
+          >
             {<Icons.lockClosed className="mr-2 h-4 w-4 text-red-900" />}
             Forgot your Password?
           </Button>

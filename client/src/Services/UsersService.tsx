@@ -2,6 +2,7 @@ import { User } from "@/Interfaces/GlobalInterfaces"
 import {
   changeEmailPayload,
   changePasswordPayload,
+  disableMfaPayload,
   finishMfaSetupPayload,
   forgotPw1Payload,
   forgotPw2Payload,
@@ -158,7 +159,7 @@ class UsersService {
    * @param {userIdPayload} payload
    * @returns {Promise<AxiosResponse>}
    */
-  static disableMfa(payload: userIdPayload): Promise<AxiosResponse> {
+  static disableMfa(payload: disableMfaPayload): Promise<AxiosResponse> {
     return jwtInterceptor.patch(api("users/disableMfa"), payload)
   }
 

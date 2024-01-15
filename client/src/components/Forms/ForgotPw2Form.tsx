@@ -1,39 +1,36 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
-import { InfoCircledIcon } from "@radix-ui/react-icons"
+"use client"
+
+import * as React from "react"
 import { cn } from "@/lib/utils"
-import { registerPayload } from "@/Interfaces/PayLoadINterfaces"
-import React, { useState } from "react"
+import UsersService from "@/Services/UsersService"
+import { useSearchParams, useNavigate } from "react-router-dom"
+import { InfoCircledIcon } from "@radix-ui/react-icons"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Icons } from "@/components/Icons"
-import { useNavigate } from "react-router-dom"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import PasswordStrengthBar, { PasswordFeedback } from "react-password-strength-bar"
-import axios from "axios"
-declare const window: {
-  BASE_URL: string
-} & Window
-const apiurl = window.BASE_URL
+import { forgotPw2Payload } from "@/Interfaces/PayLoadINterfaces"
 
-interface RegisterFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface FormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function RegisterForm({ className, ...props }: RegisterFormProps) {
-  const [errMsg, setErrMsg]: [string, React.Dispatch<React.SetStateAction<string>>] =
-    React.useState<string>("")
+export function ForgotPw2Form({ className, ...props }: FormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const userName = React.useRef<HTMLInputElement>(null)
-  const firstName = React.useRef<HTMLInputElement>(null)
-  const lastName = React.useRef<HTMLInputElement>(null)
-  const email = React.useRef<HTMLInputElement>(null)
-  const [nPassword, setnPassword] = useState<string>("")
-  const nav = useNavigate()
+  const [errMsg, setErrMsg] = React.useState<string>("")
+  const [searchParams] = useSearchParams()
+  const [token, setToken] = React.useState<string>("")
+  const [email, setEmail] = React.useState<string>("")
+  const [newPw, setNewPw] = React.useState<string>("")
   const [pwScore, setPwScore] = React.useState<number>(0)
-  const [pwScoreFeedback, setPwScoreFeedback] = useState<Array<string>>([])
-  const [pwScoreWarning, setPwScoreWarning] = useState<string>("")
-  const [pwVisible, setPwVisible] = useState<boolean>(false)
+  const [pwScoreFeedback, setPwScoreFeedback] = React.useState<Array<string>>([])
+  const [pwScoreWarning, setPwScoreWarning] = React.useState<string>("")
+  const [pwVisible, setPwVisible] = React.useState<boolean>(false)
+  const nav = useNavigate()
+  const [btnDisabled, setBtnDisabled] = React.useState<boolean>(true)
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
-    setnPassword(value)
+    setNewPw(value)
   }
 
   const handlePwVisibility = () => {
@@ -57,98 +54,82 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     setPwScoreFeedback([])
     setPwScoreWarning("")
     setPwScore(4)
-    setnPassword(tempPW)
+    setNewPw(tempPW)
+  }
+
+  React.useEffect(() => {
+    if (searchParams.get("email") === null || searchParams.get("token") === null) {
+      setErrMsg("Invalid email and /or token!")
+    } else {
+      setToken(searchParams.get("token") || "")
+      setEmail(searchParams.get("email") || "")
+      setErrMsg("")
+      if (searchParams.get("token") !== null && searchParams.get("email") !== null) {
+        setBtnDisabled(false)
+      }
+    }
+  }, [searchParams])
+
+  const handleChange = (e) => {
+    const { value } = e.target
+    setNewPw(value)
   }
 
   const validateForm = () => {
-    let hasErrors = false
-    let msg = "<ol>"
+    let hasError = false
+    let msg = "<ul style='margin-left:20px;'>"
 
-    const checkMandatoryField = (field: HTMLInputElement | null, fieldName: string) => {
-      if (field && !field?.value.trim()) {
-        hasErrors = true
-        msg += `<li>${fieldName} is mandatory!</li>`
-      }
+    const addError = (message: string) => {
+      hasError = true
+      msg += `<li>${message}</li>`
     }
 
-    const checkEmailField = (field: HTMLInputElement | null) => {
-      const emailRegex =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      if (field && !emailRegex.test(field?.value)) {
-        hasErrors = true
-        msg += "<li>Please enter a valid email address!</li>"
-      }
+    if (email === undefined || !email.trim()) {
+      addError("Email is mandatory!")
     }
 
-    checkMandatoryField(userName.current, "Username")
-    checkMandatoryField(firstName.current, "Firstname")
-    checkMandatoryField(lastName.current, "Lastname")
-    checkMandatoryField(email.current, "Email")
-    checkEmailField(email.current)
+    if (token === undefined || !token.trim()) {
+      addError("The token is mandatory!")
+    }
 
-    if (!nPassword || nPassword.trim() === "") {
-      hasErrors = true
-      msg += "<li>A password is mandatory!</li> "
+    if (newPw === undefined || !newPw.trim()) {
+      addError("Please enter a Lastname!")
     } else if (pwScore < 4) {
-      hasErrors = true
-      msg += "<li>A <b>strong</b> password is mandatory!</li> "
+      addError("<li>A <b>strong</b> password is mandatory!</li> ")
     }
 
-    if (hasErrors) {
-      msg += "</ol>"
+    if (hasError) {
+      msg += "</ul>"
+      setErrMsg(msg)
     }
 
-    setErrMsg(msg)
-    return hasErrors
+    return hasError
   }
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    console.log(pwScore)
-    event.preventDefault()
+  const onSubmit = async (e) => {
+    e.preventDefault()
     setIsLoading(true)
-
     if (!validateForm()) {
-      const payload: registerPayload = {
-        userName: userName.current?.value,
-        firstName: firstName.current?.value,
-        lastName: lastName.current?.value,
-        email: email.current?.value,
-        password: nPassword,
+      const payload: forgotPw2Payload = {
+        email: email,
+        token: token,
+        password: newPw,
       }
-      try {
-        const apiResponse = await axios.post(apiurl + "/v1/auth/signup", payload)
-        if (apiResponse.data.error === false) {
-          window.location.href = "/login?msg=reg"
+      UsersService.forgotPw2(payload).then((response) => {
+        if (response.data.error) {
+          setErrMsg(response.data.message)
         } else {
-          console.log(apiResponse)
-          setErrMsg(apiResponse.data.message)
-          setIsLoading(false)
+          window.location.href = "/login?msg=res"
         }
-      } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          setErrMsg(error.response?.data.message || "An error occurred")
-        } else {
-          setErrMsg(
-            "An unexpected error occured. Please take a look into the console for further details."
-          )
-          console.log(error)
-        }
-        setIsLoading(false)
-      }
-
-      setIsLoading(false)
+      })
     } else {
       setIsLoading(false)
     }
-
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
   }
 
   return (
-    <>
-      <div className={cn("grid gap-0", className)} {...props}>
+    <div className={cn("", className)} {...props}>
+      <div className="grid">
         {errMsg && (
           <Alert className="mb-5" variant="destructive">
             <InfoCircledIcon className="h-4 w-4" />
@@ -161,59 +142,29 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
         <form onSubmit={onSubmit}>
           <div className="grid gap-3">
             <div className="relative flex items-center max-w-2xl">
-              <Icons.person className="absolute left-2 top-1/2 -translate-y-1/2 transform h-[16px] w-[16px]" />
+              <Icons.lock className="absolute left-2 top-1/2 -translate-y-1/2 transform h-[16px] w-[16px]" />
               <Input
-                id="username"
-                placeholder="please enter a username..."
+                id="token"
                 type="text"
                 autoCapitalize="none"
                 autoComplete="off"
                 autoCorrect="off"
-                disabled={isLoading}
-                ref={userName}
+                disabled={true}
                 className="pl-8"
+                defaultValue={email}
               />
             </div>
             <div className="relative flex items-center max-w-2xl">
               <Icons.envelope className="absolute left-2 top-1/2 -translate-y-1/2 transform h-[16px] w-[16px]" />
               <Input
                 id="email"
-                placeholder="please enter your email address"
                 type="email"
                 autoCapitalize="none"
                 autoComplete="off"
                 autoCorrect="off"
-                disabled={isLoading}
-                ref={email}
+                disabled={true}
                 className="pl-8"
-              />
-            </div>
-            <div className="relative flex items-center max-w-2xl">
-              <Icons.home className="absolute left-2 top-1/2 -translate-y-1/2 transform h-[16px] w-[16px]" />
-              <Input
-                id="firstname"
-                placeholder="please enter your firstname"
-                type="text"
-                autoCapitalize="none"
-                autoComplete="off"
-                autoCorrect="off"
-                disabled={isLoading}
-                ref={firstName}
-                className="pl-8"
-              />
-            </div>
-            <div className="relative flex items-center max-w-2xl">
-              <Icons.home className="absolute left-2 top-1/2 -translate-y-1/2 transform h-[16px] w-[16px]" />
-              <Input
-                id="lastname"
-                placeholder="please enter your lastname"
-                type="text"
-                autoCapitalize="none"
-                autoComplete="off"
-                autoCorrect="off"
-                disabled={isLoading}
-                ref={lastName}
-                className="pl-8"
+                defaultValue={token}
               />
             </div>
             <div className="relative flex items-center max-w-2xl">
@@ -225,8 +176,8 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
                 autoCapitalize="none"
                 autoComplete="off"
                 autoCorrect="off"
-                disabled={isLoading}
-                value={nPassword}
+                disabled={false}
+                value={newPw}
                 onChange={handlePasswordChange}
                 className="pl-8"
               />
@@ -259,7 +210,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
                 scoreWords={["weak", "weak", "okay", "good", "strong"]}
                 barColors={["#ddd", "#ef4836", "#f6b44d", "#2b90ef", "#25c281"]}
                 scoreWordClassName="flex items-start p-0 m-0 hidden"
-                password={nPassword}
+                password={newPw}
                 onChangeScore={(score: number, feedback: PasswordFeedback) => {
                   setPwScore(score)
                   if (feedback.suggestions) {
@@ -282,14 +233,14 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
               <Button onClick={() => nav("/Login")} variant={"outline"}>
                 Cancel
               </Button>
-              <Button disabled={isLoading} className="w-[100%]">
+              <Button disabled={btnDisabled} className="w-[100%]">
                 {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
-                Register...
+                Reset my password now!
               </Button>
             </div>
           </div>
         </form>
       </div>
-    </>
+    </div>
   )
 }
