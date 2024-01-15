@@ -15,6 +15,10 @@ export interface finishMfaSetupPayload {
   _id: string | undefined
   token: string | undefined
 }
+export interface disableMfaPayload {
+  _id: string | undefined
+  execUserId: string | undefined
+}
 export interface startMfaSetupPayload {
   _id: string | undefined
 }

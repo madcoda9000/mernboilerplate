@@ -16,6 +16,10 @@ const Login = React.lazy(() => import("@/pages/Login"))
 const Home = React.lazy(() => import("@/pages/Home"))
 const Status404 = React.lazy(() => import("@/pages/Status/Status404"))
 const Register = React.lazy(() => import("@/pages/Register"))
+const ForgotPw1 = React.lazy(() => import("@/pages/ForgotPw1"))
+const ForgotPw2 = React.lazy(() => import("@/pages/ForgotPw2"))
+const MfaLogin = React.lazy(() => import("@/pages/MfaLogin"))
+const MfaSetup = React.lazy(() => import("@/pages/MfaSetup"))
 
 function App() {
   return (
@@ -46,6 +50,38 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="non-authenticated" request="/Register">
                       <Register />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/ForgotPw1"
+                  element={
+                    <ProtectedRoute accessBy="non-authenticated" request="/ForgotPw1">
+                      <ForgotPw1 />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/ForgotPw2"
+                  element={
+                    <ProtectedRoute accessBy="non-authenticated" request="/ForgotPw2">
+                      <ForgotPw2 />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/MfaLogin"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/MfaLogin">
+                      <MfaLogin />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/MfaSetup"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/MfaSetup">
+                      <MfaSetup />
                     </ProtectedRoute>
                   }
                 ></Route>
