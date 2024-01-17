@@ -10,6 +10,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import React from "react"
+import MenuEntries from "@/components/Layouts/MenuEntries"
 
 const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(
   ({ className, title, children, ...props }, ref) => {
@@ -41,50 +42,6 @@ export function MainNav() {
   const activeLinkCss =
     "text-sm font-medium text-secondary transition-colors data-[active]:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-secondary data-[state=closed]:bg-transparent data-[state=closed]:text-secondary hover:bg-transparent hover:text-secondary bg-transparent"
 
-  /* define settings links array */
-  const settingsItems: { title: string; href: string; description: string }[] = [
-    {
-      title: "Application Settings",
-      href: "/Settings/AppSettings",
-      description: "Settings that affect the whole application.",
-    },
-    {
-      title: "Mail Settings",
-      href: "/Settings/MailSettings",
-      description: "Configure mailserver parameters...",
-    },
-    {
-      title: "Notification Settings",
-      href: "/Settings/NotifSettings",
-      description: "Configure on which events a notification should be send.",
-    },
-    {
-      title: "LDAP Settings",
-      href: "/Settings/LdapSettings",
-      description: "Configure the connection to your corporate LDAP server.",
-    },
-  ]
-
-  /* define logs links arry */
-
-  const logsItems: { title: string; href: string; description: string }[] = [
-    {
-      title: "Audit Logs",
-      href: "/Logs/AuditLogs",
-      description: "Logs regarding user actions.",
-    },
-    {
-      title: "Request Logs",
-      href: "/Logs/RequestLogs",
-      description: "All Request & response logs...",
-    },
-    {
-      title: "System Logs",
-      href: "/Logs/SystemLogs",
-      description: "Server related log entries.",
-    },
-  ]
-
   return (
     <>
       <NavigationMenu className="pl-5">
@@ -110,7 +67,7 @@ export function MainNav() {
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[250px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[400px] ">
-                {settingsItems.map((component) => (
+                {MenuEntries.settingsItems.map((component) => (
                   <ListItem key={component.title} title={component.title} href={component.href}>
                     {component.description}
                   </ListItem>
@@ -128,7 +85,7 @@ export function MainNav() {
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[250px] gap-3 p-4 md:w-[300px] md:grid-cols-1 lg:w-[300px] ">
-                {logsItems.map((component) => (
+                {MenuEntries.logsItems.map((component) => (
                   <ListItem key={component.title} title={component.title} href={component.href}>
                     {component.description}
                   </ListItem>
