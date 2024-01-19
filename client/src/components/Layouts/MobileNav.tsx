@@ -8,8 +8,8 @@ const MobileNav = () => {
     <>
       <div className="text-lg font-semibold">Settings</div>
       <div>
-        {MenuEntries.settingsItems.map((component) => (
-          <div>
+        {MenuEntries.settingsItems.map((component, index) => (
+          <div key={index}>
             <div className="ml-3 mt-2">
               <span
                 onClick={() => nav(component.href)}
@@ -25,8 +25,8 @@ const MobileNav = () => {
       </div>
       <div className="text-lg font-semibold mt-3">Logs</div>
       <div>
-        {MenuEntries.logsItems.map((component) => (
-          <div className="ml-3 mt-2">
+        {MenuEntries.logsItems.map((component, index) => (
+          <div className="ml-3 mt-2" key={index}>
             <span
               onClick={() => nav(component.href)}
               title={component.description}

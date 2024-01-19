@@ -39,8 +39,9 @@ const UserNav = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
-
+          <DropdownMenuItem className="cursor-pointer" onClick={() => nav("/Profile")}>
+            Profile
+          </DropdownMenuItem>
           {user?.mfaEnabled ? (
             <DropdownMenuItem onClick={() => nav("/MfaSetup")} className="cursor-pointer">
               Disable 2FA Auth

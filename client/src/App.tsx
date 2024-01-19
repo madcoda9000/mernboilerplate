@@ -14,6 +14,7 @@ import MainLayout from "@/components/Layouts/MainLayout"
 /* import pages */
 const Login = React.lazy(() => import("@/pages/Login"))
 const Home = React.lazy(() => import("@/pages/Home"))
+const Profile = React.lazy(() => import("@/pages/Profile"))
 const Status404 = React.lazy(() => import("@/pages/Status/Status404"))
 const Register = React.lazy(() => import("@/pages/Register"))
 const ForgotPw1 = React.lazy(() => import("@/pages/ForgotPw1"))
@@ -92,6 +93,14 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Home">
                       <Home />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Profile"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Profile">
+                      <Profile />
                     </ProtectedRoute>
                   }
                 ></Route>
