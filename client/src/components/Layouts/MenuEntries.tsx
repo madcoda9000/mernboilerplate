@@ -2,22 +2,22 @@ class MenuEntries {
   static settingsItems: { title: string; href: string; description: string }[] = [
     {
       title: "Application Settings",
-      href: "/Settings/AppSettings",
+      href: "/Admin/AppSettings",
       description: "Settings that affect the whole application.",
     },
     {
       title: "Mail Settings",
-      href: "/Settings/MailSettings",
+      href: "/Admin/MailSettings",
       description: "Configure mailserver parameters...",
     },
     {
       title: "Notification Settings",
-      href: "/Settings/NotifSettings",
+      href: "/Admin/NotifSettings",
       description: "Configure on which events a notification should be send.",
     },
     {
       title: "LDAP Settings",
-      href: "/Settings/LdapSettings",
+      href: "/Admin/LdapSettings",
       description: "Configure the connection to your corporate LDAP server.",
     },
   ]

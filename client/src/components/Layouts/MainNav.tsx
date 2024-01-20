@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils"
 import React from "react"
 import MenuEntries from "@/components/Layouts/MenuEntries"
+import { useNavigate } from "react-router-dom"
 
 const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(
   ({ className, title, children, ...props }, ref) => {
@@ -36,6 +37,7 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWit
 ListItem.displayName = "ListItem"
 
 export function MainNav() {
+  const nav = useNavigate()
   /* define active and inactive styles */
   const inactiveLinkCss =
     "text-sm font-medium text-muted-foreground transition-colors hover:text-secondary data-[active]:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-secondary data-[state=closed]:bg-transparent hover:bg-transparent bg-transparent"
@@ -46,36 +48,29 @@ export function MainNav() {
     <>
       <NavigationMenu className="pl-5">
         <NavigationMenuList>
-          <NavigationMenuItem>
-            <Link
-              href="/Home"
+          <NavigationMenuItem className="cursor-pointer">
+            <span
+              onClick={() => nav("/Home")}
               className={
                 window.location.pathname.includes("Home") ? activeLinkCss : inactiveLinkCss
               }
             >
               Overview
-            </Link>
+            </span>
             <NavigationMenuContent></NavigationMenuContent>
           </NavigationMenuItem>
-          <NavigationMenuItem className="mb-[-3px] pl-5">
-            <NavigationMenuTrigger
+          <NavigationMenuItem className="pl-5 cursor-pointer">
+            <span
+              onClick={() => nav("/Admin/AppSettings")}
               className={
                 window.location.pathname.includes("Settings") ? activeLinkCss : inactiveLinkCss
               }
             >
               Settings
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[250px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[400px] ">
-                {MenuEntries.settingsItems.map((component) => (
-                  <ListItem key={component.title} title={component.title} href={component.href}>
-                    {component.description}
-                  </ListItem>
-                ))}
-              </ul>
-            </NavigationMenuContent>
+            </span>
+            <NavigationMenuContent></NavigationMenuContent>
           </NavigationMenuItem>
-          <NavigationMenuItem className="mb-[-3px]">
+          <NavigationMenuItem className="mb-[-3px] cursor-pointer">
             <NavigationMenuTrigger
               className={
                 window.location.pathname.includes("Logs") ? activeLinkCss : inactiveLinkCss
