@@ -21,6 +21,7 @@ const ForgotPw1 = React.lazy(() => import("@/pages/ForgotPw1"))
 const ForgotPw2 = React.lazy(() => import("@/pages/ForgotPw2"))
 const MfaLogin = React.lazy(() => import("@/pages/MfaLogin"))
 const MfaSetup = React.lazy(() => import("@/pages/MfaSetup"))
+const AppSettings = React.lazy(() => import("@/pages/Admin/AppSettings"))
 
 function App() {
   return (
@@ -101,6 +102,14 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Profile">
                       <Profile />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Admin/AppSettings"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Admin/AppSettings">
+                      <AppSettings />
                     </ProtectedRoute>
                   }
                 ></Route>

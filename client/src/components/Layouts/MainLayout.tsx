@@ -116,7 +116,7 @@ export default function MainLayout() {
         </div>
         {isDesktop && (
           <div className="border-t fixed bottom-0 w-full">
-            <div className="flex h-16 items-center px-4 bg-primary pl-9 pr-9 w-[100%]">
+            <div className="flex h-10 items-center px-4 bg-primary pl-9 pr-9 w-[100%]">
               <div className="w-1/3 text-gray-500">Sessiontimeout in: {remaining}</div>
               <div className="w-1/3 text-center"></div>
               <div className="w-1/3 text-end text-gray-500">fdgdh</div>

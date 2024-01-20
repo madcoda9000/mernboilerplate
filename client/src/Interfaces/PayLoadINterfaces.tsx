@@ -62,9 +62,10 @@ export interface newRolePayload {
   roleName: string | undefined
 }
 export interface appSettingsPayload {
-  scope: string | undefined
-  name: string | undefined
-  value: string | undefined
+  showRegisterLink: string | undefined
+  showResetPasswordLink: string | undefined
+  showMfaEnableBanner: string | undefined
+  showQuoteOfTheDay: string | undefined
 }
 export interface registerPayload {
   userName: string | undefined

@@ -25,8 +25,7 @@ const RoleChecker: React.FC<RoleCheckerProps> = (props) => {
         }
 
         if (props.requiredRole !== "any" && !decodedToken.roles.includes(props.requiredRole)) {
-          console.log("wech hier")
-          //navigate("/Status403");
+          navigate("/Status403")
         }
       } catch (error) {
         console.error("ROLECHECK: Error parsing user from session storage", error)

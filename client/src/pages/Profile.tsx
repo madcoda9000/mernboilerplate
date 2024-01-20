@@ -53,6 +53,8 @@ const Profile = () => {
   const [pw1Visible, setPw1Visible] = useState<boolean>(false)
   const [errMsg, setErrMsg] = useState<string>("")
   const [succMsg, setSuccMsg] = useState<string>("")
+  const [isPwLoading, setIsPwLoading] = useState<boolean>(false)
+  const [isEmLoading, setIsEmLoading] = useState<boolean>(false)
 
   const handlePw1Visibility = () => {
     setPw1Visible((current) => !current)
@@ -93,6 +95,7 @@ const Profile = () => {
 
   // 2. submit functions
   async function handleEmailFormSubmit(values: z.infer<typeof emailFormSchema>) {
+    setIsEmLoading(true)
     const payload: changeEmailPayload = {
       _id: user?._id,
       email: values.email,
@@ -100,13 +103,16 @@ const Profile = () => {
     UsersService.changeEmailAddress(payload).then((res) => {
       if (res.data.error) {
         setErrMsg(res.data.message)
+        setIsEmLoading(false)
       } else {
         setSuccMsg(res.data.message)
+        setIsEmLoading(false)
       }
     })
   }
 
   function handlePwFormSubmit(values: z.infer<typeof pwFormSchema>) {
+    setIsPwLoading(true)
     const payload: changePasswordPayload = {
       _id: user?._id,
       oldPassword: values.currPassword,
@@ -115,8 +121,10 @@ const Profile = () => {
     UsersService.changePassword(payload).then((res) => {
       if (res.data.error) {
         setErrMsg(res.data.message)
+        setIsPwLoading(false)
       } else {
         setSuccMsg(res.data.message)
+        setIsPwLoading(false)
       }
     })
   }
@@ -156,7 +164,10 @@ const Profile = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Change my email address</Button>
+              <Button type="submit" disabled={isEmLoading ? true : false}>
+                {isEmLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}Change my
+                email address
+              </Button>
             </form>
           </Form>
         </section>
@@ -228,7 +239,10 @@ const Profile = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Change my password</Button>
+              <Button type="submit" disabled={isPwLoading ? true : false}>
+                {isPwLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}Change my
+                password
+              </Button>
             </form>
           </Form>
         </section>
