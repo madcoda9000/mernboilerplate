@@ -18,6 +18,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        blue: "hsl(var(--blue))",
         warning: "hsl(var(--warning))",
         success: "hsl(var(--success))",
         border: "hsl(var(--border))",
