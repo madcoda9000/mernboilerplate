@@ -74,3 +74,24 @@ export interface registerPayload {
   email: string | undefined
   password: string | undefined
 }
+export interface mailSettingsPayload {
+  smtpServer: string | undefined
+  smtpPort: number | undefined
+  smtpUsername: string | undefined
+  smtpPassword: string | undefined
+  smtpTls: boolean | undefined
+}
+export interface ldapSettingsPayload {
+  ldapBaseDn: string | undefined
+  ldapDomainController: string | undefined
+  ldapDomainName: string | undefined
+  ldapEnabled: boolean | undefined
+  ldapGroup: string | undefined
+}
+export interface notifSettingsPayload {
+  sendNotifOnObjectCreation: string | undefined
+  sendNotifOnObjectDeletion: string | undefined
+  sendNotifOnObjectUpdate: string | undefined
+  sendNotifOnUserSelfRegister: string | undefined
+  sendWelcomeMailOnUserCreation: string | undefined
+}

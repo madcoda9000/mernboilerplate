@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator"
 import { SettingsSidebar } from "@/components/Forms/SettingsSidebar"
 import MfaChecker from "@/components/Auth/MfaChecker"
 import RoleChecker from "@/components/Auth/RoleChecker"
-import AppSettingsForm from "@/components/Forms/AppSettingsForm"
+import MailSettingsForm from "@/components/Forms/MailSettingsForm"
 import { useMediaQuery } from "@/components/hooks/useMediaQuery"
 
 const sidebarNavItems = [
@@ -24,7 +24,7 @@ const sidebarNavItems = [
   },
 ]
 
-const AppSettings = () => {
+const MailSettings = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   return (
     <>
@@ -44,14 +44,14 @@ const AppSettings = () => {
               <SettingsSidebar items={sidebarNavItems} className="pr-5" />
             </aside>
             <div className="flex-1 lg:max-w-2xl">
-              <AppSettingsForm />
+              <MailSettingsForm />
             </div>
           </div>
         </div>
       ) : (
-        <AppSettingsForm />
+        <MailSettingsForm />
       )}
     </>
   )
 }
-export default AppSettings
+export default MailSettings

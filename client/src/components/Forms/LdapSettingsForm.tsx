@@ -3,7 +3,7 @@
 import SettingsService from "@/Services/SettingsService"
 import { Switch } from "@/components/ui/switch"
 import { useEffect, useState } from "react"
-import { appSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
+import { ldapSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { InfoCircledIcon } from "@radix-ui/react-icons"
@@ -18,19 +18,30 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form"
 import { Icons } from "../Icons"
 import { useNavigate } from "react-router-dom"
+import { Input } from "../ui/input"
 
 const FormSchema = z.object({
-  showMfaEnableBanner: z.boolean(),
-  showQuoteOfTheDay: z.boolean(),
-  showRegisterLink: z.boolean(),
-  showResetPasswordLink: z.boolean(),
+  ldapBaseDn: z.string().min(1, {
+    message: "Base-DN should not be empty!.",
+  }),
+  ldapDomainController: z.string().min(1, {
+    message: "Domaincontroller should not be emnpty!.",
+  }),
+  ldapDomainName: z.string().min(1, {
+    message: "Domainname should not be empty!.",
+  }),
+  ldapGroup: z.string().min(1, {
+    message: "AD Groupname should not be empty!.",
+  }),
+  ldapEnabled: z.boolean(),
 })
 
-const AppsettingsForm = () => {
-  const [settings, setSettings] = useState<appSettingsPayload | null>(null)
+const LdapSettingsForm = () => {
+  const [settings, setSettings] = useState<ldapSettingsPayload | null>(null)
   const [isLoading, SetIsLoading] = useState<boolean>(true)
   const [btnLoading, SetBtnLoading] = useState<boolean>(false)
   const [errMsg, SetErrMsg] = useState<string>("")
@@ -40,41 +51,31 @@ const AppsettingsForm = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      showMfaEnableBanner: settings?.showMfaEnableBanner === "true" ? true : false,
-      showQuoteOfTheDay: settings?.showQuoteOfTheDay === "true" ? true : false,
-      showRegisterLink: settings?.showRegisterLink === "true" ? true : false,
-      showResetPasswordLink: settings?.showResetPasswordLink === "true" ? true : false,
+      ldapBaseDn: settings?.ldapBaseDn,
+      ldapDomainController: settings?.ldapDomainController,
+      ldapDomainName: settings?.ldapDomainName,
+      ldapEnabled: settings?.ldapEnabled,
+      ldapGroup: settings?.ldapGroup,
     },
   })
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await SettingsService.getApplicationSettings()
+        const res = await SettingsService.getLdapSettings()
         if (!res.data.error) {
           setSettings(res.data)
-          form.setValue(
-            "showMfaEnableBanner",
-            res.data.settings.showMfaEnableBanner === "true" ? true : false
-          )
-          form.setValue(
-            "showQuoteOfTheDay",
-            res.data.settings.showQuoteOfTheDay === "true" ? true : false
-          )
-          form.setValue(
-            "showRegisterLink",
-            res.data.settings.showRegisterLink === "true" ? true : false
-          )
-          form.setValue(
-            "showResetPasswordLink",
-            res.data.settings.showResetPasswordLink === "true" ? true : false
-          )
+          form.setValue("ldapBaseDn", res.data.settings.ldapBaseDn)
+          form.setValue("ldapDomainController", res.data.settings.ldapDomainController)
+          form.setValue("ldapDomainName", res.data.settings.ldapDomainName)
+          form.setValue("ldapEnabled", res.data.settings.ldapEnabled === "true" ? true : false)
+          form.setValue("ldapGroup", res.data.settings.ldapGroup)
         } else {
           SetErrMsg(res.data.message)
         }
       } catch (error) {
-        console.error("Error fetching application settings:", error)
-        SetErrMsg("An error occurred while fetching application settings.")
+        console.error("Error fetching mail settings:", error)
+        SetErrMsg("An error occurred while fetching mail settings.")
       } finally {
         SetIsLoading(false)
       }
@@ -86,13 +87,14 @@ const AppsettingsForm = () => {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     SetBtnLoading(true)
     console.log(data)
-    const settingsPl: appSettingsPayload = {
-      showMfaEnableBanner: String(data.showMfaEnableBanner),
-      showQuoteOfTheDay: String(data.showQuoteOfTheDay),
-      showRegisterLink: String(data.showRegisterLink),
-      showResetPasswordLink: String(data.showResetPasswordLink),
+    const settingsPl: ldapSettingsPayload = {
+      ldapBaseDn: data.ldapBaseDn,
+      ldapDomainController: data.ldapDomainController,
+      ldapDomainName: data.ldapDomainName,
+      ldapEnabled: data.ldapEnabled,
+      ldapGroup: data.ldapGroup,
     }
-    SettingsService.updateAppSettings(settingsPl).then((res) => {
+    SettingsService.updateLdapSettings(settingsPl).then((res) => {
       if (!res.data.error) {
         setSettings(res.data)
         SetBtnLoading(false)
@@ -117,7 +119,7 @@ const AppsettingsForm = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
             <div>
-              <h3 className="mb-4 text-lg font-medium">Application Settings</h3>
+              <h3 className="mb-4 text-lg font-medium">Ldap Settings</h3>
               {errMsg && (
                 <Alert className="mb-5" variant="destructive">
                   <InfoCircledIcon className="h-4 w-4" />
@@ -135,69 +137,88 @@ const AppsettingsForm = () => {
               <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="showMfaEnableBanner"
+                  name="ldapBaseDn"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Show 2fa enable banner?</FormLabel>
-                        <FormDescription>
-                          Wether to show the banner that prompts users to enable 2fa.
+                        <FormLabel className="text-base">The Base DN</FormLabel>
+                        <FormDescription className="w-[200px] pr-3">
+                          The distinguished name of the base domain entry.
                         </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Input type="text" value={field.value} onChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={form.control}
-                  name="showQuoteOfTheDay"
+                  name="ldapDomainController"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Show a quote of the day?</FormLabel>
-                        <FormDescription>
-                          Wether to show a quote of the day on the login page.
+                        <FormLabel className="text-base">Domaincontroller</FormLabel>
+                        <FormDescription className="w-[200px] pr-3">
+                          The fqdn of the domaincontroller.
                         </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Input type="text" value={field.value} onChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={form.control}
-                  name="showRegisterLink"
+                  name="ldapDomainName"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Show a register link</FormLabel>
-                        <FormDescription>
-                          Wether to show a register link on the login page.
+                        <FormLabel className="text-base">Domain name</FormLabel>
+                        <FormDescription className="w-[200px] pr-3">
+                          The name of the domain.
                         </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Input type="text" value={field.value} onChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={form.control}
-                  name="showResetPasswordLink"
+                  name="ldapGroup"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Show a forgot password link?</FormLabel>
-                        <FormDescription>
-                          Wether to show a forgot password link on the login page.
+                        <FormLabel className="text-base">Ldap Group</FormLabel>
+                        <FormDescription className="w-[200px] pr-3">
+                          The name of the group a user must be in to be able to login.
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Input type="text" value={field.value} onChange={field.onChange} />
+                      </FormControl>
+                      <FormMessage className="block" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="ldapEnabled"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Enable Ldap?</FormLabel>
+                        <FormDescription className="w-[200px] pr-3">
+                          Wether to enable Ldap login or not.
                         </FormDescription>
                       </div>
                       <FormControl>
                         <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -215,4 +236,4 @@ const AppsettingsForm = () => {
     )
   }
 }
-export default AppsettingsForm
+export default LdapSettingsForm

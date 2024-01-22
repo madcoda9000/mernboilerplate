@@ -6,6 +6,21 @@ const settingsToSeed = [
   { name: "showResetPasswordLink", value: true, scope: "app" },
   { name: "showMfaEnableBanner", value: true, scope: "app" },
   { name: "showQuoteOfTheDay", value: true, scope: "app" },
+  { name: "smtpServer", value: "your.mailserver.com", scope: "mail" },
+  { name: "smtpPort", value: 25, scope: "mail" },
+  { name: "smtpUsername", value: "YourUsername", scope: "mail" },
+  { name: "smtpPassword", value: "YourPassword", scope: "mail" },
+  { name: "smtpTls", value: true, scope: "mail" },
+  { name: "ldapBaseDn", value: "DC=YOUR,DC=Domain,DC=com", scope: "ldap" },
+  { name: "ldapDomainController", value: "your.domaincontroller.com", scope: "ldap" },
+  { name: "ldapDomainName", value: "your_domainname", scope: "ldap" },
+  { name: "ldapEnabled", value: false, scope: "ldap" },
+  { name: "ldapGroup", value: "Your_AD_Groupname", scope: "ldap" },
+  { name: "sendNotifOnObjectCreation", value: false, scope: "notif" },
+  { name: "sendNotifOnObjectDeletion", value: false, scope: "notif" },
+  { name: "sendNotifOnObjectUpdate", value: false, scope: "notif" },
+  { name: "sendNotifOnUserSelfRegister", value: false, scope: "notif" },
+  { name: "sendWelcomeMailOnUserCreation", value: false, scope: "notif" },
 ];
 
 const SeedSettings = async () => {
