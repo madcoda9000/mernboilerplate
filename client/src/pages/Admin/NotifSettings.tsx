@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator"
 import { SettingsSidebar } from "@/components/Forms/SettingsSidebar"
 import MfaChecker from "@/components/Auth/MfaChecker"
 import RoleChecker from "@/components/Auth/RoleChecker"
-import AppSettingsForm from "@/components/Forms/AppSettingsForm"
+import NotifSettingsForm from "@/components/Forms/NotifSettingsForm"
 import { useMediaQuery } from "@/components/hooks/useMediaQuery"
 
 const sidebarNavItems = [
@@ -24,7 +24,7 @@ const sidebarNavItems = [
   },
 ]
 
-const AppSettings = () => {
+const NotifSettings = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   return (
     <>
@@ -44,14 +44,14 @@ const AppSettings = () => {
               <SettingsSidebar items={sidebarNavItems} className="pr-5" />
             </aside>
             <div className="flex-1 lg:max-w-2xl">
-              <AppSettingsForm />
+              <NotifSettingsForm />
             </div>
           </div>
         </div>
       ) : (
-        <AppSettingsForm />
+        <NotifSettingsForm />
       )}
     </>
   )
 }
-export default AppSettings
+export default NotifSettings

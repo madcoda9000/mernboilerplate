@@ -1,9 +1,8 @@
 "use client"
 
-import Link from "next/link"
-
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom"
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {
@@ -14,6 +13,7 @@ interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
 
 export function SettingsSidebar({ className, items, ...props }: SidebarNavProps) {
   const pathname = window.location.pathname
+  const nav = useNavigate()
 
   return (
     <nav
@@ -21,19 +21,19 @@ export function SettingsSidebar({ className, items, ...props }: SidebarNavProps)
       {...props}
     >
       {items.map((item) => (
-        <Link
+        <span
           key={item.href}
-          href={item.href}
+          onClick={() => nav(item.href)}
           className={cn(
             buttonVariants({ variant: "ghost" }),
             pathname === item.href
               ? "bg-muted hover:bg-muted"
               : "hover:bg-transparent hover:underline",
-            "justify-start"
+            "justify-start cursor-pointer"
           )}
         >
           {item.title}
-        </Link>
+        </span>
       ))}
     </nav>
   )

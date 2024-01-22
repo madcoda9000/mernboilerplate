@@ -61,6 +61,39 @@ const updateAppSettingsValidation = (body) => {
   return schema.validate(body);
 };
 
+const updateMailSettingsValidation = (body) => {
+  const schema = Joi.object({
+    smtpServer: Joi.string().required().label("smtp server"),
+    smtpPort: Joi.number().required().label("smtp port"),
+    smtpUsername: Joi.string().required().label("smtp username"),
+    smtpPassword: Joi.string().required().label("smtp password"),
+    smtpTls: Joi.boolean().required().label("enable tls"),
+  });
+  return schema.validate(body);
+};
+
+const updateLdapSettingsValidation = (body) => {
+  const schema = Joi.object({
+    ldapBaseDn: Joi.string().required().label("Base DN"),
+    ldapDomainController: Joi.string().required().label("Domain Controller"),
+    ldapDomainName: Joi.string().required().label("Domain name"),
+    ldapGroup: Joi.string().required().label("Ldap Group name"),
+    ldapEnabled: Joi.boolean().required().label("enable Ldap"),
+  });
+  return schema.validate(body);
+};
+
+const updateNotifSettingsValidation = (body) => {
+  const schema = Joi.object({
+    sendNotifOnObjectCreation: Joi.boolean().required().label("sendNotifOnObjectCreation"),
+    sendNotifOnObjectDeletion: Joi.boolean().required().label("sendNotifOnObjectDeletion"),
+    sendNotifOnObjectUpdate: Joi.boolean().required().label("sendNotifOnObjectUpdate"),
+    sendNotifOnUserSelfRegister: Joi.boolean().required().label("sendNotifOnUserSelfRegister"),
+    sendWelcomeMailOnUserCreation: Joi.boolean().required().label("sendWelcomeMailOnUserCreation"),
+  });
+  return schema.validate(body);
+};
+
 const createRoleValidation = (body) => {
   const schema = Joi.object({
     roleName: Joi.string().required().label("Rolename"),
@@ -177,4 +210,7 @@ export {
   forgotpw2Validation,
   unenforceMfaValidation,
   disableMfaValidation,
+  updateMailSettingsValidation,
+  updateLdapSettingsValidation,
+  updateNotifSettingsValidation
 };

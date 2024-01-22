@@ -22,6 +22,12 @@ const ForgotPw2 = React.lazy(() => import("@/pages/ForgotPw2"))
 const MfaLogin = React.lazy(() => import("@/pages/MfaLogin"))
 const MfaSetup = React.lazy(() => import("@/pages/MfaSetup"))
 const AppSettings = React.lazy(() => import("@/pages/Admin/AppSettings"))
+const MailSettings = React.lazy(() => import("@/pages/Admin/MailSettings"))
+const LdapSettings = React.lazy(() => import("@/pages/Admin/LdapSettings"))
+const NotifSettings = React.lazy(() => import("@/pages/Admin/NotifSettings"))
+const SystemLogs = React.lazy(() => import("@/pages/Logs/SystemLogs"))
+const AuditLogs = React.lazy(() => import("@/pages/Logs/AuditLogs"))
+const RequestLogs = React.lazy(() => import("@/pages/Logs/RequestLogs"))
 
 function App() {
   return (
@@ -110,6 +116,54 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Admin/AppSettings">
                       <AppSettings />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Admin/MailSettings"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Admin/MailSettings">
+                      <MailSettings />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Admin/LdapSettings"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Admin/LdapSettings">
+                      <LdapSettings />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Admin/NotifSettings"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Admin/NotifSettings">
+                      <NotifSettings />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Logs/SystemLogs"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Logs/SystemLogs">
+                      <SystemLogs />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Logs/AuditLogs"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Logs/AuditLogs">
+                      <AuditLogs />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Logs/RequestLogs"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Logs/RequestLogs">
+                      <RequestLogs />
                     </ProtectedRoute>
                   }
                 ></Route>

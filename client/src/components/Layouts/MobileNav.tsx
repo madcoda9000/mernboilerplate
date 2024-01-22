@@ -1,23 +1,38 @@
 import MenuEntries from "@/components/Layouts/MenuEntries"
 import { useNavigate } from "react-router-dom"
 import { Icons } from "../Icons"
+import { SheetClose } from "@/components/ui/sheet"
 
 const MobileNav = () => {
   const nav = useNavigate()
   return (
     <>
-      <div className="text-lg font-semibold">Settings</div>
+      <div className="text-lg font-semibold">Main Menu</div>
       <div>
+        <div>
+          <div className="ml-3 mt-2">
+            <SheetClose asChild>
+              <span onClick={() => nav("/Home")} title={"Overview"} className="cursor-pointer">
+                Overview
+              </span>
+            </SheetClose>
+            <Icons.arrowRight className="inline ml-2" />
+          </div>
+        </div>
+
+        <div className="text-lg font-semibold">Settings</div>
         {MenuEntries.settingsItems.map((component, index) => (
           <div key={index}>
             <div className="ml-3 mt-2">
-              <span
-                onClick={() => nav(component.href)}
-                title={component.description}
-                className="cursor-pointer"
-              >
-                {component.title}
-              </span>
+              <SheetClose asChild>
+                <span
+                  onClick={() => nav(component.href)}
+                  title={component.description}
+                  className="cursor-pointer"
+                >
+                  {component.title}
+                </span>
+              </SheetClose>
               <Icons.arrowRight className="inline ml-2" />
             </div>
           </div>
@@ -27,13 +42,15 @@ const MobileNav = () => {
       <div>
         {MenuEntries.logsItems.map((component, index) => (
           <div className="ml-3 mt-2" key={index}>
-            <span
-              onClick={() => nav(component.href)}
-              title={component.description}
-              className="cursor-pointer"
-            >
-              {component.title}
-            </span>
+            <SheetClose asChild>
+              <span
+                onClick={() => nav(component.href)}
+                title={component.description}
+                className="cursor-pointer"
+              >
+                {component.title}
+              </span>
+            </SheetClose>
             <Icons.arrowRight className="inline ml-2" />
           </div>
         ))}

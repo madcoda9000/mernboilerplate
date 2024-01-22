@@ -3,7 +3,7 @@
 import SettingsService from "@/Services/SettingsService"
 import { Switch } from "@/components/ui/switch"
 import { useEffect, useState } from "react"
-import { appSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
+import { appSettingsPayload, notifSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { InfoCircledIcon } from "@radix-ui/react-icons"
@@ -23,14 +23,15 @@ import { Icons } from "../Icons"
 import { useNavigate } from "react-router-dom"
 
 const FormSchema = z.object({
-  showMfaEnableBanner: z.boolean(),
-  showQuoteOfTheDay: z.boolean(),
-  showRegisterLink: z.boolean(),
-  showResetPasswordLink: z.boolean(),
+  sendNotifOnObjectCreation: z.boolean(),
+  sendNotifOnObjectDeletion: z.boolean(),
+  sendNotifOnObjectUpdate: z.boolean(),
+  sendNotifOnUserSelfRegister: z.boolean(),
+  sendWelcomeMailOnUserCreation: z.boolean(),
 })
 
 const AppsettingsForm = () => {
-  const [settings, setSettings] = useState<appSettingsPayload | null>(null)
+  const [settings, setSettings] = useState<notifSettingsPayload | null>(null)
   const [isLoading, SetIsLoading] = useState<boolean>(true)
   const [btnLoading, SetBtnLoading] = useState<boolean>(false)
   const [errMsg, SetErrMsg] = useState<string>("")
@@ -40,41 +41,47 @@ const AppsettingsForm = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      showMfaEnableBanner: settings?.showMfaEnableBanner === "true" ? true : false,
-      showQuoteOfTheDay: settings?.showQuoteOfTheDay === "true" ? true : false,
-      showRegisterLink: settings?.showRegisterLink === "true" ? true : false,
-      showResetPasswordLink: settings?.showResetPasswordLink === "true" ? true : false,
+      sendNotifOnObjectCreation: settings?.sendNotifOnObjectCreation === "true" ? true : false,
+      sendNotifOnObjectDeletion: settings?.sendNotifOnObjectDeletion === "true" ? true : false,
+      sendNotifOnObjectUpdate: settings?.sendNotifOnObjectUpdate === "true" ? true : false,
+      sendNotifOnUserSelfRegister: settings?.sendNotifOnUserSelfRegister === "true" ? true : false,
+      sendWelcomeMailOnUserCreation:
+        settings?.sendWelcomeMailOnUserCreation === "true" ? true : false,
     },
   })
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await SettingsService.getApplicationSettings()
+        const res = await SettingsService.getNotifSettings()
         if (!res.data.error) {
           setSettings(res.data)
           form.setValue(
-            "showMfaEnableBanner",
-            res.data.settings.showMfaEnableBanner === "true" ? true : false
+            "sendNotifOnObjectCreation",
+            res.data.settings.sendNotifOnObjectCreation === "true" ? true : false
           )
           form.setValue(
-            "showQuoteOfTheDay",
-            res.data.settings.showQuoteOfTheDay === "true" ? true : false
+            "sendNotifOnObjectDeletion",
+            res.data.settings.sendNotifOnObjectDeletion === "true" ? true : false
           )
           form.setValue(
-            "showRegisterLink",
-            res.data.settings.showRegisterLink === "true" ? true : false
+            "sendNotifOnObjectUpdate",
+            res.data.settings.sendNotifOnObjectUpdate === "true" ? true : false
           )
           form.setValue(
-            "showResetPasswordLink",
-            res.data.settings.showResetPasswordLink === "true" ? true : false
+            "sendNotifOnUserSelfRegister",
+            res.data.settings.sendNotifOnUserSelfRegister === "true" ? true : false
+          )
+          form.setValue(
+            "sendWelcomeMailOnUserCreation",
+            res.data.settings.sendWelcomeMailOnUserCreation === "true" ? true : false
           )
         } else {
           SetErrMsg(res.data.message)
         }
       } catch (error) {
-        console.error("Error fetching application settings:", error)
-        SetErrMsg("An error occurred while fetching application settings.")
+        console.error("Error fetching notification settings:", error)
+        SetErrMsg("An error occurred while fetching notification settings.")
       } finally {
         SetIsLoading(false)
       }
@@ -86,13 +93,14 @@ const AppsettingsForm = () => {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     SetBtnLoading(true)
     console.log(data)
-    const settingsPl: appSettingsPayload = {
-      showMfaEnableBanner: String(data.showMfaEnableBanner),
-      showQuoteOfTheDay: String(data.showQuoteOfTheDay),
-      showRegisterLink: String(data.showRegisterLink),
-      showResetPasswordLink: String(data.showResetPasswordLink),
+    const settingsPl: notifSettingsPayload = {
+      sendNotifOnObjectCreation: String(data.sendNotifOnObjectCreation),
+      sendNotifOnObjectDeletion: String(data.sendNotifOnObjectDeletion),
+      sendNotifOnObjectUpdate: String(data.sendNotifOnObjectUpdate),
+      sendNotifOnUserSelfRegister: String(data.sendNotifOnUserSelfRegister),
+      sendWelcomeMailOnUserCreation: String(data.sendWelcomeMailOnUserCreation),
     }
-    SettingsService.updateAppSettings(settingsPl).then((res) => {
+    SettingsService.updateNotifSettings(settingsPl).then((res) => {
       if (!res.data.error) {
         setSettings(res.data)
         SetBtnLoading(false)
@@ -117,7 +125,7 @@ const AppsettingsForm = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
             <div>
-              <h3 className="mb-4 text-lg font-medium">Application Settings</h3>
+              <h3 className="mb-4 text-lg font-medium">Notification Settings</h3>
               {errMsg && (
                 <Alert className="mb-5" variant="destructive">
                   <InfoCircledIcon className="h-4 w-4" />
@@ -135,13 +143,13 @@ const AppsettingsForm = () => {
               <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="showMfaEnableBanner"
+                  name="sendNotifOnObjectCreation"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Show 2fa enable banner?</FormLabel>
+                        <FormLabel className="text-base">Object creation</FormLabel>
                         <FormDescription>
-                          Wether to show the banner that prompts users to enable 2fa.
+                          Wether to send a notification on object (user, role) creation or not?
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -152,13 +160,13 @@ const AppsettingsForm = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="showQuoteOfTheDay"
+                  name="sendNotifOnObjectDeletion"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Show a quote of the day?</FormLabel>
+                        <FormLabel className="text-base">Object deletion</FormLabel>
                         <FormDescription>
-                          Wether to show a quote of the day on the login page.
+                          Wether to send a notification on object (user, role) deletion or not?
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -169,13 +177,13 @@ const AppsettingsForm = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="showRegisterLink"
+                  name="sendNotifOnObjectUpdate"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Show a register link</FormLabel>
+                        <FormLabel className="text-base">Object update</FormLabel>
                         <FormDescription>
-                          Wether to show a register link on the login page.
+                          Wether to send a notification on object (user, role) update or not?
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -186,13 +194,30 @@ const AppsettingsForm = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="showResetPasswordLink"
+                  name="sendNotifOnUserSelfRegister"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Show a forgot password link?</FormLabel>
+                        <FormLabel className="text-base">Self register</FormLabel>
                         <FormDescription>
-                          Wether to show a forgot password link on the login page.
+                          Wether to send a notification on user self registration or not?
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="sendWelcomeMailOnUserCreation"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">User creation</FormLabel>
+                        <FormDescription>
+                          Wether to send a notification on user creation by an adfmin or not?
                         </FormDescription>
                       </div>
                       <FormControl>
