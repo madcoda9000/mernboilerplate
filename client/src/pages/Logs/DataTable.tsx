@@ -63,7 +63,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <>
       <DataTableToolbar table={table} />
-      <div className="rounded-md border">
+      <div className="rounded-md ">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -95,7 +95,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} data-label={cell.getContext().column.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

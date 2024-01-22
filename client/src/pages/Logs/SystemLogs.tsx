@@ -77,7 +77,7 @@ const SystemLogs = () => {
           </div>
         </div>
       ) : (
-        <span>implement mobile logview!</span>
+        <DataTable data={data} columns={columns} />
       )}
     </>
   )
