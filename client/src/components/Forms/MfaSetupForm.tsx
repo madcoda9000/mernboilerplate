@@ -160,13 +160,13 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
               </Alert>
             )}
             {succMsg && (
-              <Alert>
+              <Alert variant={"success"}>
                 <InfoCircledIcon className="h-4 w-4" />
                 <AlertTitle>Success!</AlertTitle>
                 {succMsg}
               </Alert>
             )}
-            <Alert>
+            <Alert variant={"default"}>
               <AlertDescription>
                 You've successfully configured 2FA Authentication.
                 <br /> <br />
@@ -210,13 +210,13 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
                   </Alert>
                 )}
                 {succMsg && (
-                  <Alert>
+                  <Alert variant={"success"}>
                     <InfoCircledIcon className="h-4 w-4" />
                     <AlertTitle>Success!</AlertTitle>
                     {succMsg}
                   </Alert>
                 )}
-                <Alert>
+                <Alert variant={"default"}>
                   <AlertDescription>
                     <b>
                       Your administrator has enforced to enable 2FA Authentication for your account.
@@ -341,19 +341,19 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
                   </Alert>
                 )}
                 {succMsg && (
-                  <Alert>
+                  <Alert variant={"success"}>
                     <InfoCircledIcon className="h-4 w-4" />
                     <AlertTitle>Success!</AlertTitle>
                     {succMsg}
                   </Alert>
                 )}
-                <Alert>
+                <Alert variant={"info"}>
                   <AlertDescription>
                     <b>Great that you're willing to enable 2FA Authentication!</b>
                     <br /> <br />
                     <Accordion type="single" collapsible className="w-full">
                       <AccordionItem value="item-1" className="border-none">
-                        <AccordionTrigger style={{ color: "#2b90ef" }}>
+                        <AccordionTrigger style={{ color: "#fff" }}>
                           <Icons.infoCircle className="inline mt-[-2px]" />
                           &nbsp;Enable 2FA AUthentication in three steps:
                         </AccordionTrigger>

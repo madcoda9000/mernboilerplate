@@ -14,12 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "./DataTableColumnHeader"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Icons } from "@/components/Icons"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type SystemLog = {
   _id: string
   timestamp: string
+  level: string
   message: string
   hostname: string
   meta: object
@@ -59,6 +61,41 @@ export const columns: ColumnDef<SystemLog>[] = [
     },
     size: 160,
     maxSize: 160,
+  },
+  {
+    accessorKey: "level",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Level" />,
+    cell: ({ row }) => {
+      if (row.getValue("level") === "info") {
+        return (
+          <div className="flex w-[60px] max-w-[60px]">
+            <Icons.infoCircle className="text-blue" />
+          </div>
+        )
+      } else if (row.getValue("level") === "warn") {
+        return (
+          <div className="flex w-[60px] max-w-[60px]">
+            <Icons.exclamationTriangle className="text-warning" />
+          </div>
+        )
+      } else if (row.getValue("level") === "error") {
+        return (
+          <div className="flex w-[60px] max-w-[60px]">
+            <Icons.exclamationTriangle className="text-destructive" />
+          </div>
+        )
+      } else if (row.getValue("level") === "http") {
+        return (
+          <div className="flex w-[60px] max-w-[60px]">
+            <Icons.globe className="text-blue" />
+          </div>
+        )
+      } else {
+        return <div className="flex w-[60px] max-w-[60px]">{row.getValue("level")}</div>
+      }
+    },
+    size: 60,
+    maxSize: 60,
   },
   {
     accessorKey: "hostname",

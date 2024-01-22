@@ -86,3 +86,70 @@ export async function sendPwResetMail(user, token) {
     throw error; // Re-throw the error to propagate it further if needed
   }
 }
+
+export async function sendWelcomeMail(user) {
+  const ms_mailOptions = {
+    from: enviromentConfig.smtp.senderAddress, // sender address
+    template: "welcome", // the name of the template file, i.e., email.handlebars
+    to: user.email,
+    subject: "Welcome to " + enviromentConfig.app.appName + "...",
+    context: {
+      appName: enviromentConfig.app.appName,
+      companyName: enviromentConfig.app.companyName,
+      companyStreet: enviromentConfig.app.companyStreet,
+      companyTown: enviromentConfig.app.companyTown,
+      privacyPolicyUrl: enviromentConfig.app.privacyPolicyUrl,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    },
+    attachments: [
+      {
+        filename: "email_blue.png",
+        path: "mailImages/email_blue.png",
+        cid: "logo",
+      },
+    ],
+  };
+
+  try {
+    await ms_transporter.sendMail(ms_mailOptions);
+    logger.info("MAIL | Successfully send welcome mail to " + user.email);
+  } catch (error) {
+    logger.error("MAIL | Error sending welcome mail to " + User.email + ": " + error.message);
+    throw error; // Re-throw the error to propagate it further if needed
+  }
+}
+
+export async function sendObjectMail(objectName, objectType, action) {
+  const ms_mailOptions = {
+    from: enviromentConfig.smtp.senderAddress, // sender address
+    template: "object", // the name of the template file, i.e., email.handlebars
+    to: user.email,
+    subject: "PAn object has been " + action + " ...",
+    context: {
+      appName: enviromentConfig.app.appName,
+      companyName: enviromentConfig.app.companyName,
+      companyStreet: enviromentConfig.app.companyStreet,
+      companyTown: enviromentConfig.app.companyTown,
+      privacyPolicyUrl: enviromentConfig.app.privacyPolicyUrl,
+      objectName: objectName,
+      objectType: objectType,
+      action: action,
+    },
+    attachments: [
+      {
+        filename: "email_blue.png",
+        path: "mailImages/email_blue.png",
+        cid: "logo",
+      },
+    ],
+  };
+
+  try {
+    await ms_transporter.sendMail(ms_mailOptions);
+    logger.info("MAIL | Successfully send object " + action + " mail to " + user.email);
+  } catch (error) {
+    logger.error("MAIL | Error sending object " + action + " mail to " + User.email + ": " + error.message);
+    throw error; // Re-throw the error to propagate it further if needed
+  }
+}
