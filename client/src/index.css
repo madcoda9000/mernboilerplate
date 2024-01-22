@@ -87,3 +87,28 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+@media screen and (max-width: 600px) {
+  table {
+    border: none !important;
+  }
+  table thead {
+    display: none;
+  }
+  table td {
+    display: flex;
+    border: none !important;
+  }
+
+  table tr {
+    border-bottom: 3px solid #000;
+  }
+
+  table td::before {
+    content: attr(data-label) ": ";
+    font-weight: bold;
+    width: 100px;
+    min-width: 100px;
+    border: none !important;
+  }
+}
