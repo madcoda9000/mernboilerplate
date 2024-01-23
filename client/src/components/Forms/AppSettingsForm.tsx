@@ -3,7 +3,7 @@
 import SettingsService from "@/Services/SettingsService"
 import { Switch } from "@/components/ui/switch"
 import { useEffect, useState } from "react"
-import { appSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
+import { AuditEntryPayload, appSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { InfoCircledIcon } from "@radix-ui/react-icons"
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form"
 import { Icons } from "../Icons"
 import { useNavigate } from "react-router-dom"
+import LogsService from "@/Services/LogsService"
 
 const FormSchema = z.object({
   showMfaEnableBanner: z.boolean(),
@@ -48,30 +49,37 @@ const AppsettingsForm = () => {
   })
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
       try {
-        const res = await SettingsService.getApplicationSettings()
-        if (!res.data.error) {
-          setSettings(res.data)
-          form.setValue(
-            "showMfaEnableBanner",
-            res.data.settings.showMfaEnableBanner === "true" ? true : false
-          )
-          form.setValue(
-            "showQuoteOfTheDay",
-            res.data.settings.showQuoteOfTheDay === "true" ? true : false
-          )
-          form.setValue(
-            "showRegisterLink",
-            res.data.settings.showRegisterLink === "true" ? true : false
-          )
-          form.setValue(
-            "showResetPasswordLink",
-            res.data.settings.showResetPasswordLink === "true" ? true : false
-          )
-        } else {
-          SetErrMsg(res.data.message)
-        }
+        SettingsService.getApplicationSettings().then((res) => {
+          if (!res.data.error) {
+            const adpl: AuditEntryPayload = {
+              user: JSON.parse(sessionStorage.getItem("user")!).userName,
+              level: "info",
+              message: "Viewed Application Settingss",
+            }
+            LogsService.createAuditEntry(adpl)
+            setSettings(res.data)
+            form.setValue(
+              "showMfaEnableBanner",
+              res.data.settings.showMfaEnableBanner === "true" ? true : false
+            )
+            form.setValue(
+              "showQuoteOfTheDay",
+              res.data.settings.showQuoteOfTheDay === "true" ? true : false
+            )
+            form.setValue(
+              "showRegisterLink",
+              res.data.settings.showRegisterLink === "true" ? true : false
+            )
+            form.setValue(
+              "showResetPasswordLink",
+              res.data.settings.showResetPasswordLink === "true" ? true : false
+            )
+          } else {
+            SetErrMsg(res.data.message)
+          }
+        })
       } catch (error) {
         console.error("Error fetching application settings:", error)
         SetErrMsg("An error occurred while fetching application settings.")
@@ -94,6 +102,12 @@ const AppsettingsForm = () => {
     }
     SettingsService.updateAppSettings(settingsPl).then((res) => {
       if (!res.data.error) {
+        const adpl: AuditEntryPayload = {
+          user: JSON.parse(sessionStorage.getItem("user")!).userName,
+          level: "warn",
+          message: "Modified Application Settings",
+        }
+        LogsService.createAuditEntry(adpl)
         setSettings(res.data)
         SetBtnLoading(false)
         SetSuccMsg("Settings updated successfully")

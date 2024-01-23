@@ -77,6 +77,9 @@ router.post("/forgotPw2", async (req, res) => {
     };
     await User.findByIdAndUpdate({ _id: us._id }, update);
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + us.userName + " resetted password sucessfully", 201);
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail(us.userName, "User", "resetted password");
+    }
     res.status(201).json({ error: false, message: "Account " + us.userName + " resetted password sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
@@ -147,6 +150,9 @@ router.post("/forgotPw1", async (req, res) => {
       res.status(200).json({ error: false, message: "Account deactivated, password reset mail sended successfully. Please take a look into your inbox." });
     } else {
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "user user with email address " + req.body.email + " not found.", 200);
+      if (sendNotifOnObjectUpdate) {
+        sendObjectMail(user.userName, "User", "started password reset");
+      }
       res.status(200).json({ error: true, message: "user user with email address " + req.body.email + " not found." });
     }
   } catch (err) {
@@ -296,7 +302,9 @@ router.post("/createUser", auth, roleCheck("admins"), async (req, res) => {
     });
     await newUser.save();
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body.email + " created sucessfully", 201);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectCreation) {
+      sendObjectMail(req.body.userName, "User", "created");
+    }
     res.status(201).json({ error: false, message: "Account " + req.body.email + " created sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
@@ -352,7 +360,9 @@ router.post("/deleteUser", auth, roleCheck("admins"), async (req, res) => {
     }
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectDeletion) {
+      sendObjectMail(req.body.userName, "User", "deleted");
+    }
     logger.error("API|users.js|/deleteUser|" + err.message);
     res.status(500).json({ message: err.message });
   }
@@ -436,7 +446,9 @@ router.put("/updateUser", auth, roleCheck("admins"), async (req, res) => {
     res.status(201).json({ error: false, message: "Account " + req.body.userName + " updated sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail(req.body.userName, "User", "modified");
+    }
     logger.error("API|users.js|/updateUser|" + err.message);
     res.status(500).json({ message: err.message });
   }
@@ -486,7 +498,9 @@ router.patch("/changeEmailAddress", auth, async (req, res) => {
   // update user properties
   await User.findByIdAndUpdate({ _id: req.body._id }, { email: req.body.email });
   doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + iduser.userName + " updated sucessfully", 200);
-  //TODO: check if we have to send a mail
+  if (sendNotifOnObjectUpdate) {
+    sendObjectMail(iduser.userName, "User", "email address changed");
+  }
   res.status(200).json({ error: false, message: "Account " + iduser.userName + " updated sucessfully" });
 });
 
@@ -547,7 +561,9 @@ router.patch("/changePassword", auth, async (req, res) => {
     const hashPassword = await bcrypt.hash(req.body.newPassword, salt);
     await User.findByIdAndUpdate({ _id: req.body._id }, { password: hashPassword });
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + iduser.userName + " changed password sucessfully", 201);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail(iduser.userName, "User", "password changed");
+    }
     res.status(201).json({ error: false, message: "Account " + iduser.userName + " changed password sucessfully" });
   }
 });
@@ -710,7 +726,9 @@ router.patch("/lockUser", auth, roleCheck("admins"), async (req, res) => {
     };
     await User.findByIdAndUpdate({ _id: req.body._id }, update);
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body._id + " locked sucessfully", 200);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail(iduser.userName, "User", "account locked");
+    }
     res.status(200).json({ error: false, message: "Account " + req.body._id + " locked sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
@@ -767,7 +785,9 @@ router.patch("/unlockUser", auth, roleCheck("admins"), async (req, res) => {
     };
     await User.findByIdAndUpdate({ _id: req.body._id }, update);
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body._id + " unlocked sucessfully", 200);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail(iduser.userName, "User", "account unlocked");
+    }
     res.status(200).json({ error: false, message: "Account " + req.body._id + " unlocked sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
@@ -824,7 +844,9 @@ router.patch("/enableLdap", auth, roleCheck("admins"), async (req, res) => {
     };
     await User.findByIdAndUpdate({ _id: req.body._id }, update);
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body._id + " ldap enabled sucessfully", 200);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail(iduser.userName, "User", "ldap enabled");
+    }
     res.status(200).json({ error: false, message: "Account " + req.body._id + " ldap enabled sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
@@ -881,7 +903,9 @@ router.patch("/disableLdap", auth, roleCheck("admins"), async (req, res) => {
     };
     await User.findByIdAndUpdate({ _id: req.body._id }, update);
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body._id + " ldap disabled sucessfully", 200);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail(iduser.userName, "User", "ldap disabled");
+    }
     res.status(200).json({ error: false, message: "Account " + req.body._id + " ldap disabled sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
@@ -938,7 +962,9 @@ router.patch("/enforceMfa", auth, roleCheck("admins"), async (req, res) => {
     };
     await User.findByIdAndUpdate({ _id: req.body._id }, update);
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body._id + " mfa enforced sucessfully", 200);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail(iduser.userName, "User", "2fa enforced");
+    }
     res.status(200).json({ error: false, message: "Account " + req.body._id + " mfa enforced sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
@@ -996,7 +1022,7 @@ router.patch("/unenforceMfa", auth, roleCheck("admins"), async (req, res) => {
     await User.findByIdAndUpdate({ _id: req.body._id }, update);
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body._id + " mfa enforcement disabled sucessfully", 200);
     if (sendNotifOnObjectUpdate) {
-      sendObjectMail("User Accountstatus", "User", "Account user " + iduser.userName + " unlocked by user " + execUser.userName);
+      sendObjectMail("User 2fa Status", "User", "unenforced");
     }
     res.status(200).json({ error: false, message: "Account " + req.body._id + " mfa enforcement disabled sucessfully" });
   } catch (err) {
@@ -1098,7 +1124,7 @@ router.patch("/disableMfa", async (req, res) => {
     );
     res.status(200).json({ error: false, message: "Account " + iduser.userName + " mfa disabled by user " + execUser.userName + " sucessfully" });
     if (sendNotifOnObjectUpdate) {
-      sendObjectMail("MFA User Setting", "User", "Mfa for user " + iduser.userName + " disabled by user " + execUser.userName);
+      sendObjectMail(iduser.userName, "User", "2fa disabled by " + execUser.userName);
     }
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);

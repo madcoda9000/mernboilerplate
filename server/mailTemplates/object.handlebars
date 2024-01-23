@@ -322,7 +322,7 @@
 				<div class="content">
 
 					<!-- START CENTERED WHITE CONTAINER -->
-					<span class="preheader">Your Password reset request at {{appName}}</span>
+					<span class="preheader">An object has been {{action}}!</span>
 					<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="main">
 
 						<!-- START MAIN CONTENT AREA -->
@@ -334,33 +334,33 @@
 						<tr>
 							<td class="wrapper">
 								<p>Hello {{firstName}} {{lastName}}</p>
-								<p>An object has been {{action}}.</p>
-								<table role="presentation" border="0" cellpadding="0" cellspacing="0"
-									class="btn btn-primary">
+								<p>An object has been <b style="color:#E53E3E">{{action}}</b>.</p>
+								<table role="presentation" cellpadding="0" cellspacing="0" style="border:1px solid:#3182CE;">
+									
 									<tbody>
 										<tr>
 											<td align="center" style="padding:15px;">
 												<table role="presentation" border="0" cellpadding="0" cellspacing="0">
 													<tbody>
 														<tr>
-															<td> 
-                                                                Object name:
+															<td align="left" style="width:120px;max-width:120px;"> 
+                                                                <b>Object name:</b>
                                                             </td>
                                                             <td>
                                                                 {{objectName}}
                                                             </td>
 														</tr>
                                                         <tr>
-															<td> 
-                                                                Object type:
+															<td align="left"> 
+                                                                <b>Object type:</b>
                                                             </td>
                                                             <td>
                                                                 {{objectType}}
                                                             </td>
 														</tr>
                                                         <tr>
-															<td> 
-                                                                Object action:
+															<td align="left"> 
+                                                                <b>Object action:</b>
                                                             </td>
                                                             <td>
                                                                 {{action}}
@@ -368,7 +368,8 @@
 														</tr>
 														<tr>
 															<td colspan="2"> 
-																Please see audit log for more information!
+																<br />
+																<b>Please see audit log for more information!</b>
 															</td>
 													</tbody>
 												</table>

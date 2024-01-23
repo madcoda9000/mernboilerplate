@@ -8,6 +8,7 @@ import RoleChecker from "@/components/Auth/RoleChecker"
 import { useMediaQuery } from "@/components/hooks/useMediaQuery"
 import { Separator } from "@/components/ui/separator"
 import { SettingsSidebar } from "@/components/Forms/SettingsSidebar"
+import { AuditEntryPayload } from "@/Interfaces/PayLoadINterfaces"
 
 const sidebarNavItems = [
   {
@@ -33,6 +34,12 @@ const SystemLogs = () => {
     const getData = () => {
       LogsService.getSystemLogs(1, 90000, "").then((response) => {
         if (response && !response.data.error) {
+          const adpl: AuditEntryPayload = {
+            user: JSON.parse(sessionStorage.getItem("user")!).userName,
+            level: "info",
+            message: "Viewed System Logs",
+          }
+          LogsService.createAuditEntry(adpl)
           setData(response.data.paginatedResult.docs)
           SetIsLoading(false)
         } else {

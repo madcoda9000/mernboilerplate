@@ -68,6 +68,7 @@ const updateMailSettingsValidation = (body) => {
     smtpUsername: Joi.string().required().label("smtp username"),
     smtpPassword: Joi.string().required().label("smtp password"),
     smtpTls: Joi.boolean().required().label("enable tls"),
+    smtpSenderAddress: Joi.string().required().label("sender adress"),
   });
   return schema.validate(body);
 };

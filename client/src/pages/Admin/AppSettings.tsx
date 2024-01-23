@@ -3,7 +3,7 @@ import { SettingsSidebar } from "@/components/Forms/SettingsSidebar"
 import MfaChecker from "@/components/Auth/MfaChecker"
 import RoleChecker from "@/components/Auth/RoleChecker"
 import AppSettingsForm from "@/components/Forms/AppSettingsForm"
-import { useMediaQuery } from "@/components/hooks/useMediaQuery"
+import { isMobile } from "react-device-detect"
 
 const sidebarNavItems = [
   {
@@ -25,12 +25,11 @@ const sidebarNavItems = [
 ]
 
 const AppSettings = () => {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
   return (
     <>
       <MfaChecker />
       <RoleChecker requiredRole="admins" />
-      {isDesktop ? (
+      {!isMobile ? (
         <div className="hidden space-y-6 pb-16 md:block">
           <div className="space-y-0.5">
             <h2 className="text-2xl font-bold tracking-tight">Settings</h2>

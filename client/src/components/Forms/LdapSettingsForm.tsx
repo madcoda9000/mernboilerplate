@@ -3,7 +3,7 @@
 import SettingsService from "@/Services/SettingsService"
 import { Switch } from "@/components/ui/switch"
 import { useEffect, useState } from "react"
-import { ldapSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
+import { AuditEntryPayload, ldapSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { InfoCircledIcon } from "@radix-ui/react-icons"
@@ -23,6 +23,7 @@ import {
 import { Icons } from "../Icons"
 import { useNavigate } from "react-router-dom"
 import { Input } from "../ui/input"
+import LogsService from "@/Services/LogsService"
 
 const FormSchema = z.object({
   ldapBaseDn: z.string().min(1, {
@@ -64,6 +65,12 @@ const LdapSettingsForm = () => {
       try {
         const res = await SettingsService.getLdapSettings()
         if (!res.data.error) {
+          const adpl: AuditEntryPayload = {
+            user: JSON.parse(sessionStorage.getItem("user")!).userName,
+            level: "info",
+            message: "Viewed Ldap Settings",
+          }
+          LogsService.createAuditEntry(adpl)
           setSettings(res.data)
           form.setValue("ldapBaseDn", res.data.settings.ldapBaseDn)
           form.setValue("ldapDomainController", res.data.settings.ldapDomainController)
@@ -96,6 +103,12 @@ const LdapSettingsForm = () => {
     }
     SettingsService.updateLdapSettings(settingsPl).then((res) => {
       if (!res.data.error) {
+        const adpl: AuditEntryPayload = {
+          user: JSON.parse(sessionStorage.getItem("user")!).userName,
+          level: "warn",
+          message: "Modified Ldap Settings",
+        }
+        LogsService.createAuditEntry(adpl)
         setSettings(res.data)
         SetBtnLoading(false)
         SetSuccMsg("Settings updated successfully")
