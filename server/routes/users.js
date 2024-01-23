@@ -16,7 +16,7 @@ import {
 } from "../utils/validationSchema.js";
 import bcrypt, { hash } from "bcrypt";
 import logger from "../services/logger.service.js";
-import { sendPwResetMail } from "../utils/mailSender.js";
+import { sendPwResetMail, sendNotifOnObjectCreation, sendNotifOnObjectDeletion, sendNotifOnObjectUpdate, sendObjectMail } from "../utils/mailSender.js";
 
 const router = Router();
 
@@ -995,7 +995,9 @@ router.patch("/unenforceMfa", auth, roleCheck("admins"), async (req, res) => {
     };
     await User.findByIdAndUpdate({ _id: req.body._id }, update);
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Account " + req.body._id + " mfa enforcement disabled sucessfully", 200);
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail("User Accountstatus", "User", "Account user " + iduser.userName + " unlocked by user " + execUser.userName);
+    }
     res.status(200).json({ error: false, message: "Account " + req.body._id + " mfa enforcement disabled sucessfully" });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
@@ -1095,7 +1097,9 @@ router.patch("/disableMfa", async (req, res) => {
       200
     );
     res.status(200).json({ error: false, message: "Account " + iduser.userName + " mfa disabled by user " + execUser.userName + " sucessfully" });
-    //TODO: check if we have to send a mail
+    if (sendNotifOnObjectUpdate) {
+      sendObjectMail("MFA User Setting", "User", "Mfa for user " + iduser.userName + " disabled by user " + execUser.userName);
+    }
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
     logger.error("API|users.js|/disableMfa|" + err.message);

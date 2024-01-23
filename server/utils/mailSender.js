@@ -4,6 +4,8 @@ import path from "path";
 import logger from "../services/logger.service.js";
 import { enviromentConfig } from "../config/enviromentConfig.js";
 import { handlebarsConfig } from "../config/handlebarsConfig.js";
+import Setting from "../models/Setting.js";
+import e from "express";
 
 // create nodemailer transport
 const ms_transporter = nodemailer.createTransport({
@@ -18,6 +20,66 @@ const ms_transporter = nodemailer.createTransport({
 
 // use a template file with nodemailer
 ms_transporter.use("compile", hbs(handlebarsConfig));
+
+// method to check if we have to send a object change notification
+export async function sendNotifOnObjectUpdate() {
+  var sett = await Setting.find({ scope: "notif" });
+  if (sett.length > 0) {
+    if (sett.sendNotifOnObjectUpdate === "true") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+// method to check if we have to send a self register notification
+export async function sendNotifOnUserSelfRegister() {
+  var sett = await Setting.find({ scope: "notif" });
+  if (sett.length > 0) {
+    if (sett.sendNotifOnUserSelfRegister === "true") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+// method to check if we have to send a object creation notification
+export async function sendNotifOnObjectCreation() {
+  var sett = await Setting.find({ scope: "notif" });
+  if (sett.length > 0) {
+    if (sett.sendNotifOnObjectCreation === "true") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+// method to check if we have to send a object delete notification
+export async function sendNotifOnObjectDeletion() {
+  var sett = await Setting.find({ scope: "notif" });
+  if (sett.length > 0) {
+    if (sett.sendNotifOnObjectDeletion === "true") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+// method to check if we have to send a user creation welcome notification
+export async function sendWelcomeMailOnUserCreation() {
+  var sett = await Setting.find({ scope: "notif" });
+  if (sett.length > 0) {
+    if (sett.sendWelcomeMailOnUserCreation === "true") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
 
 export async function sendConfirmMail(User) {
   const ms_mailOptions = {
@@ -121,10 +183,11 @@ export async function sendWelcomeMail(user) {
 }
 
 export async function sendObjectMail(objectName, objectType, action) {
+  var sett = await Setting.find({ scope: "notif" });
   const ms_mailOptions = {
     from: enviromentConfig.smtp.senderAddress, // sender address
     template: "object", // the name of the template file, i.e., email.handlebars
-    to: user.email,
+    to: sett.notifReceiver,
     subject: "PAn object has been " + action + " ...",
     context: {
       appName: enviromentConfig.app.appName,
@@ -135,6 +198,8 @@ export async function sendObjectMail(objectName, objectType, action) {
       objectName: objectName,
       objectType: objectType,
       action: action,
+      firstName: sett.notifReceiverFirstname,
+      lastName: sett.notifReceiverLastname,
     },
     attachments: [
       {
