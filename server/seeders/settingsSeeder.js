@@ -21,6 +21,9 @@ const settingsToSeed = [
   { name: "sendNotifOnObjectUpdate", value: false, scope: "notif" },
   { name: "sendNotifOnUserSelfRegister", value: false, scope: "notif" },
   { name: "sendWelcomeMailOnUserCreation", value: false, scope: "notif" },
+  { name: "notifReceiver", value: "your@Mail.address", scope: "notif" },
+  { name: "notifReciverFirstname", value: "Firstname", scope: "notif" },
+  { name: "notifReceiverLastname", value: "Lastname", scope: "notif" },
 ];
 
 const SeedSettings = async () => {
