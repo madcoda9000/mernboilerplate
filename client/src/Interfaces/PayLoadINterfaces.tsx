@@ -76,10 +76,11 @@ export interface registerPayload {
 }
 export interface mailSettingsPayload {
   smtpServer: string | undefined
-  smtpPort: number | undefined
+  smtpPort: string | undefined
   smtpUsername: string | undefined
   smtpPassword: string | undefined
   smtpTls: boolean | undefined
+  smtpSenderAddress: string | undefined
 }
 export interface ldapSettingsPayload {
   ldapBaseDn: string | undefined

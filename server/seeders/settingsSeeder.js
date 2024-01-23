@@ -10,6 +10,7 @@ const settingsToSeed = [
   { name: "smtpPort", value: 25, scope: "mail" },
   { name: "smtpUsername", value: "YourUsername", scope: "mail" },
   { name: "smtpPassword", value: "YourPassword", scope: "mail" },
+  { name: "smtpSenderAddress", value: "your@address.com", scope: "mail" },
   { name: "smtpTls", value: true, scope: "mail" },
   { name: "ldapBaseDn", value: "DC=YOUR,DC=Domain,DC=com", scope: "ldap" },
   { name: "ldapDomainController", value: "your.domaincontroller.com", scope: "ldap" },

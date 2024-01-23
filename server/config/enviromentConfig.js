@@ -4,17 +4,9 @@ dotenv.config();
 
 /**
  * @description Module to hold enviroment settings
- * @type {{app: {clientUrl: *, appName: *, contactName: *, enableFileLog: *, companyName: *, enableSwaggerEndpoint: *, serverPort: *, privacyPolicyUrl: *, companyStreet: *, license: *, enableDbLog: *, contactUrl: *, confirmUrl: *, companyTown: *, enableConsoleLog: *}, database: {password: *, authSource: *, port: *, dbName: *, host: *, userName: *}, smtp: {server: *, password: *, senderAddress: *, port: *, userName: *}, cors: {allowedOrigins: *}, rateLimiter: {allowdRequestsInTimespan: *, measureTimespan: *, enabled: string}, jwt: {accessTokenPrivateKey: *, refreshTokenPrivateKey: *}}}
+ * @type {{app: {clientUrl: *, appName: *, contactName: *, enableFileLog: *, companyName: *, enableSwaggerEndpoint: *, serverPort: *, privacyPolicyUrl: *, companyStreet: *, license: *, enableDbLog: *, contactUrl: *, confirmUrl: *, companyTown: *, enableConsoleLog: *}, database: {password: *, authSource: *, port: *, dbName: *, host: *, userName: *}, cors: {allowedOrigins: *}, rateLimiter: {allowdRequestsInTimespan: *, measureTimespan: *, enabled: string}, jwt: {accessTokenPrivateKey: *, refreshTokenPrivateKey: *}}}
  */
 export const enviromentConfig = {
-  smtp: {
-    server: process.env.SMTP_SERVER,
-    port: process.env.SMTP_PORT,
-    userName: process.env.SMTP_USERNAME,
-    password: process.env.SMTP_PASSWORD,
-    senderAddress: process.env.SMTP_SENDERADDRESS,
-    // ... other SMTP configurations
-  },
   app: {
     confirmUrl: process.env.SMTP_CONFIRM_CLIENTURL,
     appName: process.env.APPLICATION_SWAGGER_APPNAME,

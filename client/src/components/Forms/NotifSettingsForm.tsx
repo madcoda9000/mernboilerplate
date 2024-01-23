@@ -3,7 +3,7 @@
 import SettingsService from "@/Services/SettingsService"
 import { Switch } from "@/components/ui/switch"
 import { useEffect, useState } from "react"
-import { appSettingsPayload, notifSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
+import { AuditEntryPayload, notifSettingsPayload } from "@/Interfaces/PayLoadINterfaces"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { InfoCircledIcon } from "@radix-ui/react-icons"
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form"
 import { Icons } from "../Icons"
 import { useNavigate } from "react-router-dom"
+import LogsService from "@/Services/LogsService"
 
 const FormSchema = z.object({
   sendNotifOnObjectCreation: z.boolean(),
@@ -55,6 +56,12 @@ const AppsettingsForm = () => {
       try {
         const res = await SettingsService.getNotifSettings()
         if (!res.data.error) {
+          const adpl: AuditEntryPayload = {
+            user: JSON.parse(sessionStorage.getItem("user")!).userName,
+            level: "info",
+            message: "Viewed Notification Settings",
+          }
+          LogsService.createAuditEntry(adpl)
           setSettings(res.data)
           form.setValue(
             "sendNotifOnObjectCreation",
@@ -102,6 +109,12 @@ const AppsettingsForm = () => {
     }
     SettingsService.updateNotifSettings(settingsPl).then((res) => {
       if (!res.data.error) {
+        const adpl: AuditEntryPayload = {
+          user: JSON.parse(sessionStorage.getItem("user")!).userName,
+          level: "warn",
+          message: "Modified Notification Setting",
+        }
+        LogsService.createAuditEntry(adpl)
         setSettings(res.data)
         SetBtnLoading(false)
         SetSuccMsg("Settings updated successfully")

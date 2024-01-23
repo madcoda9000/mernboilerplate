@@ -279,7 +279,7 @@ router.put("/updateAppSettings", auth, roleCheck("admins"), async (req, res) => 
 
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Application settings updated successfully", 200);
     if (sendNotifOnObjectUpdate()) {
-      sendObjectMail("App Settings", "Settings", "modified app settings");
+      sendObjectMail("App Settings", "Settings", "modified");
     }
     res.status(200).json({ error: false, message: "Application settings updated successfully" });
   } catch (err) {
@@ -327,7 +327,7 @@ router.put("/updateMailSettings", auth, roleCheck("admins"), async (req, res) =>
       return res.status(400).json({ error: true, message: error.details[0].message });
     }
 
-    const settingNames = ["smtpServer", "smtpPort", "smtpUsername", "smtpPassword", "smtpTls"];
+    const settingNames = ["smtpServer", "smtpPort", "smtpUsername", "smtpPassword", "smtpTls", "smtpSenderAddress"];
     const settings = await Promise.all(settingNames.map((name) => Setting.findOne({ name })));
 
     if (settings.some((setting) => !setting)) {
@@ -344,7 +344,7 @@ router.put("/updateMailSettings", auth, roleCheck("admins"), async (req, res) =>
 
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Mail settings updated successfully", 200);
     if (sendNotifOnObjectUpdate()) {
-      sendObjectMail("Mail Settings", "Settings", "modified mail settings");
+      sendObjectMail("Mail Settings", "Settings", "modified");
     }
     res.status(200).json({ error: false, message: "Mail settings updated successfully" });
   } catch (err) {
@@ -409,7 +409,7 @@ router.put("/updateLdapSettings", auth, roleCheck("admins"), async (req, res) =>
 
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Ldap settings updated successfully", 200);
     if (sendNotifOnObjectUpdate()) {
-      sendObjectMail("LDAP Settings", "Settings", "modified ldap settings");
+      sendObjectMail("LDAP Settings", "Settings", "modified");
     }
     res.status(200).json({ error: false, message: "Ldap settings updated successfully" });
   } catch (err) {
@@ -474,7 +474,7 @@ router.put("/updateNotifSettings", auth, roleCheck("admins"), async (req, res) =
 
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Notification settings updated successfully", 200);
     if (sendNotifOnObjectUpdate()) {
-      sendObjectMail("Notification Settings", "Settings", "modified notification settings");
+      sendObjectMail("Notification Settings", "Settings", "modified");
     }
     res.status(200).json({ error: false, message: "Notification settings updated successfully" });
   } catch (err) {
