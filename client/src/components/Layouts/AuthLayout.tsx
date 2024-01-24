@@ -1,7 +1,7 @@
 import { AppSettings, Quote } from "@/Interfaces/GlobalInterfaces"
 import QuotesService from "@/Services/QuotesService"
 import { useEffect, useState } from "react"
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 
 declare const window: {
   APP_TITLE: string
@@ -11,6 +11,7 @@ const appTitle = window.APP_TITLE
 export default function AuthLayout() {
   const [aSettings, setAsettings] = useState<AppSettings>()
   const [quote, setQuote] = useState<Quote>()
+  const nav = useNavigate()
 
   useEffect(() => {
     const locSett = localStorage.getItem("AppSettings")
@@ -32,7 +33,10 @@ export default function AuthLayout() {
         <div className="flex-1 h-[100vh] flex-col dark:text-black dark:bg-primary bg-primary text-white lg:flex dark:border-r hidden lg_block ">
           <div className="relative hidden h-full flex-col p-10 lg:flex dark:border-r">
             <div className="absolute inset-0 " />
-            <div className="relative z-20 flex items-center text-lg font-medium">
+            <div
+              className="relative z-20 flex items-center text-lg font-medium cursor-pointer"
+              onClick={() => nav("/")}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

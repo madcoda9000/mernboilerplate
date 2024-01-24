@@ -24,6 +24,7 @@ import { Icons } from "../Icons"
 import { useNavigate } from "react-router-dom"
 import { Input } from "../ui/input"
 import LogsService from "@/Services/LogsService"
+import { isMobile } from "react-device-detect"
 
 const FormSchema = z.object({
   ldapBaseDn: z.string().min(1, {
@@ -48,6 +49,10 @@ const LdapSettingsForm = () => {
   const [errMsg, SetErrMsg] = useState<string>("")
   const [succMsg, SetSuccMsg] = useState<string>("")
   const nav = useNavigate()
+  const [desktopFrameCss, setDesktopFrameCss] = useState<string>(
+    "flex flex-row items-center justify-between rounded-lg border p-4"
+  )
+  const [descrCss, setDescrCss] = useState<string>("w-[200px] pr-3")
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -63,6 +68,13 @@ const LdapSettingsForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (isMobile) {
+          setDesktopFrameCss("rounded-lg border p-4")
+          setDescrCss("w-[100%]")
+        } else {
+          setDesktopFrameCss("flex flex-row items-center justify-between rounded-lg border p-4")
+          setDescrCss("w-[200px] pr-3")
+        }
         const res = await SettingsService.getLdapSettings()
         if (!res.data.error) {
           const adpl: AuditEntryPayload = {
@@ -152,10 +164,10 @@ const LdapSettingsForm = () => {
                   control={form.control}
                   name="ldapBaseDn"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className={desktopFrameCss}>
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">The Base DN</FormLabel>
-                        <FormDescription className="w-[200px] pr-3">
+                        <FormDescription className={descrCss}>
                           The distinguished name of the base domain entry.
                         </FormDescription>
                       </div>
@@ -169,10 +181,10 @@ const LdapSettingsForm = () => {
                   control={form.control}
                   name="ldapDomainController"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className={desktopFrameCss}>
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Domaincontroller</FormLabel>
-                        <FormDescription className="w-[200px] pr-3">
+                        <FormDescription className={descrCss}>
                           The fqdn of the domaincontroller.
                         </FormDescription>
                       </div>
@@ -186,10 +198,10 @@ const LdapSettingsForm = () => {
                   control={form.control}
                   name="ldapDomainName"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className={desktopFrameCss}>
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Domain name</FormLabel>
-                        <FormDescription className="w-[200px] pr-3">
+                        <FormDescription className={descrCss}>
                           The name of the domain.
                         </FormDescription>
                       </div>
@@ -203,10 +215,10 @@ const LdapSettingsForm = () => {
                   control={form.control}
                   name="ldapGroup"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className={desktopFrameCss}>
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Ldap Group</FormLabel>
-                        <FormDescription className="w-[200px] pr-3">
+                        <FormDescription className={descrCss}>
                           The name of the group a user must be in to be able to login.
                         </FormDescription>
                       </div>

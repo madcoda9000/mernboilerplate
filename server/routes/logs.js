@@ -65,6 +65,129 @@ router.post("/createAuditEntry", auth, async (req, res) => {
 });
 
 /**
+ * GET /v1/logs/getMailLogs/{page}/{pageSize}/{searchParam}
+ * @summary method to fetch a paged list of mail logs
+ * @tags Logs (Authenticated:true | Role:admins) - logs related api endpoints
+ * @param {number} page.query - the page (default 0)
+ * @param {number} pageSize.query - the page size (default 10)
+ * @param {string} searchParam.query - the optional search parameter
+ * @return {object} 200 - success response - application/json
+ * @return {object} 400 - Bad request response - application/json
+ * @example response - 200 - example success response
+ * {
+ * "error": false,
+ * "message": "returned paginated system logs list..",
+ * "paginatedResult": {
+ *   "docs": [
+ *     {
+ *		"_id": "655328395e3027428a17c8f5",
+ *      "timestamp": "2023-11-16T10:09:22.097+00:00",
+ *      "level": "info",
+ *      "message": "SEEDER|Admins user seeded already|::1",
+ *      "meta": [
+ *       {
+ *       "exception": "any message"
+ *       }
+ *      ],
+ *      "hostname": "requesting hostname or ip"
+ *     }
+ *   ],
+ *   "total": 1,
+ *   "limit": "10",
+ *   "page": "1",
+ *   "pages": 1
+ *  }
+ * }
+ * @example response - 400 - example error message
+ * {
+ *   "error": true,
+ *   "message": "error message goes here..."
+ * }
+ */
+router.get("/getMailLogs/:page/:pageSize/:searchParam?", auth, roleCheck("admins"), async (req, res) => {
+  const mid = crypto.randomBytes(16).toString("hex");
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+
+    if (req.params.page === undefined || req.params.page === null) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The page parameter is required!", 400);
+      return res.status(400).json({ error: true, message: "The page parameter is required!" });
+    }
+
+    if (req.params.pageSize === undefined || req.params.pageSize === null) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The pageSize parameter is required!", 400);
+      return res.status(400).json({ error: true, message: "The pageSize parameter is required!" });
+    }
+
+    if (req.params.searchParam) {
+      var query = {
+        $and: [
+          {
+            $or: [
+              { level: { $regex: new RegExp(req.params.searchParam, "i") } }, // Case-insensitive search for the "level" field
+              { message: { $regex: new RegExp("MAIL") } },
+            ],
+          },
+          { message: { $regex: new RegExp(".*" + req.params.searchParam + ".*", "i") } }, // Case-insensitive search for the "message" field
+        ],
+      };
+      var options = {
+        page: req.params.page,
+        limit: req.params.pageSize,
+        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
+      };
+      Logs.paginate(query, options, function (error, paginatedResults) {
+        if (error) {
+          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
+          return res.status(400).json({
+            error: true,
+            message: error.message,
+          });
+        } else {
+          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated mail logs list..", 200);
+          return res.status(200).json({
+            error: false,
+            message: "returned paginated mail logs list..",
+            paginatedResult: paginatedResults,
+          });
+        }
+      });
+    } else {
+      var query = {
+        $or: [
+          { message: { $regex: /MAIL/ } },
+        ],
+      };
+      var options = {
+        page: req.params.page,
+        limit: req.params.pageSize,
+        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
+      };
+      Logs.paginate(query, options, function (error, paginatedResults) {
+        if (error) {
+          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
+          return res.status(400).json({
+            error: true,
+            message: error.message,
+          });
+        } else {
+          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated mail logs list..", 200);
+          return res.status(200).json({
+            error: false,
+            message: "returned paginated mail logs list..",
+            paginatedResult: paginatedResults,
+          });
+        }
+      });
+    }
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
+    logger.error("API|logs.js|/getSystemLogs|" + err.message);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+/**
  * GET /v1/logs/getSystemLogs/{page}/{pageSize}/{searchParam}
  * @summary method to fetch a paged list of system logs
  * @tags Logs (Authenticated:true | Role:admins) - logs related api endpoints
@@ -148,10 +271,10 @@ router.get("/getSystemLogs/:page/:pageSize/:searchParam?", auth, roleCheck("admi
             message: error.message,
           });
         } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated roles list..", 200);
+          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated mail logs list..", 200);
           return res.status(200).json({
             error: false,
-            message: "returned paginated roles list..",
+            message: "returned paginated mail logs list..",
             paginatedResult: paginatedResults,
           });
         }
@@ -267,10 +390,10 @@ router.get("/getRequestLogs/:page/:pageSize/:searchParam?", auth, roleCheck("adm
             message: error.message,
           });
         } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated roles list..", 200);
+          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated request logs list..", 200);
           return res.status(200).json({
             error: false,
-            message: "returned paginated roles list..",
+            message: "returned paginated requst logs list..",
             paginatedResult: paginatedResults,
           });
         }
@@ -386,10 +509,10 @@ router.get("/getAuditLogs/:page/:pageSize/:searchParam?", auth, roleCheck("admin
             message: error.message,
           });
         } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated roles list..", 200);
+          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated audit logs list..", 200);
           return res.status(200).json({
             error: false,
-            message: "returned paginated roles list..",
+            message: "returned paginated audit logs list..",
             paginatedResult: paginatedResults,
           });
         }

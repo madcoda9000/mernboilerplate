@@ -28,6 +28,8 @@ const NotifSettings = React.lazy(() => import("@/pages/Admin/NotifSettings"))
 const SystemLogs = React.lazy(() => import("@/pages/Logs/SystemLogs"))
 const AuditLogs = React.lazy(() => import("@/pages/Logs/AuditLogs"))
 const RequestLogs = React.lazy(() => import("@/pages/Logs/RequestLogs"))
+const MailLogs = React.lazy(() => import("@/pages/Logs/MailLogs"))
+const Privacy = React.lazy(() => import("@/pages/Privacy"))
 
 function App() {
   return (
@@ -90,6 +92,14 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/MfaSetup">
                       <MfaSetup />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/privacy"
+                  element={
+                    <ProtectedRoute accessBy="non-authenticated" request="/privacy">
+                      <Privacy />
                     </ProtectedRoute>
                   }
                 ></Route>
@@ -164,6 +174,14 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Logs/RequestLogs">
                       <RequestLogs />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Logs/MailLogs"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Logs/MailLogs">
+                      <MailLogs />
                     </ProtectedRoute>
                   }
                 ></Route>

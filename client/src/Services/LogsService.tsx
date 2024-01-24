@@ -9,6 +9,17 @@ const api = (endpoint: string) => `${apiurl}/v1/${endpoint}`
 
 class LogsService {
   /**
+   * Methode zum Abrufen aller mail-Logs.
+   * @param {number} page
+   * @param {number} count
+   * @param {string} searchParam
+   * @returns {Promise<AxiosResponse>} Promise für die Ajax-Antwort
+   */
+  static getMailLogs(page: number, count: number, searchParam: string): Promise<AxiosResponse> {
+    return jwtInterceptor.get(api("logs/getMailLogs/" + page + "/" + count + "/" + searchParam))
+  }
+
+  /**
    * Methode zum Abrufen aller Audit-Logs.
    * @param {number} page
    * @param {number} count
