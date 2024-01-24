@@ -92,13 +92,13 @@ export function ForgotPw1Form({ className, ...props }: FormProps) {
             style={errMsg ? { display: "none" } : { display: "block" }}
           >
             <AlertDescription>
-              Resetting your password requires two steps.
+              <span className="text-lg">Resetting your password requires two steps.</span>
               <br /> <br />
               <b>Step 1</b>
               <br />
               Enter your email address and click on "reset my password".
               <br />
-              After doing so, you'r{" "}
+              After doing so, your{" "}
               <b className="text-destructive">account will become deactivated</b> until you complete
               Step 2.
               <br />

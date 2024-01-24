@@ -23,6 +23,10 @@ const sidebarNavItems = [
     title: "Request Logs",
     href: "/Logs/RequestLogs",
   },
+  {
+    title: "Mail Logs",
+    href: "/Logs/MailLogs",
+  },
 ]
 
 const AuditLogs = () => {

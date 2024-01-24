@@ -24,6 +24,7 @@ import { Icons } from "../Icons"
 import { useNavigate } from "react-router-dom"
 import { Input } from "../ui/input"
 import LogsService from "@/Services/LogsService"
+import { isMobile } from "react-device-detect"
 
 const FormSchema = z.object({
   smtpServer: z.string().min(1, {
@@ -47,6 +48,10 @@ const AppsettingsForm = () => {
   const [errMsg, SetErrMsg] = useState<string>("")
   const [succMsg, SetSuccMsg] = useState<string>("")
   const nav = useNavigate()
+  const [desktopFrameCss, setDesktopFrameCss] = useState<string>(
+    "flex flex-row items-center justify-between rounded-lg border p-4"
+  )
+  const [descrCss, setDescrCss] = useState<string>("w-[200px] pr-3")
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -63,6 +68,13 @@ const AppsettingsForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (isMobile) {
+          setDesktopFrameCss("rounded-lg border p-4")
+          setDescrCss("w-[100%]")
+        } else {
+          setDesktopFrameCss("flex flex-row items-center justify-between rounded-lg border p-4")
+          setDescrCss("w-[200px] pr-3")
+        }
         const res = await SettingsService.getMailSettings()
         if (!res.data.error) {
           const adpl: AuditEntryPayload = {
@@ -155,14 +167,14 @@ const AppsettingsForm = () => {
                   control={form.control}
                   name="smtpServer"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className={desktopFrameCss}>
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">The Mailserver name</FormLabel>
-                        <FormDescription className="w-[200px] pr-3">
+                        <FormDescription className={descrCss}>
                           The FQDN of your mail server. Example: mail.example.com
                         </FormDescription>
                       </div>
-                      <FormControl>
+                      <FormControl className="block">
                         <Input type="text" value={field.value} onChange={field.onChange} />
                       </FormControl>
                     </FormItem>
@@ -172,10 +184,10 @@ const AppsettingsForm = () => {
                   control={form.control}
                   name="smtpUsername"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className={desktopFrameCss}>
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">SMTP Username</FormLabel>
-                        <FormDescription className="w-[200px] pr-3">
+                        <FormDescription className={descrCss}>
                           The username used to authenticate to the SMTP server.
                         </FormDescription>
                       </div>
@@ -189,10 +201,10 @@ const AppsettingsForm = () => {
                   control={form.control}
                   name="smtpPassword"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className={desktopFrameCss}>
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">SMTP Password</FormLabel>
-                        <FormDescription className="w-[200px] pr-3">
+                        <FormDescription className={descrCss}>
                           The username used to authenticate to the SMTP server.
                         </FormDescription>
                       </div>
@@ -206,10 +218,10 @@ const AppsettingsForm = () => {
                   control={form.control}
                   name="smtpPort"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className={desktopFrameCss}>
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">SMTP Port</FormLabel>
-                        <FormDescription className="w-[200px] pr-3">
+                        <FormDescription className={descrCss}>
                           The port used to connect to the SMTP server.
                         </FormDescription>
                       </div>
@@ -242,10 +254,10 @@ const AppsettingsForm = () => {
                   control={form.control}
                   name="smtpSenderAddress"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className={desktopFrameCss}>
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Sender address</FormLabel>
-                        <FormDescription className="w-[200px] pr-3">
+                        <FormDescription className={descrCss}>
                           The email address used to send mails.
                         </FormDescription>
                       </div>
