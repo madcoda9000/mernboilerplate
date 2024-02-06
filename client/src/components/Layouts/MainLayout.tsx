@@ -9,6 +9,8 @@ import { useIdleTimer } from "react-idle-timer"
 import { useCallback, useEffect, useState } from "react"
 import { useAuthContext } from "../Auth/AuthContext"
 import TimeoutWarningModal from "../Forms/TimeoutWarningModal"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { Toaster } from "@/components/ui/sonner"
 
 const timeout = 300_000
 const promptBeforeIdle = 30_000
@@ -112,7 +114,10 @@ export default function MainLayout() {
           </div>
         </div>
         <div className="flex-grow p-9">
-          <Outlet />
+          <TooltipProvider>
+            <Outlet />
+          </TooltipProvider>
+          <Toaster />
         </div>
         {isDesktop && (
           <div className="border-t fixed bottom-0 w-full">
