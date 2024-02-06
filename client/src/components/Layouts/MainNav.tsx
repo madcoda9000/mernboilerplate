@@ -31,6 +31,20 @@ export function MainNav() {
           </NavigationMenuItem>
           <NavigationMenuItem className="pl-5 cursor-pointer">
             <span
+              onClick={() => nav("/Admin/Users")}
+              className={
+                window.location.pathname.includes("Users") ||
+                window.location.pathname.includes("Roles")
+                  ? activeLinkCss
+                  : inactiveLinkCss
+              }
+            >
+              Administration
+            </span>
+            <NavigationMenuContent></NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem className="pl-5 cursor-pointer">
+            <span
               onClick={() => nav("/Admin/AppSettings")}
               className={
                 window.location.pathname.includes("Settings") ? activeLinkCss : inactiveLinkCss

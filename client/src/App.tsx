@@ -30,6 +30,7 @@ const AuditLogs = React.lazy(() => import("@/pages/Logs/AuditLogs"))
 const RequestLogs = React.lazy(() => import("@/pages/Logs/RequestLogs"))
 const MailLogs = React.lazy(() => import("@/pages/Logs/MailLogs"))
 const Privacy = React.lazy(() => import("@/pages/Privacy"))
+const Users = React.lazy(() => import("@/pages/Admin/Users"))
 
 function App() {
   return (
@@ -182,6 +183,14 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Logs/MailLogs">
                       <MailLogs />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Admin/Users"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Admin/Users">
+                      <Users />
                     </ProtectedRoute>
                   }
                 ></Route>
