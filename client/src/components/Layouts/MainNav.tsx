@@ -65,6 +65,17 @@ export function MainNav() {
             </span>
             <NavigationMenuContent></NavigationMenuContent>
           </NavigationMenuItem>
+          <NavigationMenuItem className="pl-5 cursor-pointer">
+            <span
+              onClick={() => window.open(`${window.BASE_URL}/v1/doc`)}
+              className={
+                window.location.pathname.includes("Logs") ? activeLinkCss : inactiveLinkCss
+              }
+            >
+              API Docs
+            </span>
+            <NavigationMenuContent></NavigationMenuContent>
+          </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
     </>

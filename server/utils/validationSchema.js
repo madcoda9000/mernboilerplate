@@ -91,6 +91,9 @@ const updateNotifSettingsValidation = (body) => {
     sendNotifOnObjectUpdate: Joi.boolean().required().label("sendNotifOnObjectUpdate"),
     sendNotifOnUserSelfRegister: Joi.boolean().required().label("sendNotifOnUserSelfRegister"),
     sendWelcomeMailOnUserCreation: Joi.boolean().required().label("sendWelcomeMailOnUserCreation"),
+    notifReceiver: Joi.string().required().label("Notification receiver Email adress"),
+    notifReciverFirstname: Joi.string().required().label("Notification receiver firstname"),
+    notifReceiverLastname: Joi.string().required().label("Notification receiver lastname"),
   });
   return schema.validate(body);
 };

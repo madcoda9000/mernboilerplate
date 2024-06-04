@@ -106,7 +106,6 @@ const AppsettingsForm = () => {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     SetBtnLoading(true)
-    console.log(data)
     const settingsPl: mailSettingsPayload = {
       smtpServer: data.smtpServer,
       smtpPort: data.smtpPort,

@@ -457,7 +457,7 @@ router.put("/updateNotifSettings", auth, roleCheck("admins"), async (req, res) =
       return res.status(400).json({ error: true, message: error.details[0].message });
     }
 
-    const settingNames = ["sendWelcomeMailOnUserCreation", "sendNotifOnUserSelfRegister", "sendNotifOnObjectUpdate", "sendNotifOnObjectDeletion", "sendNotifOnObjectCreation"];
+    const settingNames = ["sendWelcomeMailOnUserCreation", "sendNotifOnUserSelfRegister", "sendNotifOnObjectUpdate", "sendNotifOnObjectDeletion", "sendNotifOnObjectCreation", "notifReceiver", "notifReciverFirstname", "notifReceiverLastname"];
     const settings = await Promise.all(settingNames.map((name) => Setting.findOne({ name })));
 
     if (settings.some((setting) => !setting)) {
