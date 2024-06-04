@@ -2,6 +2,7 @@ import React, { Suspense } from "react"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { AuthContextProvider } from "@/components/Auth/AuthContext"
 import { ThemeProvider } from "@/components/Utils/themeProvider"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import "./index.css"
 
 /* auth components */
@@ -12,32 +13,38 @@ import AuthLayout from "@/components/Layouts/AuthLayout"
 import MainLayout from "@/components/Layouts/MainLayout"
 
 /* import pages */
-const Login = React.lazy(() => import("@/pages/Login"))
-const Home = React.lazy(() => import("@/pages/Home"))
-const Profile = React.lazy(() => import("@/pages/Profile"))
-const Status404 = React.lazy(() => import("@/pages/Status/Status404"))
-const Register = React.lazy(() => import("@/pages/Register"))
-const ForgotPw1 = React.lazy(() => import("@/pages/ForgotPw1"))
-const ForgotPw2 = React.lazy(() => import("@/pages/ForgotPw2"))
-const MfaLogin = React.lazy(() => import("@/pages/MfaLogin"))
-const MfaSetup = React.lazy(() => import("@/pages/MfaSetup"))
-const AppSettings = React.lazy(() => import("@/pages/Admin/AppSettings"))
-const MailSettings = React.lazy(() => import("@/pages/Admin/MailSettings"))
-const LdapSettings = React.lazy(() => import("@/pages/Admin/LdapSettings"))
-const NotifSettings = React.lazy(() => import("@/pages/Admin/NotifSettings"))
-const SystemLogs = React.lazy(() => import("@/pages/Logs/SystemLogs"))
-const AuditLogs = React.lazy(() => import("@/pages/Logs/AuditLogs"))
-const RequestLogs = React.lazy(() => import("@/pages/Logs/RequestLogs"))
-const MailLogs = React.lazy(() => import("@/pages/Logs/MailLogs"))
-const Privacy = React.lazy(() => import("@/pages/Privacy"))
-const Users = React.lazy(() => import("@/pages/Admin/Users"))
+import Login from "@/pages/Login"
+import Home from "@/pages/Home"
+import Profile from "@/pages/Profile"
+import Status404 from "@/pages/Status/Status404"
+import Register from "@/pages/Register"
+import ForgotPw1 from "@/pages/ForgotPw1"
+import ForgotPw2 from "@/pages/ForgotPw2"
+import MfaLogin from "@/pages/MfaLogin"
+import MfaSetup from "@/pages/MfaSetup"
+import AppSettings from "@/pages/Admin/AppSettings"
+import MailSettings from "@/pages/Admin/MailSettings"
+import LdapSettings from "@/pages/Admin/LdapSettings"
+import NotifSettings from "@/pages/Admin/NotifSettings"
+import SystemLogs from "@/pages/Logs/SystemLogs"
+import AuditLogs from "@/pages/Logs/AuditLogs"
+import RequestLogs from "@/pages/Logs/RequestLogs"
+import MailLogs from "@/pages/Logs/MailLogs"
+import Privacy from "@/pages/Privacy"
+import Users from "@/pages/Admin/Users"
 
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <BrowserRouter>
         <AuthContextProvider>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center w-[100%] mt-10">
+                <LoadingSpinner />
+              </div>
+            }
+          >
             <Routes>
               <Route element={<AuthLayout />}>
                 <Route

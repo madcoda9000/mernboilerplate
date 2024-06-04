@@ -95,4 +95,7 @@ export interface notifSettingsPayload {
   sendNotifOnObjectUpdate: string | undefined
   sendNotifOnUserSelfRegister: string | undefined
   sendWelcomeMailOnUserCreation: string | undefined
+  notifReceiver: string | undefined
+  notifReciverFirstname: string | undefined
+  notifReceiverLastname: string | undefined
 }

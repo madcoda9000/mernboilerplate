@@ -95,7 +95,7 @@ if (enviromentConfig.app.enableDbLog === "true") {
       timestamp: function () {
         return new Date().toLocaleTimeString();
       },
-      format: combine(errors({ stack: true }), timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), metadata()),
+      format: combine(errors({ stack: true }), timestamp({ format: "YYYY-MM-DD HH:mm:ss:SSS" }), metadata()),
     })
   );
 }

@@ -260,10 +260,10 @@ const Users = () => {
                                   {user.firstName}&nbsp;{user.lastName}
                                 </DropdownMenuLabel>
                                 <DropdownMenuItem
-                                  onClick={() => navigator.clipboard.writeText(user._id)}
+                                  onClick={() => navigator.clipboard.writeText(user.userName)}
                                 >
                                   <Icons.clipboardCopy className="inline mr-3" />
-                                  Copy user ID
+                                  Copy user name
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                   <Icons.pencil className="inline mr-3" />

@@ -19,9 +19,11 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import { Icons } from "../Icons"
 import { useNavigate } from "react-router-dom"
 import LogsService from "@/Services/LogsService"
+import { isMobile } from "react-device-detect"
 
 const FormSchema = z.object({
   sendNotifOnObjectCreation: z.boolean(),
@@ -29,6 +31,15 @@ const FormSchema = z.object({
   sendNotifOnObjectUpdate: z.boolean(),
   sendNotifOnUserSelfRegister: z.boolean(),
   sendWelcomeMailOnUserCreation: z.boolean(),
+  notifReceiver: z.string().min(1, {
+    message: "Notification receiver email should not be empty!.",
+  }),
+  notifReciverFirstname: z.string().min(1, {
+    message: "Notification receiver firstname should not be empty!.",
+  }),
+  notifReceiverLastname: z.string().min(1, {
+    message: "Notificationreceiver lastname should not be empty!.",
+  }),
 })
 
 const AppsettingsForm = () => {
@@ -38,6 +49,10 @@ const AppsettingsForm = () => {
   const [errMsg, SetErrMsg] = useState<string>("")
   const [succMsg, SetSuccMsg] = useState<string>("")
   const nav = useNavigate()
+  const [desktopFrameCss, setDesktopFrameCss] = useState<string>(
+    "flex flex-row items-center justify-between rounded-lg border p-4"
+  )
+  const [descrCss, setDescrCss] = useState<string>("w-[200px] pr-3")
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -48,12 +63,22 @@ const AppsettingsForm = () => {
       sendNotifOnUserSelfRegister: settings?.sendNotifOnUserSelfRegister === "true" ? true : false,
       sendWelcomeMailOnUserCreation:
         settings?.sendWelcomeMailOnUserCreation === "true" ? true : false,
+      notifReceiver: settings?.notifReceiver,
+      notifReciverFirstname: settings?.notifReciverFirstname,
+      notifReceiverLastname: settings?.notifReceiverLastname,
     },
   })
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (isMobile) {
+          setDesktopFrameCss("rounded-lg border p-4")
+          setDescrCss("w-[100%]")
+        } else {
+          setDesktopFrameCss("flex flex-row items-center justify-between rounded-lg border p-4")
+          setDescrCss("w-[200px] pr-3")
+        }
         const res = await SettingsService.getNotifSettings()
         if (!res.data.error) {
           const adpl: AuditEntryPayload = {
@@ -83,6 +108,9 @@ const AppsettingsForm = () => {
             "sendWelcomeMailOnUserCreation",
             res.data.settings.sendWelcomeMailOnUserCreation === "true" ? true : false
           )
+          form.setValue("notifReceiver", res.data.settings.notifReceiver)
+          form.setValue("notifReciverFirstname", res.data.settings.notifReciverFirstname)
+          form.setValue("notifReceiverLastname", res.data.settings.notifReceiverLastname)
         } else {
           SetErrMsg(res.data.message)
         }
@@ -106,6 +134,9 @@ const AppsettingsForm = () => {
       sendNotifOnObjectUpdate: String(data.sendNotifOnObjectUpdate),
       sendNotifOnUserSelfRegister: String(data.sendNotifOnUserSelfRegister),
       sendWelcomeMailOnUserCreation: String(data.sendWelcomeMailOnUserCreation),
+      notifReceiver: String(data.notifReceiver),
+      notifReciverFirstname: String(data.notifReciverFirstname),
+      notifReceiverLastname: String(data.notifReceiverLastname),
     }
     SettingsService.updateNotifSettings(settingsPl).then((res) => {
       if (!res.data.error) {
@@ -235,6 +266,59 @@ const AppsettingsForm = () => {
                       </div>
                       <FormControl>
                         <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="notifReceiver"
+                  render={({ field }) => (
+                    <FormItem className={desktopFrameCss}>
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">
+                          Notification receiver email address
+                        </FormLabel>
+                        <FormDescription className={descrCss}>
+                          The email address used to send notifications to.
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Input type="text" value={field.value} onChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="notifReciverFirstname"
+                  render={({ field }) => (
+                    <FormItem className={desktopFrameCss}>
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Notification receiver firstname</FormLabel>
+                        <FormDescription className={descrCss}>
+                          The firstname of the notification receiver.
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Input type="text" value={field.value} onChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="notifReceiverLastname"
+                  render={({ field }) => (
+                    <FormItem className={desktopFrameCss}>
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Notification receiver lastname</FormLabel>
+                        <FormDescription className={descrCss}>
+                          The lastname of the notification receiver.
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Input type="text" value={field.value} onChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}

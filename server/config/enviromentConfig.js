@@ -4,7 +4,10 @@ dotenv.config();
 
 /**
  * @description Module to hold enviroment settings
- * @type {{app: {clientUrl: *, appName: *, contactName: *, enableFileLog: *, companyName: *, enableSwaggerEndpoint: *, serverPort: *, privacyPolicyUrl: *, companyStreet: *, license: *, enableDbLog: *, contactUrl: *, confirmUrl: *, companyTown: *, enableConsoleLog: *}, database: {password: *, authSource: *, port: *, dbName: *, host: *, userName: *}, cors: {allowedOrigins: *}, rateLimiter: {allowdRequestsInTimespan: *, measureTimespan: *, enabled: string}, jwt: {accessTokenPrivateKey: *, refreshTokenPrivateKey: *}}}
+ * @type {{app: {clientUrl: *, appName: *, contactName: *, enableFileLog: *, companyName: *, enableSwaggerEndpoint: *, serverPort: *, privacyPolicyUrl: *, companyStreet: *, license: *, enableDbLog: *, contactUrl: *, confirmUrl: *, companyTown: *, enableConsoleLog: *}, 
+ * database: {password: *, authSource: *, port: *, dbName: *, host: *, userName: *}, 
+ * cors: {allowedOrigins: *}, rateLimiter: {allowdRequestsInTimespan: *, measureTimespan: *, enabled: string}, 
+ * jwt: {accessTokenPrivateKey: *, refreshTokenPrivateKey: *}}}
  */
 export const enviromentConfig = {
   app: {
