@@ -33,35 +33,100 @@ const router = Router();
  * }
  */
 router.post("/createAuditEntry", auth, async (req, res) => {
-  const mid = crypto.randomBytes(16).toString("hex");
-  try {
-    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+    const mid = crypto.randomBytes(16).toString("hex");
+    try {
+        doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
-    if (req.body.user === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The User parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The User parameter is required!" });
+        if (req.body.user === null) {
+            doHttpLog(
+                "RES",
+                mid,
+                req.method,
+                req.originalUrl,
+                req.ip,
+                "The User parameter is required!",
+                400
+            );
+            return res
+                .status(400)
+                .json({
+                    error: true,
+                    message: "The User parameter is required!"
+                });
+        }
+
+        if (req.body.level === null) {
+            doHttpLog(
+                "RES",
+                mid,
+                req.method,
+                req.originalUrl,
+                req.ip,
+                "The level parameter is required!",
+                400
+            );
+            return res
+                .status(400)
+                .json({
+                    error: true,
+                    message: "The level parameter is required!"
+                });
+        }
+
+        if (req.body.message === null) {
+            doHttpLog(
+                "RES",
+                mid,
+                req.method,
+                req.originalUrl,
+                req.ip,
+                "The message parameter is required!",
+                400
+            );
+            return res
+                .status(400)
+                .json({
+                    error: true,
+                    message: "The message parameter is required!"
+                });
+        }
+        /*
+    if(req.body.level==="info") {
+        logger.info("AUDIT | " + req.body.user + " | " + req.body.message);
+    } else if(req.body.level === "warn") {
+        logger.warn("AUDIT | " + req.body.user + " | " + req.body.message);
+    } else if(req.body.level === "error") {
+        logger.error("AUDIT | " + req.body.user + " | " + req.body.message);
     }
+    */
+        const logLevels = {
+            info: logger.info,
+            warn: logger.warn,
+            error: logger.error
+        };
 
-    if (req.body.level === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The level parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The level parameter is required!" });
+        const logFunction = logLevels[req.body.level];
+        if (logFunction) {
+            logFunction(`AUDIT | ${req.body.user} | ${req.body.message}`);
+        }
+        doHttpLog(
+            "RES",
+            mid,
+            req.method,
+            req.originalUrl,
+            req.ip,
+            "Log entry created sucessfully",
+            201
+        );
+        res.status(201).json({
+            error: false,
+            message: "Log entry created sucessfully"
+        });
+    } catch (err) {
+        doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
+        logger.error("API|logs.js|/createAuditEntry|" + err.message);
+        res.status(500).json({ message: err.message });
     }
-
-    if (req.body.message === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The message parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The message parameter is required!" });
-    }
-
-    req.body.level === "info" && logger.info("AUDIT | " + req.body.user + " | " + req.body.message);
-    req.body.level === "warn" && logger.warn("AUDIT | " + req.body.user + " | " + req.body.message);
-    req.body.level === "error" && logger.error("AUDIT | " + req.body.user + " | " + req.body.message);
-    doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Log entry created sucessfully", 201);
-    res.status(201).json({ error: false, message: "Log entry created sucessfully" });
-  } catch (err) {
-    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-    logger.error("API|logs.js|/createAuditEntry|" + err.message);
-    res.status(500).json({ message: err.message });
-  }
 });
 
 /**
@@ -104,88 +169,181 @@ router.post("/createAuditEntry", auth, async (req, res) => {
  *   "message": "error message goes here..."
  * }
  */
-router.get("/getMailLogs/:page/:pageSize/:searchParam?", auth, roleCheck("admins"), async (req, res) => {
-  const mid = crypto.randomBytes(16).toString("hex");
-  try {
-    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+router.get(
+    "/getMailLogs/:page/:pageSize/:searchParam?",
+    auth,
+    roleCheck("admins"),
+    async (req, res) => {
+        const mid = crypto.randomBytes(16).toString("hex");
+        try {
+            doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
-    if (req.params.page === undefined || req.params.page === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The page parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The page parameter is required!" });
-    }
+            if (req.params.page === undefined || req.params.page === null) {
+                doHttpLog(
+                    "RES",
+                    mid,
+                    req.method,
+                    req.originalUrl,
+                    req.ip,
+                    "The page parameter is required!",
+                    400
+                );
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        message: "The page parameter is required!"
+                    });
+            }
 
-    if (req.params.pageSize === undefined || req.params.pageSize === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The pageSize parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The pageSize parameter is required!" });
-    }
+            if (
+                req.params.pageSize === undefined ||
+                req.params.pageSize === null
+            ) {
+                doHttpLog(
+                    "RES",
+                    mid,
+                    req.method,
+                    req.originalUrl,
+                    req.ip,
+                    "The pageSize parameter is required!",
+                    400
+                );
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        message: "The pageSize parameter is required!"
+                    });
+            }
 
-    if (req.params.searchParam) {
-      var query = {
-        $and: [
-          {
-            $or: [
-              { level: { $regex: new RegExp(req.params.searchParam, "i") } }, // Case-insensitive search for the "level" field
-              { message: { $regex: new RegExp("MAIL") } },
-            ],
-          },
-          { message: { $regex: new RegExp(".*" + req.params.searchParam + ".*", "i") } }, // Case-insensitive search for the "message" field
-        ],
-      };
-      var options = {
-        page: req.params.page,
-        limit: req.params.pageSize,
-        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
-      };
-      Logs.paginate(query, options, function (error, paginatedResults) {
-        if (error) {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
-          return res.status(400).json({
-            error: true,
-            message: error.message,
-          });
-        } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated mail logs list..", 200);
-          return res.status(200).json({
-            error: false,
-            message: "returned paginated mail logs list..",
-            paginatedResult: paginatedResults,
-          });
+            if (req.params.searchParam) {
+                var query = {
+                    $and: [
+                        {
+                            $or: [
+                                {
+                                    level: {
+                                        $regex: new RegExp(
+                                            req.params.searchParam,
+                                            "i"
+                                        )
+                                    }
+                                }, // Case-insensitive search for the "level" field
+                                { message: { $regex: new RegExp("MAIL") } }
+                            ]
+                        },
+                        {
+                            message: {
+                                $regex: new RegExp(
+                                    ".*" + req.params.searchParam + ".*",
+                                    "i"
+                                )
+                            }
+                        } // Case-insensitive search for the "message" field
+                    ]
+                };
+                var options = {
+                    page: req.params.page,
+                    limit: req.params.pageSize,
+                    sort: { timestamp: -1 } // 1 for ascending, -1 for descending
+                };
+                Logs.paginate(
+                    query,
+                    options,
+                    function (error, paginatedResults) {
+                        if (error) {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                error.message,
+                                400
+                            );
+                            return res.status(400).json({
+                                error: true,
+                                message: error.message
+                            });
+                        } else {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                "returned paginated mail logs list..",
+                                200
+                            );
+                            return res.status(200).json({
+                                error: false,
+                                message: "returned paginated mail logs list..",
+                                paginatedResult: paginatedResults
+                            });
+                        }
+                    }
+                );
+            } else {
+                var query = {
+                    $or: [{ message: { $regex: /MAIL/ } }]
+                };
+                var options = {
+                    page: req.params.page,
+                    limit: req.params.pageSize,
+                    sort: { timestamp: -1 } // 1 for ascending, -1 for descending
+                };
+                Logs.paginate(
+                    query,
+                    options,
+                    function (error, paginatedResults) {
+                        if (error) {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                error.message,
+                                400
+                            );
+                            return res.status(400).json({
+                                error: true,
+                                message: error.message
+                            });
+                        } else {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                "returned paginated mail logs list..",
+                                200
+                            );
+                            return res.status(200).json({
+                                error: false,
+                                message: "returned paginated mail logs list..",
+                                paginatedResult: paginatedResults
+                            });
+                        }
+                    }
+                );
+            }
+        } catch (err) {
+            doHttpLog(
+                "RES",
+                mid,
+                req.method,
+                req.originalUrl,
+                err.message,
+                500
+            );
+            logger.error("API|logs.js|/getSystemLogs|" + err.message);
+            res.status(500).json({ message: err.message });
         }
-      });
-    } else {
-      var query = {
-        $or: [
-          { message: { $regex: /MAIL/ } },
-        ],
-      };
-      var options = {
-        page: req.params.page,
-        limit: req.params.pageSize,
-        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
-      };
-      Logs.paginate(query, options, function (error, paginatedResults) {
-        if (error) {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
-          return res.status(400).json({
-            error: true,
-            message: error.message,
-          });
-        } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated mail logs list..", 200);
-          return res.status(200).json({
-            error: false,
-            message: "returned paginated mail logs list..",
-            paginatedResult: paginatedResults,
-          });
-        }
-      });
     }
-  } catch (err) {
-    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-    logger.error("API|logs.js|/getSystemLogs|" + err.message);
-    res.status(500).json({ message: err.message });
-  }
-});
+);
 
 /**
  * GET /v1/logs/getSystemLogs/{page}/{pageSize}/{searchParam}
@@ -227,96 +385,194 @@ router.get("/getMailLogs/:page/:pageSize/:searchParam?", auth, roleCheck("admins
  *   "message": "error message goes here..."
  * }
  */
-router.get("/getSystemLogs/:page/:pageSize/:searchParam?", auth, roleCheck("admins"), async (req, res) => {
-  const mid = crypto.randomBytes(16).toString("hex");
-  try {
-    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+router.get(
+    "/getSystemLogs/:page/:pageSize/:searchParam?",
+    auth,
+    roleCheck("admins"),
+    async (req, res) => {
+        const mid = crypto.randomBytes(16).toString("hex");
+        try {
+            doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
-    if (req.params.page === undefined || req.params.page === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The page parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The page parameter is required!" });
-    }
+            if (req.params.page === undefined || req.params.page === null) {
+                doHttpLog(
+                    "RES",
+                    mid,
+                    req.method,
+                    req.originalUrl,
+                    req.ip,
+                    "The page parameter is required!",
+                    400
+                );
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        message: "The page parameter is required!"
+                    });
+            }
 
-    if (req.params.pageSize === undefined || req.params.pageSize === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The pageSize parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The pageSize parameter is required!" });
-    }
+            if (
+                req.params.pageSize === undefined ||
+                req.params.pageSize === null
+            ) {
+                doHttpLog(
+                    "RES",
+                    mid,
+                    req.method,
+                    req.originalUrl,
+                    req.ip,
+                    "The pageSize parameter is required!",
+                    400
+                );
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        message: "The pageSize parameter is required!"
+                    });
+            }
 
-    if (req.params.searchParam) {
-      var query = {
-        $and: [
-          {
-            $or: [
-              { level: { $regex: new RegExp(req.params.searchParam, "i") } }, // Case-insensitive search for the "level" field
-              { message: { $regex: new RegExp("^SEEDER") } },
-              { message: { $regex: new RegExp("^DATABASE") } },
-              { message: { $regex: new RegExp("^SERVER") } },
-              { message: { $regex: new RegExp("^API") } },
-              { message: { $regex: new RegExp("^MAIL") } },
-            ],
-          },
-          { message: { $regex: new RegExp(".*" + req.params.searchParam + ".*", "i") } }, // Case-insensitive search for the "message" field
-        ],
-      };
-      var options = {
-        page: req.params.page,
-        limit: req.params.pageSize,
-        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
-      };
-      Logs.paginate(query, options, function (error, paginatedResults) {
-        if (error) {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
-          return res.status(400).json({
-            error: true,
-            message: error.message,
-          });
-        } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated mail logs list..", 200);
-          return res.status(200).json({
-            error: false,
-            message: "returned paginated mail logs list..",
-            paginatedResult: paginatedResults,
-          });
+            if (req.params.searchParam) {
+                var query = {
+                    $and: [
+                        {
+                            $or: [
+                                {
+                                    level: {
+                                        $regex: new RegExp(
+                                            req.params.searchParam,
+                                            "i"
+                                        )
+                                    }
+                                }, // Case-insensitive search for the "level" field
+                                { message: { $regex: new RegExp("^SEEDER") } },
+                                {
+                                    message: { $regex: new RegExp("^DATABASE") }
+                                },
+                                { message: { $regex: new RegExp("^SERVER") } },
+                                { message: { $regex: new RegExp("^API") } },
+                                { message: { $regex: new RegExp("^MAIL") } }
+                            ]
+                        },
+                        {
+                            message: {
+                                $regex: new RegExp(
+                                    ".*" + req.params.searchParam + ".*",
+                                    "i"
+                                )
+                            }
+                        } // Case-insensitive search for the "message" field
+                    ]
+                };
+                var options = {
+                    page: req.params.page,
+                    limit: req.params.pageSize,
+                    sort: { timestamp: -1 } // 1 for ascending, -1 for descending
+                };
+                Logs.paginate(
+                    query,
+                    options,
+                    function (error, paginatedResults) {
+                        if (error) {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                error.message,
+                                400
+                            );
+                            return res.status(400).json({
+                                error: true,
+                                message: error.message
+                            });
+                        } else {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                "returned paginated mail logs list..",
+                                200
+                            );
+                            return res.status(200).json({
+                                error: false,
+                                message: "returned paginated mail logs list..",
+                                paginatedResult: paginatedResults
+                            });
+                        }
+                    }
+                );
+            } else {
+                var query = {
+                    $or: [
+                        { message: { $regex: /^SEEDER/ } },
+                        { message: { $regex: /^DATABASE/ } },
+                        { message: { $regex: /^SERVER/ } },
+                        { message: { $regex: /^API/ } },
+                        { message: { $regex: /^MAIL/ } }
+                    ]
+                };
+                var options = {
+                    page: req.params.page,
+                    limit: req.params.pageSize,
+                    sort: { timestamp: -1 } // 1 for ascending, -1 for descending
+                };
+                Logs.paginate(
+                    query,
+                    options,
+                    function (error, paginatedResults) {
+                        if (error) {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                error.message,
+                                400
+                            );
+                            return res.status(400).json({
+                                error: true,
+                                message: error.message
+                            });
+                        } else {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                "returned paginated system logs list..",
+                                200
+                            );
+                            return res.status(200).json({
+                                error: false,
+                                message:
+                                    "returned paginated system logs list..",
+                                paginatedResult: paginatedResults
+                            });
+                        }
+                    }
+                );
+            }
+        } catch (err) {
+            doHttpLog(
+                "RES",
+                mid,
+                req.method,
+                req.originalUrl,
+                err.message,
+                500
+            );
+            logger.error("API|logs.js|/getSystemLogs|" + err.message);
+            res.status(500).json({ message: err.message });
         }
-      });
-    } else {
-      var query = {
-        $or: [
-          { message: { $regex: /^SEEDER/ } },
-          { message: { $regex: /^DATABASE/ } },
-          { message: { $regex: /^SERVER/ } },
-          { message: { $regex: /^API/ } },
-          { message: { $regex: /^MAIL/ } },
-        ],
-      };
-      var options = {
-        page: req.params.page,
-        limit: req.params.pageSize,
-        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
-      };
-      Logs.paginate(query, options, function (error, paginatedResults) {
-        if (error) {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
-          return res.status(400).json({
-            error: true,
-            message: error.message,
-          });
-        } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated system logs list..", 200);
-          return res.status(200).json({
-            error: false,
-            message: "returned paginated system logs list..",
-            paginatedResult: paginatedResults,
-          });
-        }
-      });
     }
-  } catch (err) {
-    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-    logger.error("API|logs.js|/getSystemLogs|" + err.message);
-    res.status(500).json({ message: err.message });
-  }
-});
+);
 
 /**
  * GET /v1/logs/getRequestLogs/{page}/{pageSize}/{searchParam}
@@ -358,76 +614,176 @@ router.get("/getSystemLogs/:page/:pageSize/:searchParam?", auth, roleCheck("admi
  *   "message": "error message goes here..."
  * }
  */
-router.get("/getRequestLogs/:page/:pageSize/:searchParam?", auth, roleCheck("admins"), async (req, res) => {
-  const mid = crypto.randomBytes(16).toString("hex");
-  try {
-    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+router.get(
+    "/getRequestLogs/:page/:pageSize/:searchParam?",
+    auth,
+    roleCheck("admins"),
+    async (req, res) => {
+        const mid = crypto.randomBytes(16).toString("hex");
+        try {
+            doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
-    if (req.params.page === undefined || req.params.page === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The page parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The page parameter is required!" });
-    }
+            if (req.params.page === undefined || req.params.page === null) {
+                doHttpLog(
+                    "RES",
+                    mid,
+                    req.method,
+                    req.originalUrl,
+                    req.ip,
+                    "The page parameter is required!",
+                    400
+                );
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        message: "The page parameter is required!"
+                    });
+            }
 
-    if (req.params.pageSize === undefined || req.params.pageSize === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The pageSize parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The pageSize parameter is required!" });
-    }
+            if (
+                req.params.pageSize === undefined ||
+                req.params.pageSize === null
+            ) {
+                doHttpLog(
+                    "RES",
+                    mid,
+                    req.method,
+                    req.originalUrl,
+                    req.ip,
+                    "The pageSize parameter is required!",
+                    400
+                );
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        message: "The pageSize parameter is required!"
+                    });
+            }
 
-    if (req.params.searchParam) {
-      var query = {
-        $and: [{ $or: [{ message: { $regex: /^RES/ } }, { message: { $regex: /^REQ/ } }] }, { message: { $regex: ".*" + req.params.searchParam + ".*" } }],
-      };
-      var options = {
-        page: req.params.page,
-        limit: req.params.pageSize,
-        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
-      };
-      Logs.paginate(query, options, function (error, paginatedResults) {
-        if (error) {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
-          return res.status(400).json({
-            error: true,
-            message: error.message,
-          });
-        } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated request logs list..", 200);
-          return res.status(200).json({
-            error: false,
-            message: "returned paginated requst logs list..",
-            paginatedResult: paginatedResults,
-          });
+            if (req.params.searchParam) {
+                var query = {
+                    $and: [
+                        {
+                            $or: [
+                                { message: { $regex: /^RES/ } },
+                                { message: { $regex: /^REQ/ } }
+                            ]
+                        },
+                        {
+                            message: {
+                                $regex: ".*" + req.params.searchParam + ".*"
+                            }
+                        }
+                    ]
+                };
+                var options = {
+                    page: req.params.page,
+                    limit: req.params.pageSize,
+                    sort: { timestamp: -1 } // 1 for ascending, -1 for descending
+                };
+                Logs.paginate(
+                    query,
+                    options,
+                    function (error, paginatedResults) {
+                        if (error) {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                error.message,
+                                400
+                            );
+                            return res.status(400).json({
+                                error: true,
+                                message: error.message
+                            });
+                        } else {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                "returned paginated request logs list..",
+                                200
+                            );
+                            return res.status(200).json({
+                                error: false,
+                                message:
+                                    "returned paginated requst logs list..",
+                                paginatedResult: paginatedResults
+                            });
+                        }
+                    }
+                );
+            } else {
+                var query = {
+                    $or: [
+                        { message: { $regex: /^RES/ } },
+                        { message: { $regex: /^REQ/ } }
+                    ]
+                };
+                var options = {
+                    page: req.params.page,
+                    limit: req.params.pageSize,
+                    sort: { timestamp: -1 } // 1 for ascending, -1 for descending
+                };
+                Logs.paginate(
+                    query,
+                    options,
+                    function (error, paginatedResults) {
+                        if (error) {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                error.message,
+                                400
+                            );
+                            return res.status(400).json({
+                                error: true,
+                                message: error.message
+                            });
+                        } else {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                "returned paginated request logs list..",
+                                200
+                            );
+                            return res.status(200).json({
+                                error: false,
+                                message:
+                                    "returned paginated request logs list..",
+                                paginatedResult: paginatedResults
+                            });
+                        }
+                    }
+                );
+            }
+        } catch (err) {
+            doHttpLog(
+                "RES",
+                mid,
+                req.method,
+                req.originalUrl,
+                err.message,
+                500
+            );
+            logger.error("API|logs.js|/getRequestLogs|" + err.message);
+            res.status(500).json({ message: err.message });
         }
-      });
-    } else {
-      var query = { $or: [{ message: { $regex: /^RES/ } }, { message: { $regex: /^REQ/ } }] };
-      var options = {
-        page: req.params.page,
-        limit: req.params.pageSize,
-        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
-      };
-      Logs.paginate(query, options, function (error, paginatedResults) {
-        if (error) {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
-          return res.status(400).json({
-            error: true,
-            message: error.message,
-          });
-        } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated request logs list..", 200);
-          return res.status(200).json({
-            error: false,
-            message: "returned paginated request logs list..",
-            paginatedResult: paginatedResults,
-          });
-        }
-      });
     }
-  } catch (err) {
-    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-    logger.error("API|logs.js|/getRequestLogs|" + err.message);
-    res.status(500).json({ message: err.message });
-  }
-});
+);
 
 /**
  * GET /v1/logs/getAuditLogs/{page}/{pageSize}/{searchParam}
@@ -469,83 +825,178 @@ router.get("/getRequestLogs/:page/:pageSize/:searchParam?", auth, roleCheck("adm
  *   "message": "error message goes here..."
  * }
  */
-router.get("/getAuditLogs/:page/:pageSize/:searchParam?", auth, roleCheck("admins"), async (req, res) => {
-  const mid = crypto.randomBytes(16).toString("hex");
-  try {
-    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+router.get(
+    "/getAuditLogs/:page/:pageSize/:searchParam?",
+    auth,
+    roleCheck("admins"),
+    async (req, res) => {
+        const mid = crypto.randomBytes(16).toString("hex");
+        try {
+            doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
-    if (req.params.page === undefined || req.params.page === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The page parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The page parameter is required!" });
-    }
+            if (req.params.page === undefined || req.params.page === null) {
+                doHttpLog(
+                    "RES",
+                    mid,
+                    req.method,
+                    req.originalUrl,
+                    req.ip,
+                    "The page parameter is required!",
+                    400
+                );
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        message: "The page parameter is required!"
+                    });
+            }
 
-    if (req.params.pageSize === undefined || req.params.pageSize === null) {
-      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "The pageSize parameter is required!", 400);
-      return res.status(400).json({ error: true, message: "The pageSize parameter is required!" });
-    }
+            if (
+                req.params.pageSize === undefined ||
+                req.params.pageSize === null
+            ) {
+                doHttpLog(
+                    "RES",
+                    mid,
+                    req.method,
+                    req.originalUrl,
+                    req.ip,
+                    "The pageSize parameter is required!",
+                    400
+                );
+                return res
+                    .status(400)
+                    .json({
+                        error: true,
+                        message: "The pageSize parameter is required!"
+                    });
+            }
 
-    if (req.params.searchParam) {
-      var query = {
-        $and: [
-          {
-            $or: [
-              { message: { $regex: new RegExp("^AUDIT") } },
-              { level: { $regex: new RegExp(req.params.searchParam, "i") } }, // Case-insensitive search for the "level" field
-            ],
-          },
-          { message: { $regex: new RegExp(".*" + req.params.searchParam + ".*", "i") } }, // Case-insensitive search for the "message" field
-        ],
-      };
-      var options = {
-        page: req.params.page,
-        limit: req.params.pageSize,
-        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
-      };
-      Logs.paginate(query, options, function (error, paginatedResults) {
-        if (error) {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
-          return res.status(400).json({
-            error: true,
-            message: error.message,
-          });
-        } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated audit logs list..", 200);
-          return res.status(200).json({
-            error: false,
-            message: "returned paginated audit logs list..",
-            paginatedResult: paginatedResults,
-          });
+            if (req.params.searchParam) {
+                var query = {
+                    $and: [
+                        {
+                            $or: [
+                                { message: { $regex: new RegExp("^AUDIT") } },
+                                {
+                                    level: {
+                                        $regex: new RegExp(
+                                            req.params.searchParam,
+                                            "i"
+                                        )
+                                    }
+                                } // Case-insensitive search for the "level" field
+                            ]
+                        },
+                        {
+                            message: {
+                                $regex: new RegExp(
+                                    ".*" + req.params.searchParam + ".*",
+                                    "i"
+                                )
+                            }
+                        } // Case-insensitive search for the "message" field
+                    ]
+                };
+                var options = {
+                    page: req.params.page,
+                    limit: req.params.pageSize,
+                    sort: { timestamp: -1 } // 1 for ascending, -1 for descending
+                };
+                Logs.paginate(
+                    query,
+                    options,
+                    function (error, paginatedResults) {
+                        if (error) {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                error.message,
+                                400
+                            );
+                            return res.status(400).json({
+                                error: true,
+                                message: error.message
+                            });
+                        } else {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                "returned paginated audit logs list..",
+                                200
+                            );
+                            return res.status(200).json({
+                                error: false,
+                                message: "returned paginated audit logs list..",
+                                paginatedResult: paginatedResults
+                            });
+                        }
+                    }
+                );
+            } else {
+                var query = { message: { $regex: /^AUDIT/ } };
+                var options = {
+                    page: req.params.page,
+                    limit: req.params.pageSize,
+                    sort: { timestamp: -1 } // 1 for ascending, -1 for descending
+                };
+                Logs.paginate(
+                    query,
+                    options,
+                    function (error, paginatedResults) {
+                        if (error) {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                error.message,
+                                400
+                            );
+                            return res.status(400).json({
+                                error: true,
+                                message: error.message
+                            });
+                        } else {
+                            doHttpLog(
+                                "RES",
+                                mid,
+                                req.method,
+                                req.originalUrl,
+                                req.ip,
+                                "returned paginated audit logs list..",
+                                200
+                            );
+                            return res.status(200).json({
+                                error: false,
+                                message: "returned paginated audit logs list..",
+                                paginatedResult: paginatedResults
+                            });
+                        }
+                    }
+                );
+            }
+        } catch (err) {
+            doHttpLog(
+                "RES",
+                mid,
+                req.method,
+                req.originalUrl,
+                err.message,
+                500
+            );
+            logger.error("API|logs.js|/getAuditLogs|" + err.message);
+            res.status(500).json({ message: err.message });
         }
-      });
-    } else {
-      var query = { message: { $regex: /^AUDIT/ } };
-      var options = {
-        page: req.params.page,
-        limit: req.params.pageSize,
-        sort: { timestamp: -1 }, // 1 for ascending, -1 for descending
-      };
-      Logs.paginate(query, options, function (error, paginatedResults) {
-        if (error) {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400);
-          return res.status(400).json({
-            error: true,
-            message: error.message,
-          });
-        } else {
-          doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "returned paginated audit logs list..", 200);
-          return res.status(200).json({
-            error: false,
-            message: "returned paginated audit logs list..",
-            paginatedResult: paginatedResults,
-          });
-        }
-      });
     }
-  } catch (err) {
-    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-    logger.error("API|logs.js|/getAuditLogs|" + err.message);
-    res.status(500).json({ message: err.message });
-  }
-});
+);
 
 export default router;

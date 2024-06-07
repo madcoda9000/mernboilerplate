@@ -5,63 +5,45 @@ import logger from "../services/logger.service.js";
  * @summary method to seed initial roles
  */
 const SeedRoles = async () => {
+    // check if role was seeded already, else seed roles
+    const foundUserRole = await Role.findOne({ roleName: "users" });
+    const foundAdminRole = await Role.findOne({ roleName: "admins" });
 
-  logger.info("SEEDER | try to seed intial roles");
+    if (!foundUserRole) {
+        logger.info("SEEDER | try to seed user role role");
+        // create array of roles
+        const Roles = [
+            new Role({
+                roleName: "users"
+            })
+        ];
 
-  // check if role was seeded already, else seed roles
-  const foundUserRole = await Role.findOne({ roleName: "users" });
-  const foundAdminRole = await Role.findOne({ roleName: "admins" });
+        Roles.map(async (p, index) => {
+            await p.save((err, result) => {
+                if (index === Roles.length - 1) {
+                    logger.info("SEEDER | users role seeded successfully!");
+                }
+            });
+        });
+    }
 
-  if (!foundUserRole) {
-    // create array of roles
-    const Roles = [
-      new Role({
-        roleName: "users"
-      }),
-    ]
+    if (!foundAdminRole) {
+        logger.info("SEEDER | try to seed admins role");
+        // create array of roles
+        const Roles = [
+            new Role({
+                roleName: "admins"
+            })
+        ];
 
-    Roles.map( async (p, index) => {
-      await p.save((err, result) => {
-        if (index === Roles.length - 1) {
-          logger.info("SEEDER | users role seeded successfully!");
-        }
-      });
-    });
-  } else {
-    logger.info("SEEDER | users role seeded already.");
-  }
-
-  if (!foundAdminRole) {
-    // create array of roles
-    const Roles = [
-      new Role({
-        roleName: "admins"
-      }),
-      new Role({
-        roleName: "it-operations"
-      }),
-      new Role({
-        roleName: "it-sd"
-      }),
-      new Role({
-        roleName: "dwh"
-      }),
-      new Role({
-        roleName: "MDM"
-      }),
-    ]
-
-    Roles.map(async (p, index) => {
-      await p.save((err, result) => {
-        if (index === Roles.length - 1) {
-          logger.info("SEEDER | admins role seeded successfully!");
-        }
-      });
-    });
-  } else {
-    logger.info("SEEDER | admins role seeded already.");
-  }
-  
-}
+        Roles.map(async (p, index) => {
+            await p.save((err, result) => {
+                if (index === Roles.length - 1) {
+                    logger.info("SEEDER | admins role seeded successfully!");
+                }
+            });
+        });
+    }
+};
 
 export default SeedRoles;

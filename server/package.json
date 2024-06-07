@@ -31,6 +31,7 @@
     "mongoose-paginate": "^5.0.3",
     "nodemailer": "^6.9.7",
     "nodemailer-express-handlebars": "^6.1.0",
+    "npm-check-updates": "^16.14.20",
     "npm-update": "^3.0.1",
     "otpauth": "^9.2.1",
     "punycode": "^2.3.1",
