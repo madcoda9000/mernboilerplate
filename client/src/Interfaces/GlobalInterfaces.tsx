@@ -5,9 +5,9 @@ export interface User {
   userName: string
   email: string
   password: string
-  roles: Array<string>
-  mfaEnforced: false
-  mfaEnabled: false
+  roles: string[]
+  mfaEnforced: boolean
+  mfaEnabled: boolean
   mfaToken: string
   mfaVerified: boolean
   emailVerifyToken: string
@@ -31,4 +31,28 @@ export interface Quote {
   quote: string | undefined
   author: string | undefined
   genre: string | undefined
+}
+
+export class UserClass implements User {
+  _id: string = ""
+  firstName: string = ""
+  lastName: string = ""
+  userName: string = ""
+  email: string = ""
+  password: string = ""
+  roles: string[] = []
+  mfaEnforced: boolean = false
+  mfaEnabled: boolean = false
+  mfaToken: string = ""
+  mfaVerified: boolean = false
+  emailVerifyToken: string = ""
+  pwResetToken: string = ""
+  emailVerified: boolean = false
+  accountLocked: boolean = false
+  ldapEnabled: boolean = false
+  __v: number = 0
+
+  constructor(init?: Partial<User>) {
+    Object.assign(this, init)
+  }
 }

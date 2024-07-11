@@ -70,11 +70,12 @@ export function ForgotPw2Form({ className, ...props }: FormProps) {
     }
   }, [searchParams])
 
+  /*
   const handleChange = (e) => {
     const { value } = e.target
     setNewPw(value)
   }
-
+*/
   const validateForm = () => {
     let hasError = false
     let msg = "<ul style='margin-left:20px;'>"
@@ -106,7 +107,7 @@ export function ForgotPw2Form({ className, ...props }: FormProps) {
     return hasError
   }
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
     if (!validateForm()) {

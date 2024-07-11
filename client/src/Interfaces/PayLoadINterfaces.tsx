@@ -55,6 +55,19 @@ export interface newUserPayload {
   mfaEnforced: boolean
   roles: Array<string> | undefined
 }
+export interface editUserPayload {
+  userName: string | undefined
+  firstName: string | undefined
+  lastName: string | undefined
+  email: string | undefined
+  password: string | undefined
+  emailVerified: boolean
+  accountLocked: boolean
+  ldapEnabled: boolean
+  mfaEnabled: boolean
+  mfaEnforced: boolean
+  roles: Array<string> | undefined
+}
 export interface roleIdPayload {
   _id: string | undefined
 }

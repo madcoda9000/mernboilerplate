@@ -1,4 +1,4 @@
-import React, { Suspense } from "react"
+import { Suspense } from "react"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { AuthContextProvider } from "@/components/Auth/AuthContext"
 import { ThemeProvider } from "@/components/Utils/themeProvider"
@@ -17,6 +17,7 @@ import Login from "@/pages/Login"
 import Home from "@/pages/Home"
 import Profile from "@/pages/Profile"
 import Status404 from "@/pages/Status/Status404"
+import Status403 from "@/pages/Status/Status403"
 import Register from "@/pages/Register"
 import ForgotPw1 from "@/pages/ForgotPw1"
 import ForgotPw2 from "@/pages/ForgotPw2"
@@ -32,10 +33,11 @@ import RequestLogs from "@/pages/Logs/RequestLogs"
 import MailLogs from "@/pages/Logs/MailLogs"
 import Privacy from "@/pages/Privacy"
 import Users from "@/pages/Admin/Users"
+import EditUser from "@/pages/Admin/EditUser"
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <BrowserRouter>
         <AuthContextProvider>
           <Suspense
@@ -201,8 +203,17 @@ function App() {
                     </ProtectedRoute>
                   }
                 ></Route>
+                <Route
+                  path="/Admin/EditUser/:userId"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Admin/EditUser">
+                      <EditUser />
+                    </ProtectedRoute>
+                  }
+                ></Route>
               </Route>
               <Route path="/Status404" element={<Status404 />} />
+              <Route path="/Status403" element={<Status403 />} />
               <Route path="*" element={<Status404 />} />
             </Routes>
           </Suspense>

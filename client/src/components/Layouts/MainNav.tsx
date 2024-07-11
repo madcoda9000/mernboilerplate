@@ -5,12 +5,15 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu"
 import { useNavigate } from "react-router-dom"
+declare const window: {
+  BASE_URL: string
+} & Window
 
 export function MainNav() {
   const nav = useNavigate()
   /* define active and inactive styles */
   const inactiveLinkCss =
-    "text-sm font-medium text-muted-foreground transition-colors hover:text-secondary data-[active]:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-secondary data-[state=closed]:bg-transparent hover:bg-transparent bg-transparent"
+    "text-sm font-medium text-[#bfbfbf] transition-colors hover:text-secondary data-[active]:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-secondary data-[state=closed]:bg-transparent hover:bg-transparent bg-transparent"
   const activeLinkCss =
     "text-sm font-medium text-secondary transition-colors data-[active]:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-secondary data-[state=closed]:bg-transparent data-[state=closed]:text-secondary hover:bg-transparent hover:text-secondary bg-transparent"
 
