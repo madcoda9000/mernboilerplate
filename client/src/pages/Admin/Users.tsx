@@ -1,3 +1,5 @@
+"use client"
+
 import { AuditEntryPayload } from "@/Interfaces/PayLoadINterfaces"
 import LogsService from "@/Services/LogsService"
 import UsersService from "@/Services/UsersService"
@@ -31,6 +33,7 @@ import { MoreHorizontal } from "lucide-react"
 import { Icons } from "@/components/Icons"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
+import { useNavigate } from "react-router-dom"
 
 const sidebarNavItems = [
   {
@@ -46,6 +49,7 @@ const sidebarNavItems = [
 const Users = () => {
   const [data, setData] = useState<User[]>([])
   const [isLoading, SetIsLoading] = useState<boolean>(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const getData = () => {
@@ -71,17 +75,48 @@ const Users = () => {
 
   const showToast = (typ: string, message: string) => {
     const date = new Date()
-    toast(message, {
-      description:
-        date.toLocaleDateString("en-EN", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }) +
-        " at " +
-        date.toLocaleTimeString("en-EN", { hour: "2-digit", minute: "2-digit" }),
-    })
+    if (typ === "info") {
+      toast.info(message, {
+        description:
+          date.toLocaleDateString("en-EN", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }) +
+          " at " +
+          date.toLocaleTimeString("en-EN", { hour: "2-digit", minute: "2-digit" }),
+      })
+    } else if (typ === "success") {
+      toast.success(message, {
+        description:
+          date.toLocaleDateString("en-EN", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }) +
+          " at " +
+          date.toLocaleTimeString("en-EN", { hour: "2-digit", minute: "2-digit" }),
+      })
+    } else if (typ === "error") {
+      toast.error(message, {
+        description:
+          date.toLocaleDateString("en-EN", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }) +
+          " at " +
+          date.toLocaleTimeString("en-EN", { hour: "2-digit", minute: "2-digit" }),
+      })
+    }
+  }
+
+  const copyUsernameToClpd = (username: string) => {
+    navigator.clipboard.writeText(username)
+    showToast("success", "Username copied to clippoard successfully!")
   }
 
   const getData = () => {
@@ -259,13 +294,13 @@ const Users = () => {
                                 <DropdownMenuLabel>
                                   {user.firstName}&nbsp;{user.lastName}
                                 </DropdownMenuLabel>
-                                <DropdownMenuItem
-                                  onClick={() => navigator.clipboard.writeText(user.userName)}
-                                >
+                                <DropdownMenuItem onClick={() => copyUsernameToClpd(user.userName)}>
                                   <Icons.clipboardCopy className="inline mr-3" />
                                   Copy user name
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => navigate("/Admin/EditUser/" + user._id)}
+                                >
                                   <Icons.pencil className="inline mr-3" />
                                   Edit User
                                 </DropdownMenuItem>
