@@ -111,10 +111,23 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
       if (sessionStorage.getItem("user")) {
         sessionStorage.removeItem("user")
       }
+      auditMfaSetupAbort()
       logout()
       navigate("/Login")
     } else {
+      auditMfaSetupAbort()
       navigate("/Home")
+    }
+  }
+
+  const auditMfaSetupAbort = () => {
+    if (user) {
+      const payload: AuditEntryPayload = {
+        user: user.userName,
+        level: "info",
+        message: user.userName + " aborted 2fa setup..",
+      }
+      LogsService.createAuditEntry(payload)
     }
   }
 

@@ -18,6 +18,7 @@ import Home from "@/pages/Home"
 import Profile from "@/pages/Profile"
 import Status404 from "@/pages/Status/Status404"
 import Status403 from "@/pages/Status/Status403"
+import Status429 from "@/pages/Status/Status429"
 import Register from "@/pages/Register"
 import ForgotPw1 from "@/pages/ForgotPw1"
 import ForgotPw2 from "@/pages/ForgotPw2"
@@ -30,7 +31,7 @@ import NotifSettings from "@/pages/Admin/NotifSettings"
 import SystemLogs from "@/pages/Logs/SystemLogs"
 import AuditLogs from "@/pages/Logs/AuditLogs"
 import RequestLogs from "@/pages/Logs/RequestLogs"
-import MailLogs from "@/pages/Logs/MailLogs"
+//import MailLogs from "@/pages/Logs/MailLogs"
 import Privacy from "@/pages/Privacy"
 import Users from "@/pages/Admin/Users"
 import EditUser from "@/pages/Admin/EditUser"
@@ -188,14 +189,6 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/Logs/MailLogs"
-                  element={
-                    <ProtectedRoute accessBy="authenticated" request="/Logs/MailLogs">
-                      <MailLogs />
-                    </ProtectedRoute>
-                  }
-                ></Route>
-                <Route
                   path="/Admin/Users"
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Admin/Users">
@@ -214,6 +207,7 @@ function App() {
               </Route>
               <Route path="/Status404" element={<Status404 />} />
               <Route path="/Status403" element={<Status403 />} />
+              <Route path="/Status429" element={<Status429 />} />
               <Route path="*" element={<Status404 />} />
             </Routes>
           </Suspense>
