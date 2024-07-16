@@ -30,6 +30,7 @@ import LdapSettings from "@/pages/Admin/LdapSettings"
 import NotifSettings from "@/pages/Admin/NotifSettings"
 import SystemLogs from "@/pages/Logs/SystemLogs"
 import AuditLogs from "@/pages/Logs/AuditLogs"
+import MailLogs from "@/pages/Logs/MailLogs"
 import RequestLogs from "@/pages/Logs/RequestLogs"
 //import MailLogs from "@/pages/Logs/MailLogs"
 import Privacy from "@/pages/Privacy"
@@ -169,6 +170,14 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Logs/SystemLogs">
                       <SystemLogs />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Logs/MailLOgs"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Logs/MailLOgs">
+                      <MailLogs />
                     </ProtectedRoute>
                   }
                 ></Route>
