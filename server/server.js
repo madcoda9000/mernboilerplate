@@ -146,17 +146,17 @@ if (enviromentConfig.app.enableSwaggerEndpoint === "true") {
 // publish routes
 app.use("/v1/auth", cors(corsOptions), authRoutes)
 app.use("/v1/auth", cors(corsOptions), refreshTokenRoutes)
-logger.info("SERVER | published auth routes..")
+logger.info("SERVER | published auth routes at /v1/auth")
 app.use("/v1/users", cors(corsOptions), userRoutes)
-logger.info("SERVER | published users routes..")
+logger.info("SERVER | published users routes at /v1/users")
 app.use("/v1/roles", cors(corsOptions), roleRoutes)
-logger.info("SERVER | published roles routes..")
+logger.info("SERVER | published roles routes at /v1/roles")
 app.use("/v1/logs", cors(corsOptions), logsRoutes)
-logger.info("SERVER | published logs routes..")
+logger.info("SERVER | published logs routes at /v1/logs")
 app.use("/v1/settings", cors(corsOptions), settingsRoutes)
-logger.info("SERVER | published settings routes..")
+logger.info("SERVER | published settings routes at /v1/settings")
 app.use("/v1/quotes", cors(corsOptions), quoteRoutes)
-logger.info("SERVER | published quote routes..")
+logger.info("SERVER | published quote routes at /v1/quotes")
 
 // start server
 const port = enviromentConfig.app.serverPort || 8080
