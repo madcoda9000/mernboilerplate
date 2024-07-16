@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import mongoosePaginate from "mongoose-paginate";
+import mongoose from "mongoose"
+import mongoosePaginate from "mongoose-paginate-v2"
 
 /**
  * role schema
@@ -7,13 +7,13 @@ import mongoosePaginate from "mongoose-paginate";
  * @property {string} roleName - The name of the role
  */
 const roleSchema = new mongoose.Schema({
-    roleName: {
-		type: String,
-		required: true,
-		unique: true,
-	},
-});
-roleSchema.plugin(mongoosePaginate);
-const Role = mongoose.model("Role", roleSchema);
+  roleName: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+})
+roleSchema.plugin(mongoosePaginate)
+const Role = mongoose.model("Role", roleSchema)
 
-export default Role;
+export default Role

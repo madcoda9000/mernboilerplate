@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import mongoosePaginate from "mongoose-paginate";
+import mongoose from "mongoose"
+import mongoosePaginate from "mongoose-paginate-v2"
 
 /**
  * role schema
@@ -9,17 +9,17 @@ import mongoosePaginate from "mongoose-paginate";
  * @property {string} value - the value of the settings
  */
 const logsSchema = new mongoose.Schema({
-    scope: {
-		type: String,
-	},
-    name: {
-		type: String,
-	},
-    value: {
-		type: String,
-	},
-});
-logsSchema.plugin(mongoosePaginate);
-const Setting = mongoose.model("Setting", logsSchema);
+  scope: {
+    type: String,
+  },
+  name: {
+    type: String,
+  },
+  value: {
+    type: String,
+  },
+})
+logsSchema.plugin(mongoosePaginate)
+const Setting = mongoose.model("Setting", logsSchema)
 
-export default Setting;
+export default Setting

@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import mongoosePaginate from "mongoose-paginate";
+import mongoose from "mongoose"
+import mongoosePaginate from "mongoose-paginate-v2"
 
 /**
  * role schema
@@ -10,23 +10,23 @@ import mongoosePaginate from "mongoose-paginate";
  * @property {string} hostname - the logged hostname
  */
 const logsSchema = new mongoose.Schema({
-    timestamp: {
-		type: Date,
-		default: Date.now,
-		required: true,
-		unique: true,
-	},
-    level: {
-		type: String,
-	},
-    message: {
-		type: String,
-	},
-    hostname: {
-		type: String,
-	},
-});
-logsSchema.plugin(mongoosePaginate);
-const Logs = mongoose.model("Logs", logsSchema);
+  timestamp: {
+    type: Date,
+    default: Date.now,
+    required: true,
+    unique: true,
+  },
+  level: {
+    type: String,
+  },
+  message: {
+    type: String,
+  },
+  hostname: {
+    type: String,
+  },
+})
+logsSchema.plugin(mongoosePaginate)
+const Logs = mongoose.model("Logs", logsSchema)
 
-export default Logs;
+export default Logs
