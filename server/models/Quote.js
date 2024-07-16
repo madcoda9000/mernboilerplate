@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import mongoosePaginate from "mongoose-paginate";
+import mongoose from "mongoose"
+import mongoosePaginate from "mongoose-paginate-v2"
 
 /**
  * Quote schema
@@ -18,8 +18,8 @@ const quoteSchema = new mongoose.Schema({
   genre: {
     type: String,
   },
-});
-quoteSchema.plugin(mongoosePaginate);
-const Quote = mongoose.model("Quote", quoteSchema);
+})
+quoteSchema.plugin(mongoosePaginate)
+const Quote = mongoose.model("Quote", quoteSchema)
 
-export default Quote;
+export default Quote
