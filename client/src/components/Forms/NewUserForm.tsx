@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { InfoCircledIcon } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
-import { AuditEntryPayload } from "@/Interfaces/PayLoadINterfaces"
+import { AuditEntryPayload, newUserPayload } from "@/Interfaces/PayLoadINterfaces"
 import React, { useEffect, useState } from "react"
 import { Icons } from "@/components/Icons"
 import { useNavigate, useParams } from "react-router-dom"
@@ -28,28 +28,28 @@ import RolesService from "@/Services/RolesService"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 
 const FormSchema = z.object({
-  userName: z.string().min(1, {
+  _userName: z.string().min(1, {
     message: "Username should not be empty!.",
   }),
-  firstName: z.string().min(1, {
+  _firstName: z.string().min(1, {
     message: "Firstname should not be emnpty!.",
   }),
-  lastName: z.string().min(1, {
+  _lastName: z.string().min(1, {
     message: "Lastname should not be empty!.",
   }),
-  email: z.string().min(1, {
+  _email: z.string().min(1, {
     message: "Email should not be empty!.",
   }),
-  password: z.string().optional(),
-  emailVerified: z.boolean(),
-  accountLocked: z.boolean(),
-  ldapEnabled: z.boolean(),
-  mfaEnforced: z.boolean(),
+  _password: z.string().optional(),
+  _emailVerified: z.boolean(),
+  _accountLocked: z.boolean(),
+  _ldapEnabled: z.boolean(),
+  _mfaEnforced: z.boolean(),
 })
 
-interface EditUserFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface NewUserFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function EditUserForm({ className, ...props }: EditUserFormProps) {
+export function NewUserForm({ className, ...props }: NewUserFormProps) {
   const [user, setUser] = React.useState<User | null>(null)
   const [errMsg, setErrMsg] = useState<string>("")
   const [succMsg, SetSuccMsg] = useState<string>("")
@@ -61,7 +61,6 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
   const [pwScoreFeedback, setPwScoreFeedback] = useState<Array<string>>([])
   const [pwScoreWarning, setPwScoreWarning] = useState<string>("")
   const [pwVisible, setPwVisible] = useState<boolean>(false)
-  const { userId } = useParams()
   const [allRoles, setAllRoles] = useState(null)
   const [hintText, setHintText] = useState("")
   const [btnLoading, SetBtnLoading] = useState<boolean>(false)
@@ -69,10 +68,14 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      userName: user?.userName,
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      email: user?.email,
+      _userName: user?.userName,
+      _firstName: user?.firstName,
+      _lastName: user?.lastName,
+      _email: user?.email,
+      _mfaEnforced: false,
+      _ldapEnabled: false,
+      _emailVerified: false,
+      _accountLocked: false,
     },
   })
 
@@ -86,41 +89,10 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
         }
       })
     }
-  }, [allRoles])
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await UsersService.getUser(userId !== undefined ? userId : "")
-        if (!res.data.error) {
-          const adpl: AuditEntryPayload = {
-            user: JSON.parse(sessionStorage.getItem("user")!).userName,
-            level: "info",
-            message: "Viewed User Details",
-          }
-          LogsService.createAuditEntry(adpl)
-          setUser(res.data.user)
-          form.setValue("userName", res.data.user.userName)
-          form.setValue("firstName", res.data.user.firstName)
-          form.setValue("lastName", res.data.user.lastName)
-          form.setValue("email", res.data.user.email)
-          form.setValue("accountLocked", res.data.user.accountLocked)
-          form.setValue("emailVerified", res.data.user.emailVerified)
-          form.setValue("ldapEnabled", res.data.user.ldapEnabled)
-          form.setValue("mfaEnforced", res.data.user.mfaEnforced)
-        } else {
-          setErrMsg(res.data.message)
-        }
-      } catch (error) {
-        console.error("Error fetching user details:", error)
-        setErrMsg("An error occurred while fetching user details.")
-      } finally {
-        setIsLoading(false)
-      }
+    if (!user) {
+      setUser(new UserClass({ roles: [] }))
     }
-
-    fetchData()
-  }, [form, userId])
+  }, [allRoles, user])
 
   const valChkBx = (e: string) => {
     const selBox = document.getElementById(e) as HTMLInputElement | null
@@ -195,34 +167,44 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
   }
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    SetBtnLoading(true)
-    if (user !== null) {
-      let tempUser = user
-      tempUser.userName = data.userName
-      tempUser.firstName = data.firstName
-      tempUser.lastName = data.lastName
-      tempUser.email = data.email
-      tempUser.ldapEnabled = data.ldapEnabled
-      tempUser.mfaEnforced = data.mfaEnforced
-      tempUser.accountLocked = data.accountLocked
-      tempUser.emailVerified = data.emailVerified
-      console.log(data.password)
-      nPassword !== undefined ? (tempUser.password = nPassword) : (tempUser.password = "")
-      console.log(nPassword)
-      UsersService.updateUser(tempUser).then((response) => {
-        if (response.data.error) {
-          setErrMsg(response.data.message)
-        } else {
-          const adpl: AuditEntryPayload = {
-            user: JSON.parse(sessionStorage.getItem("user")!).userName,
-            level: "info",
-            message: "Modified User " + user.userName,
-          }
-          LogsService.createAuditEntry(adpl)
-          SetSuccMsg(response.data.message)
-          SetBtnLoading(false)
+    if (nPassword === "" || nPassword === undefined) {
+      setErrMsg("Please enter a password for the new User!")
+    } else if (user?.roles.length === 0) {
+      setErrMsg("Please select at least one role for the new User!")
+    } else if (nPassword && user) {
+      try {
+        let payload: newUserPayload = {
+          userName: data._userName,
+          firstName: data._firstName,
+          lastName: data._lastName,
+          email: data._email,
+          accountLocked: data._accountLocked,
+          mfaEnforced: data._mfaEnforced,
+          mfaEnabled: false,
+          ldapEnabled: data._ldapEnabled,
+          emailVerified: data._emailVerified,
+          password: nPassword,
+          roles: user.roles,
         }
-      })
+
+        UsersService.createUser(payload).then((response) => {
+          if (response.data.error) {
+            setErrMsg(response.data.message)
+          } else {
+            const adpl: AuditEntryPayload = {
+              user: JSON.parse(sessionStorage.getItem("user")!).userName,
+              level: "info",
+              message: "Created User " + data._userName,
+            }
+            LogsService.createAuditEntry(adpl)
+            setErrMsg("")
+            SetSuccMsg(response.data.message)
+            SetBtnLoading(false)
+          }
+        })
+      } catch (error) {
+        setErrMsg("Error: " + error)
+      }
     }
   }
 
@@ -252,7 +234,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                 <div className="">
                   <FormField
                     control={form.control}
-                    name="userName"
+                    name="_userName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="relative ml-[12px]">The username</FormLabel>
@@ -266,7 +248,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                 <div className="">
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="_firstName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="relative ml-[12px]">The Firstname</FormLabel>
@@ -280,7 +262,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                 <div className="">
                   <FormField
                     control={form.control}
-                    name="lastName"
+                    name="_lastName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="relative ml-[12px]">The Lastname</FormLabel>
@@ -294,7 +276,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                 <div className="">
                   <FormField
                     control={form.control}
-                    name="email"
+                    name="_email"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="relative ml-[12px]">The email adress</FormLabel>
@@ -309,13 +291,13 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                 <div className="">
                   <FormField
                     control={form.control}
-                    name="accountLocked"
+                    name="_accountLocked"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
                         <div className="space-y-0.5">
                           <FormLabel className="">Account Status</FormLabel>
                           <FormDescription className=" pr-3">
-                            Wether to set the account activated or not.
+                            Wether to set the account is locked or not (locked = switch on!).
                           </FormDescription>
                         </div>
                         <FormControl>
@@ -332,7 +314,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                 <div className="">
                   <FormField
                     control={form.control}
-                    name="mfaEnforced"
+                    name="_mfaEnforced"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
                         <div className="space-y-0.5">
@@ -355,7 +337,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                 <div className="">
                   <FormField
                     control={form.control}
-                    name="ldapEnabled"
+                    name="_ldapEnabled"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
                         <div className="space-y-0.5">
@@ -378,7 +360,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                 <div className="">
                   <FormField
                     control={form.control}
-                    name="emailVerified"
+                    name="_emailVerified"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
                         <div className="space-y-0.5">
@@ -499,7 +481,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                     Cancel
                   </Button>
                   <Button type="submit">
-                    {btnLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}update
+                    {btnLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}save new
                     user.....
                   </Button>
                 </div>
@@ -508,24 +490,12 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
           </Form>
         </div>
         <aside className="-mx-4 lg:w-2/3 border-l pl-5">
-          {user !== null && user.userName === "super.admin" ? (
+          {infoRolesText && (
             <Alert variant={"info"} className="mb-5" id="a1">
               <Icons.infoCircle className="h-4 w-4" />
-              <AlertTitle>Heads up!</AlertTitle>
-              <AlertDescription>
-                Role assignment for user {user !== null ? user.userName : ""} disabled!
-              </AlertDescription>
+              <AlertTitle>Note!</AlertTitle>
+              <AlertDescription>{infoRolesText}</AlertDescription>
             </Alert>
-          ) : (
-            <>
-              {infoRolesText && (
-                <Alert variant={"info"} className="mb-5" id="a1">
-                  <Icons.infoCircle className="h-4 w-4" />
-                  <AlertTitle>Note!</AlertTitle>
-                  <AlertDescription>{infoRolesText}</AlertDescription>
-                </Alert>
-              )}
-            </>
           )}
           {hintText && (
             <Alert variant={"destructive"} className="mb-5" id="a2">

@@ -43,16 +43,16 @@ export interface changeEmailPayload {
   email: string | undefined
 }
 export interface newUserPayload {
-  userName: string | undefined
-  firstName: string | undefined
-  lastName: string | undefined
-  email: string | undefined
-  password: string | undefined
+  userName: string
+  firstName: string
+  lastName: string
+  email: string
   emailVerified: boolean
   accountLocked: boolean
   ldapEnabled: boolean
   mfaEnabled: boolean
   mfaEnforced: boolean
+  password: string
   roles: Array<string> | undefined
 }
 export interface editUserPayload {

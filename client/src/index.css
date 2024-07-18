@@ -51,11 +51,13 @@
       font-size: 16px;
       cursor: pointer;
     }
+
     .checkbox input {
       display: none;
       width: 0;
       height: 0;
     }
+
     .checkbox span {
       width: 18px;
       height: 18px;
@@ -67,6 +69,7 @@
       border-radius: calc(var(--radius) - 2px);
       background-color: #ffffff;
     }
+
     .checkbox input:checked + span:after {
       content: "\2713";
       display: block;
@@ -75,12 +78,15 @@
       font-size: 11px;
       color: #ffffff;
     }
+
     .checkbox input:checked + span {
       background-color: #000000;
     }
+
     .checkbox input:disabled + span {
       background-color: #e5e5e5;
     }
+
     .checkbox span:before {
       position: absolute;
       content: "";
@@ -142,11 +148,13 @@
       font-size: 16px;
       cursor: pointer;
     }
+
     .checkbox input {
       display: none;
       width: 0;
       height: 0;
     }
+
     .checkbox span {
       width: 18px;
       height: 18px;
@@ -158,6 +166,7 @@
       border-radius: calc(var(--radius) - 2px);
       background-color: #000;
     }
+
     .checkbox input:checked + span:after {
       content: "\2713";
       display: block;
@@ -166,12 +175,15 @@
       font-size: 11px;
       color: #ffffff;
     }
+
     .checkbox input:checked + span {
       background-color: #000;
     }
+
     .checkbox input:disabled + span {
       background-color: #e5e5e5;
     }
+
     .checkbox span:before {
       position: absolute;
       content: "";
@@ -189,9 +201,12 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 }
 
@@ -199,9 +214,11 @@
   table {
     border: none !important;
   }
+
   table thead {
     display: none;
   }
+
   table td {
     display: flex;
     border: none !important;

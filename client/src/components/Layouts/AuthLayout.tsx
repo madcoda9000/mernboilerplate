@@ -2,6 +2,7 @@ import { AppSettings, Quote } from "@/Interfaces/GlobalInterfaces"
 import QuotesService from "@/Services/QuotesService"
 import { useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
+import { Blockquote, BlockquoteAuthor } from "@/components/ui/blockquote"
 
 declare const window: {
   APP_TITLE: string
@@ -53,10 +54,10 @@ export default function AuthLayout() {
             </div>
             {aSettings && aSettings.showQuoteOfTheDay === "true" && (
               <div className="relative z-20 mt-auto">
-                <blockquote className="space-y-2">
-                  <p className="text-lg dark:text-black">&ldquo;{quote?.quote}&rdquo;</p>
-                  <footer className="text-sm dark:text-black">{quote?.author}</footer>
-                </blockquote>
+                <Blockquote>
+                  {quote?.quote}
+                  <BlockquoteAuthor>{quote?.author}</BlockquoteAuthor>
+                </Blockquote>
               </div>
             )}
           </div>
