@@ -32,10 +32,10 @@ import SystemLogs from "@/pages/Logs/SystemLogs"
 import AuditLogs from "@/pages/Logs/AuditLogs"
 import MailLogs from "@/pages/Logs/MailLogs"
 import RequestLogs from "@/pages/Logs/RequestLogs"
-//import MailLogs from "@/pages/Logs/MailLogs"
 import Privacy from "@/pages/Privacy"
 import Users from "@/pages/Admin/Users"
 import EditUser from "@/pages/Admin/EditUser"
+import NewUser from "@/pages/Admin/NewUser"
 
 function App() {
   return (
@@ -210,6 +210,14 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Admin/EditUser">
                       <EditUser />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Admin/NewUser"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Admin/NewUser">
+                      <NewUser />
                     </ProtectedRoute>
                   }
                 ></Route>

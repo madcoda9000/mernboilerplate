@@ -2,13 +2,11 @@ import MfaChecker from "@/components/Auth/MfaChecker"
 import RoleChecker from "@/components/Auth/RoleChecker"
 import { useState } from "react"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
-import { useParams } from "react-router-dom"
-import { EditUserForm } from "@/components/Forms/EditUserForm"
+import { NewUserForm } from "@/components/Forms/NewUserForm"
 import { Separator } from "@/components/ui/separator"
 
-const EditUser = () => {
+const NewUser = () => {
   const [isLoading, SetIsLoading] = useState<boolean>(false)
-  const { userId } = useParams()
 
   if (isLoading) {
     return (
@@ -27,18 +25,15 @@ const EditUser = () => {
         <MfaChecker />
         <div>
           <div className="space-y-0.5">
-            <h2 className="text-2xl font-bold tracking-tight">Edit User (Id: {userId})</h2>
-            <p className="text-muted-foreground">
-              <b>Note: </b> If you don't want to change the users password, simply leave the field
-              empty!
-            </p>
+            <h2 className="text-2xl font-bold tracking-tight">Create a new User</h2>
+            <p className="text-muted-foreground">Please fill in all mandatory fields.</p>
           </div>
           <Separator className="my-6" />
-          <EditUserForm />
+          <NewUserForm />
         </div>
       </>
     )
   }
 }
 
-export default EditUser
+export default NewUser

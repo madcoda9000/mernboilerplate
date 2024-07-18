@@ -170,7 +170,14 @@ const Users = () => {
           <>
             <div className="hidden space-y-6 pb-16 md:block">
               <div className="space-y-0.5">
+                <div className="float-left w-[50%]"></div>
+                <div className="float-right">
+                  <Button variant="blue" onClick={() => navigate("/Admin/NewUser")}>
+                    create new User
+                  </Button>
+                </div>
                 <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+
                 <p className="text-muted-foreground">
                   Manage preferences that affect different scopes of this application.
                 </p>
@@ -294,17 +301,21 @@ const Users = () => {
                                 <DropdownMenuLabel>
                                   {user.firstName}&nbsp;{user.lastName}
                                 </DropdownMenuLabel>
-                                <DropdownMenuItem onClick={() => copyUsernameToClpd(user.userName)}>
+                                <DropdownMenuItem
+                                  onClick={() => copyUsernameToClpd(user.userName)}
+                                  className="cursor-pointer"
+                                >
                                   <Icons.clipboardCopy className="inline mr-3" />
                                   Copy user name
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() => navigate("/Admin/EditUser/" + user._id)}
+                                  className="cursor-pointer"
                                 >
                                   <Icons.pencil className="inline mr-3" />
                                   Edit User
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer">
                                   {user.accountLocked === true ? (
                                     <>
                                       <Icons.lockOpen className="inline mr-3" />
@@ -317,7 +328,7 @@ const Users = () => {
                                     </>
                                   )}
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer">
                                   <Icons.circleCross className="inline mr-3" />
                                   Delete User
                                 </DropdownMenuItem>
