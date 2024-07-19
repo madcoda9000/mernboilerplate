@@ -17,6 +17,13 @@ interface DataTableViewOptionsProps<TData> {
   table: Table<TData>
 }
 
+/**
+ * Renders a dropdown menu for toggling the visibility of columns in a data table.
+ *
+ * @param {DataTableViewOptionsProps<TData>} props - The component props.
+ * @param {Table<TData>} props.table - The data table object.
+ * @return {JSX.Element} The rendered dropdown menu component.
+ */
 export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu>

@@ -38,6 +38,7 @@ import RolesService from "@/Services/RolesService"
 import { rolesClomns } from "@/components/Utils/RolesColumnsDefinition"
 import { DataTable } from "@/components/Utils/DataTable"
 
+// sidebar nav items
 const sidebarNavItems = [
   {
     title: "Users",
@@ -49,6 +50,11 @@ const sidebarNavItems = [
   },
 ]
 
+/**
+ * Renders a component that displays a list of roles and allows creating new roles.
+ *
+ * @return {JSX.Element} The rendered component.
+ */
 const Roles = () => {
   const [data, setData] = useState<Role[]>([])
   const [isLoading, SetIsLoading] = useState<boolean>(true)

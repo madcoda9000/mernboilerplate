@@ -19,6 +19,12 @@ interface DataTablePaginationProps<TData> {
   table: Table<TData>
 }
 
+/**
+ * DataTablePagination component for handling pagination in a data table.
+ *
+ * @param {DataTablePaginationProps<TData>} table - The data table to paginate.
+ * @return {JSX.Element} The pagination UI for the data table.
+ */
 export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2 mt-10">

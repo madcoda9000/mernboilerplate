@@ -2,6 +2,11 @@ import Link from "next/link"
 import { ModeToggle } from "@/components/Utils/themeToggle"
 import { ForgotPw2Form } from "@/components/Forms/ForgotPw2Form"
 
+/**
+ * Renders the Password Reset (Step 2) page with necessary components and links.
+ *
+ * @return {JSX.Element} The rendered JSX for the Password Reset (Step 2) page.
+ */
 const ForgotPw2 = () => {
   return (
     <>

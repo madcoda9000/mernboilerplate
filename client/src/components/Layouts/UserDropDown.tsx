@@ -12,6 +12,11 @@ import {
 import { useAuthContext } from "../Auth/AuthContext"
 import { useNavigate } from "react-router-dom"
 
+/**
+ * Renders the user navigation dropdown menu based on user authentication status.
+ *
+ * @return {JSX.Element} The JSX element representing the user navigation dropdown menu.
+ */
 const UserNav = () => {
   const { user, logout } = useAuthContext()
   const initials = (user?.firstName + " " + user?.lastName)

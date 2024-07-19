@@ -14,6 +14,11 @@ declare const window: {
 const apiurl = window.BASE_URL
 const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
+/**
+ * Auth context provider function that handles user authentication actions like login, logout, and context refresh.
+ *
+ * @param {AuthContextProviderProps} children - The children elements to be rendered within the AuthContextProvider.
+ */
 export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ children }) => {
   const navigate = useNavigate()
 

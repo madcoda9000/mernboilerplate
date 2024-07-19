@@ -38,6 +38,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { DataTable } from "@/components/Utils/DataTable"
 import { usersClomns } from "@/components/Utils/UsersColumsDefinition"
 
+// sidebar nav items
 const sidebarNavItems = [
   {
     title: "Users",
@@ -49,6 +50,11 @@ const sidebarNavItems = [
   },
 ]
 
+/**
+ * Renders the Users component which fetches data from the UsersService and displays it in a DataTable.
+ *
+ * @return {JSX.Element} The rendered Users component.
+ */
 const Users = () => {
   const [data, setData] = useState<User[]>([])
   const [isLoading, SetIsLoading] = useState<boolean>(true)
@@ -77,6 +83,13 @@ const Users = () => {
     getData()
   }, [])
 
+  /**
+   * Displays a toast message with the specified type and message.
+   *
+   * @param {ToastType} typ - The type of toast message (info, success, or error).
+   * @param {string} message - The message content to be displayed in the toast.
+   * @return {void}
+   */
   const showToast = (typ: ToastType, message: string) => {
     const date = new Date()
     const description = `${date.toLocaleDateString("en-EN", {

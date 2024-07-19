@@ -5,6 +5,7 @@ import RoleChecker from "@/components/Auth/RoleChecker"
 import NotifSettingsForm from "@/components/Forms/NotifSettingsForm"
 import { isMobile } from "react-device-detect"
 
+// Sidebar nav items
 const sidebarNavItems = [
   {
     title: "Application Settings",
@@ -24,6 +25,11 @@ const sidebarNavItems = [
   },
 ]
 
+/**
+ * Renders the NotifSettings component.
+ *
+ * @return {JSX.Element} The rendered NotifSettings component.
+ */
 const NotifSettings = () => {
   return (
     <>

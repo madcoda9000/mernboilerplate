@@ -1,5 +1,11 @@
 import * as React from "react"
 
+/**
+ * Custom React hook that listens to a media query and returns whether the query matches.
+ *
+ * @param {string} query - The media query string to match.
+ * @return {boolean} The current state of whether the media query matches.
+ */
 export function useMediaQuery(query: string) {
   const [value, setValue] = React.useState(false)
 

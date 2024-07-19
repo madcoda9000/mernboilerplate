@@ -2,6 +2,11 @@ import { RegisterForm } from "@/components/Forms/RegisterForm"
 import { ModeToggle } from "@/components/Utils/themeToggle"
 import Link from "next/link"
 
+/**
+ * Renders the Register page with account registration form and toggle for theme mode.
+ *
+ * @return {JSX.Element} The JSX element representing the Register page.
+ */
 const Register = () => {
   return (
     <>

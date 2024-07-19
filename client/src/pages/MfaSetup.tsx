@@ -2,6 +2,11 @@ import Link from "next/link"
 import { ModeToggle } from "@/components/Utils/themeToggle"
 import { MfaSetupForm } from "@/components/Forms/MfaSetupForm"
 
+/**
+ * Renders the 2FA Verification page with the MfaSetupForm component and agreement links.
+ *
+ * @return {JSX.Element} The rendered JSX for the 2FA Verification page.
+ */
 const MfaSetup = () => {
   return (
     <>

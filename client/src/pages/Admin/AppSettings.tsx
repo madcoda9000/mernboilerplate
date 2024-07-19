@@ -5,6 +5,7 @@ import RoleChecker from "@/components/Auth/RoleChecker"
 import AppSettingsForm from "@/components/Forms/AppSettingsForm"
 import { isMobile } from "react-device-detect"
 
+// Sidebar nav items
 const sidebarNavItems = [
   {
     title: "Application Settings",
@@ -24,6 +25,11 @@ const sidebarNavItems = [
   },
 ]
 
+/**
+ * Renders the AppSettings component.
+ *
+ * @return {JSX.Element} The rendered AppSettings component.
+ */
 const AppSettings = () => {
   return (
     <>

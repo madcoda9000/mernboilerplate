@@ -14,6 +14,12 @@ import { forgotPw2Payload } from "@/Interfaces/PayLoadINterfaces"
 
 interface FormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/**
+ * Renders a form for resetting a user's password.
+ *
+ * @param {FormProps} props - The props for the form.
+ * @return {JSX.Element} The rendered form.
+ */
 export function ForgotPw2Form({ className, ...props }: FormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [errMsg, setErrMsg] = React.useState<string>("")

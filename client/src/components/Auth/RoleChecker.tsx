@@ -5,6 +5,13 @@ interface RoleCheckerProps {
   requiredRole: string
 }
 
+/**
+ * A React functional component that checks the user's role and redirects if necessary.
+ *
+ * @param {RoleCheckerProps} props - The properties of the component.
+ * @param {string} props.requiredRole - The required role for the user.
+ * @return {React.ReactNode} The rendered component.
+ */
 const RoleChecker: React.FC<RoleCheckerProps> = (props) => {
   const navigate = useNavigate()
 

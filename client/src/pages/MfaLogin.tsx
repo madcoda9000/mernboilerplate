@@ -2,6 +2,11 @@ import Link from "next/link"
 import { ModeToggle } from "@/components/Utils/themeToggle"
 import { MfaLoginForm } from "@/components/Forms/MfaLoginForm"
 
+/**
+ * Renders the 2FA Verification page with the MfaLoginForm component and agreement links.
+ *
+ * @return {JSX.Element} The rendered JSX for the 2FA Verification page.
+ */
 const MfaLogin = () => {
   return (
     <>

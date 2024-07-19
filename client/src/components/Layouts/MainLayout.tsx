@@ -15,6 +15,11 @@ import { Toaster } from "@/components/ui/sonner"
 const timeout = 300_000
 const promptBeforeIdle = 30_000
 
+/**
+ * MainLayout component that handles layout rendering and user interactions.
+ *
+ * @return {JSX.Element} The main layout component JSX
+ */
 export default function MainLayout() {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const [open, setOpen] = useState<boolean>(false)

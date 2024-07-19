@@ -4,6 +4,11 @@ import { ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "@/components/Utils/DataTableColumnHeader"
 import { Role } from "@/Interfaces/GlobalInterfaces"
 
+/**
+ * Defines the columns for displaying roles in a table format.
+ *
+ * @param {ColumnDef<Role>[]} rolesClomns - Array of column definitions for the roles table.
+ */
 export const rolesClomns: ColumnDef<Role>[] = [
   /*
   {

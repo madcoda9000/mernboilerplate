@@ -6,6 +6,11 @@ import { useParams } from "react-router-dom"
 import { EditUserForm } from "@/components/Forms/EditUserForm"
 import { Separator } from "@/components/ui/separator"
 
+/**
+ * Renders the Edit User page based on the user's loading status.
+ *
+ * @return {JSX.Element} The JSX elements representing the Edit User page.
+ */
 const EditUser = () => {
   const [isLoading, SetIsLoading] = useState<boolean>(false)
   const { userId } = useParams()
