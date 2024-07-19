@@ -36,6 +36,7 @@ import Privacy from "@/pages/Privacy"
 import Users from "@/pages/Admin/Users"
 import EditUser from "@/pages/Admin/EditUser"
 import NewUser from "@/pages/Admin/NewUser"
+import Roles from "@/pages/Admin/Roles"
 
 function App() {
   return (
@@ -218,6 +219,14 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Admin/NewUser">
                       <NewUser />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Admin/Roles"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Admin/Roles">
+                      <Roles />
                     </ProtectedRoute>
                   }
                 ></Route>

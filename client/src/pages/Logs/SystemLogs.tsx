@@ -1,5 +1,5 @@
-import { SystemLog, columns } from "@/pages/Logs/SystemLogsColumnsDefinition"
-import { DataTable } from "@/pages/Logs/DataTable"
+import { SystemLog, columns } from "@/components/Utils/SystemLogsColumnsDefinition"
+import { DataTable } from "@/components/Utils/DataTable"
 import LogsService from "@/Services/LogsService"
 import { useEffect, useState } from "react"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"

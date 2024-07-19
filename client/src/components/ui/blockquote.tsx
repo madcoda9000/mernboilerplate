@@ -18,7 +18,7 @@ const Blockquote = ({ children, className }: BlockquoteProps) => {
   return (
     <div
       className={cn(
-        "relative rounded-lg border-l-8 border-l-white-700 dark:border-l-white-500  dark:bg-black py-5 pl-16 pr-5 font-sans text-lg italic leading-relaxed text-gray-200 dark:text-white before:absolute before:left-3 before:top-3 before:font-serif before:text-6xl before:text-gray-200 before:content-['“']",
+        "relative rounded-lg border-l-8 border-l-white-700 dark:border-l-white-500 dark:bg-black py-5 pl-16 pr-5 font-sans text-lg italic leading-relaxed text-gray-200 dark:text-white before:absolute before:left-3 before:top-3 before:font-serif before:text-6xl before:text-gray-200 before:content-['“']",
         className
       )}
     >
