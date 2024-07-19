@@ -7,7 +7,7 @@ import MfaChecker from "@/components/Auth/MfaChecker"
 import RoleChecker from "@/components/Auth/RoleChecker"
 import { useEffect, useState } from "react"
 import { isMobile } from "react-device-detect"
-import { User } from "@/Interfaces/GlobalInterfaces"
+import { Role, User } from "@/Interfaces/GlobalInterfaces"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { SettingsSidebar } from "@/components/Forms/SettingsSidebar"
 import {
@@ -34,9 +34,9 @@ import { Icons } from "@/components/Icons"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import RolesService from "@/Services/RolesService"
+import { rolesClomns } from "@/components/Utils/RolesColumnsDefinition"
 import { DataTable } from "@/components/Utils/DataTable"
-import { usersClomns } from "@/components/Utils/UsersColumsDefinition"
 
 const sidebarNavItems = [
   {
@@ -49,20 +49,20 @@ const sidebarNavItems = [
   },
 ]
 
-const Users = () => {
-  const [data, setData] = useState<User[]>([])
+const Roles = () => {
+  const [data, setData] = useState<Role[]>([])
   const [isLoading, SetIsLoading] = useState<boolean>(true)
   const navigate = useNavigate()
   type ToastType = "info" | "success" | "error"
 
   useEffect(() => {
     const getData = () => {
-      UsersService.getUsersPaginated(1, 90000, "").then((response) => {
+      RolesService.getRoles(1, 90000, "").then((response) => {
         if (response && !response.data.error) {
           const adpl: AuditEntryPayload = {
             user: JSON.parse(sessionStorage.getItem("user")!).userName,
             level: "info",
-            message: "Viewed Users",
+            message: "Viewed Roles",
           }
           LogsService.createAuditEntry(adpl)
           setData(response.data.paginatedResult.docs)
@@ -117,7 +117,7 @@ const Users = () => {
                 <div className="float-left w-[50%]"></div>
                 <div className="float-right">
                   <Button variant="blue" onClick={() => navigate("/Admin/NewUser")}>
-                    create new User
+                    create new Role
                   </Button>
                 </div>
                 <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
@@ -139,7 +139,7 @@ const Users = () => {
                       </div>
                     </>
                   ) : (
-                    <DataTable data={data} columns={usersClomns} />
+                    <DataTable data={data} columns={rolesClomns} />
                   )}
                 </div>
               </div>
@@ -154,4 +154,4 @@ const Users = () => {
     )
   }
 }
-export default Users
+export default Roles

@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DataTableColumnHeader } from "./DataTableColumnHeader"
+import { DataTableColumnHeader } from "@/components/Utils/DataTableColumnHeader"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Icons } from "@/components/Icons"
 
