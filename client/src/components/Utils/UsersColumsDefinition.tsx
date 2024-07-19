@@ -21,6 +21,12 @@ import UsersService from "@/Services/UsersService"
 
 type ToastType = "info" | "success" | "error"
 
+/**
+ * Shows a toast message based on the type and message provided.
+ *
+ * @param {ToastType} typ - The type of the toast message (info, success, or error).
+ * @param {string} message - The message content to be displayed in the toast.
+ */
 const showToast = (typ: ToastType, message: string) => {
   const date = new Date()
   const description = `${date.toLocaleDateString("en-EN", {

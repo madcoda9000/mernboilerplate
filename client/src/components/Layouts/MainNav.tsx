@@ -9,6 +9,11 @@ declare const window: {
   BASE_URL: string
 } & Window
 
+/**
+ * MainNav component for rendering the main navigation menu.
+ *
+ * @return {JSX.Element} The rendered main navigation menu.
+ */
 export function MainNav() {
   const nav = useNavigate()
   /* define active and inactive styles */

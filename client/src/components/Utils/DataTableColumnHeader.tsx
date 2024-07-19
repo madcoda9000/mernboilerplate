@@ -16,6 +16,14 @@ interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes
   title: string
 }
 
+/**
+ * Renders a column header for a data table with sorting and visibility options.
+ *
+ * @template TData - The type of data in the table.
+ * @template TValue - The type of value in the table.
+ * @param {DataTableColumnHeaderProps<TData, TValue>} props - The props containing the column and title for the column header.
+ * @return {JSX.Element} The JSX element representing the column header.
+ */
 export function DataTableColumnHeader<TData, TValue>({
   column,
   title,

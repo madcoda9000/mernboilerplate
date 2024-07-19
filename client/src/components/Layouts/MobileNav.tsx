@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom"
 import { Icons } from "../Icons"
 import { SheetClose } from "@/components/ui/sheet"
 
+/**
+ * Renders the mobile navigation menu with main menu, settings, and logs.
+ *
+ * @return {JSX.Element} The JSX elements for the mobile navigation menu.
+ */
 const MobileNav = () => {
   const nav = useNavigate()
   return (

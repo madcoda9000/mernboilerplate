@@ -9,6 +9,11 @@ declare const window: {
 } & Window
 const appTitle = window.APP_TITLE
 
+/**
+ * Renders the AuthLayout component.
+ *
+ * @return {JSX.Element} The rendered AuthLayout component.
+ */
 export default function AuthLayout() {
   const [aSettings, setAsettings] = useState<AppSettings>()
   const [quote, setQuote] = useState<Quote>()

@@ -5,6 +5,7 @@ import RoleChecker from "@/components/Auth/RoleChecker"
 import MailSettingsForm from "@/components/Forms/MailSettingsForm"
 import { isMobile } from "react-device-detect"
 
+// Sidebar nav items
 const sidebarNavItems = [
   {
     title: "Application Settings",
@@ -24,6 +25,11 @@ const sidebarNavItems = [
   },
 ]
 
+/**
+ * Renders the MailSettings component.
+ *
+ * @return {JSX.Element} The rendered MailSettings component.
+ */
 const MailSettings = () => {
   return (
     <>

@@ -27,6 +27,13 @@ export type SystemLog = {
   meta: object
 }
 
+/**
+ * Defines the columns for displaying system logs in a table format.
+ *
+ * This type is used to define the shape of the data.
+ *
+ * @param {ColumnDef<SystemLog>[]} columns - Array of column definitions for the system logs table.
+ */
 export const columns: ColumnDef<SystemLog>[] = [
   /*
   {

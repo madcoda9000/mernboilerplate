@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { SettingsSidebar } from "@/components/Forms/SettingsSidebar"
 import { AuditEntryPayload } from "@/Interfaces/PayLoadINterfaces"
 
+// sidebarNavItems
 const sidebarNavItems = [
   {
     title: "System Logs",
@@ -29,11 +30,17 @@ const sidebarNavItems = [
   },
 ]
 
+/**
+ * Function component for displaying System Logs.
+ *
+ * @return {JSX.Element} The rendered JSX for System Logs.
+ */
 const SystemLogs = () => {
   const [data, setData] = useState<SystemLog[]>([])
   const [isLoading, SetIsLoading] = useState<boolean>(true)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
+  // get data
   useEffect(() => {
     const getData = () => {
       LogsService.getSystemLogs(1, 90000, "").then((response) => {

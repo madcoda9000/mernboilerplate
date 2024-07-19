@@ -5,6 +5,11 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { NewUserForm } from "@/components/Forms/NewUserForm"
 import { Separator } from "@/components/ui/separator"
 
+/**
+ * Renders the NewUser component based on the loading state.
+ *
+ * @return {JSX.Element} The JSX elements representing the NewUser component.
+ */
 const NewUser = () => {
   const [isLoading, SetIsLoading] = useState<boolean>(false)
 

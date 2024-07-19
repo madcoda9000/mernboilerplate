@@ -8,6 +8,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "@/components/Utils/themeProvider"
 
+/**
+ * Function component for toggling between different themes.
+ *
+ * @return {JSX.Element} The JSX element for the mode toggle functionality.
+ */
 export function ModeToggle() {
   const { setTheme } = useTheme()
 

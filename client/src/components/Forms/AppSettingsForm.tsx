@@ -30,6 +30,11 @@ const FormSchema = z.object({
   showResetPasswordLink: z.boolean(),
 })
 
+/**
+ * Renders a form for updating application settings.
+ *
+ * @return {JSX.Element} The rendered form component.
+ */
 const AppsettingsForm = () => {
   const [settings, setSettings] = useState<appSettingsPayload | null>(null)
   const [isLoading, SetIsLoading] = useState<boolean>(true)

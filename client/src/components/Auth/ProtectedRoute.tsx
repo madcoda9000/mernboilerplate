@@ -7,6 +7,15 @@ interface ProtectedRouteProps {
   request: string
 }
 
+/**
+ * Renders the protected route component.
+ *
+ * @param {ProtectedRouteProps} props - The props for the component.
+ * @param {React.ReactNode} props.children - The child components to render.
+ * @param {string} props.accessBy - The access level required for the route.
+ * @param {string} props.request - The request type.
+ * @return {React.ReactNode} The rendered component.
+ */
 const ProtectedRoute: FC<ProtectedRouteProps> = ({ children, accessBy, request }) => {
   const { user } = useAuthContext()
   if (accessBy === "non-authenticated") {

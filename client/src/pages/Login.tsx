@@ -2,6 +2,11 @@ import Link from "next/link"
 import { ModeToggle } from "@/components/Utils/themeToggle"
 import { LoginForm } from "@/components/Forms/LoginForm"
 
+/**
+ * Renders the Login page with user authentication form and agreement links.
+ *
+ * @return {JSX.Element} The Login page JSX content.
+ */
 const Login = () => {
   return (
     <>

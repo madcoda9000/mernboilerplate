@@ -1,4 +1,11 @@
+/**
+ * A class containing arrays of menu entries for different settings and logs.
+ */
 class MenuEntries {
+  /**
+   * An array of objects representing settings menu entries.
+   * Each object has a title, href, and description property.
+   */
   static settingsItems: { title: string; href: string; description: string }[] = [
     {
       title: "Application Settings",
@@ -22,8 +29,10 @@ class MenuEntries {
     },
   ]
 
-  /* define logs links arry */
-
+  /**
+   * An array of objects representing logs menu entries.
+   * Each object has a title, href, and description property.
+   */
   static logsItems: { title: string; href: string; description: string }[] = [
     {
       title: "Audit Logs",
@@ -42,4 +51,5 @@ class MenuEntries {
     },
   ]
 }
+
 export default MenuEntries

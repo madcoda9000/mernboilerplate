@@ -38,6 +38,11 @@ import EditUser from "@/pages/Admin/EditUser"
 import NewUser from "@/pages/Admin/NewUser"
 import Roles from "@/pages/Admin/Roles"
 
+/**
+ * Renders the main application component.
+ *
+ * @return {JSX.Element} The rendered application component.
+ */
 function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">

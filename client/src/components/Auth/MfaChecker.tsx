@@ -1,6 +1,15 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
+/**
+ * A React functional component that checks if Multi-Factor Authentication (MFA) is enabled and verified for the user.
+ * It fetches the user from session storage and checks the MFA-related properties of the user's token.
+ * If MFA is enabled but not verified, it navigates the user to the MFA login page.
+ * If MFA is not enabled but MFA enforcement is enabled, it navigates the user to the MFA setup page.
+ * If the user is not found in session storage, it navigates the user to the login page.
+ *
+ * @return {null} This component does not render anything, it only performs navigation.
+ */
 const MfaChecker: React.FC = () => {
   const navigate = useNavigate()
 

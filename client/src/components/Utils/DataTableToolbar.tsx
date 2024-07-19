@@ -11,6 +11,14 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>
 }
 
+/**
+ * Renders a toolbar for a data table with search input fields and a reset button.
+ *
+ * @template TData - The type of data in the table.
+ * @param {DataTableToolbarProps<TData>} props - The props for the component.
+ * @param {Table<TData>} props.table - The table instance.
+ * @returns {JSX.Element} - The rendered toolbar.
+ */
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
   const availableColumns = table.getAllColumns().map((column) => column.id)

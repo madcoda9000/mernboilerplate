@@ -32,6 +32,14 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
+/**
+ * Renders a data table with customizable columns, row selection, and filtering options.
+ *
+ * @template TData - The type of data in the table.
+ * @template TValue - The type of value in the table.
+ * @param {DataTableProps<TData, TValue>} props - The props containing columns and data for the table.
+ * @return {JSX.Element} The JSX element representing the data table.
+ */
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})

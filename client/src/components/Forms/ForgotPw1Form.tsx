@@ -13,6 +13,12 @@ import { forgotPw1Payload } from "@/Interfaces/PayLoadINterfaces"
 
 interface FormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/**
+ * Renders a form for resetting a user's password. The form validates the email address input and sends a request to the server to initiate the password reset process.
+ *
+ * @param {FormProps} props - An object containing the className and any other props to be spread onto the form div.
+ * @return {JSX.Element} A JSX element representing the form for resetting a user's password.
+ */
 export function ForgotPw1Form({ className, ...props }: FormProps) {
   const [errMsg, setErrMsg] = React.useState<string>("")
   const [succMsg, setSuccMsg] = React.useState<string>("")
@@ -49,6 +55,11 @@ export function ForgotPw1Form({ className, ...props }: FormProps) {
     return hasErrors
   }
 
+  /**
+   * A function that handles form submission for resetting a user's password. It prevents the default form submission behavior, sets loading state to true, validates the email input, and sends a request to the server to initiate the password reset process. It then updates the loading state based on the response from the server and sets error or success messages accordingly.
+   *
+   * @param {React.SyntheticEvent} event - The event object representing the form submission event.
+   */
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault()
     setIsLoading(true)

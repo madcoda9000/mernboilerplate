@@ -1,3 +1,8 @@
+/**
+ * Renders the Privacy component.
+ *
+ * @return {JSX.Element} The rendered Privacy component.
+ */
 const Privacy = () => {
   return (
     <div className="p-8 overflow-y-auto h-[100vh] max-h-[100vh]">

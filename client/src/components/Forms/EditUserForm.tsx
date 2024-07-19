@@ -49,6 +49,12 @@ const FormSchema = z.object({
 
 interface EditUserFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/**
+ * Renders an edit user form with various input fields and role selection.
+ *
+ * @param {EditUserFormProps} props - The props object containing className and other props.
+ * @return {JSX.Element} The rendered edit user form.
+ */
 export function EditUserForm({ className, ...props }: EditUserFormProps) {
   const [user, setUser] = React.useState<User | null>(null)
   const [errMsg, setErrMsg] = useState<string>("")
@@ -88,6 +94,12 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
     }
   }, [allRoles])
 
+  /**
+   * Fetches user data and sets values in the form.
+   *
+   * @param {void}
+   * @return {Promise<void>} Promise that resolves once user data is fetched and form values are set
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -122,6 +134,12 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
     fetchData()
   }, [form, userId])
 
+  /**
+   * Validates and updates the selected checkbox and related user roles.
+   *
+   * @param {string} e - The id of the checkbox element.
+   * @return {void} This function does not return anything.
+   */
   const valChkBx = (e: string) => {
     const selBox = document.getElementById(e) as HTMLInputElement | null
     const nameAttr = selBox?.getAttribute("name")
@@ -165,15 +183,32 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
     })
   }
 
+  /**
+   * A function that handles the change event for the password input.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The event object representing the change in the input field.
+   * @return {void} This function does not return anything.
+   */
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     setnPassword(value)
   }
 
+  /**
+   * Toggles the visibility of the password.
+   *
+   * @return {void} This function does not return anything.
+   */
   const handlePwVisibility = () => {
     setPwVisible((current) => !current)
   }
 
+  /**
+   * Generates a random password of the specified length using a given character set.
+   *
+   * @param {number} length - The length of the password to generate.
+   * @return {void} This function does not return anything.
+   */
   const handleGeneratePassword = (length: number) => {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_=+"
 
@@ -194,6 +229,12 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
     setnPassword(tempPW)
   }
 
+  /**
+   * A function that handles form submission, updates user data, and triggers service calls based on the form data.
+   *
+   * @param {z.infer<typeof FormSchema>} data - The form data containing user information.
+   * @return {void} No return value.
+   */
   function onSubmit(data: z.infer<typeof FormSchema>) {
     SetBtnLoading(true)
     if (user !== null) {

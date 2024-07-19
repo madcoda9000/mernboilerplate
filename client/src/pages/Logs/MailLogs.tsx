@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { SettingsSidebar } from "@/components/Forms/SettingsSidebar"
 import { AuditEntryPayload } from "@/Interfaces/PayLoadINterfaces"
 
+// sidebarNavItems
 const sidebarNavItems = [
   {
     title: "System Logs",
@@ -29,11 +30,17 @@ const sidebarNavItems = [
   },
 ]
 
+/**
+ * Renders the Mail Logs component, fetches mail logs data, and displays it in a data table.
+ *
+ * @return {JSX.Element} The JSX element representing the Mail Logs component.
+ */
 const MailLogs = () => {
   const [data, setData] = useState<SystemLog[]>([])
   const [isLoading, SetIsLoading] = useState<boolean>(true)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
+  // get data
   useEffect(() => {
     const getData = () => {
       LogsService.getMailLogs(1, 90000, "").then((response) => {

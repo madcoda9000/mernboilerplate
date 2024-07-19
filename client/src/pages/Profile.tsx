@@ -30,6 +30,7 @@ const passwordValidation = new RegExp(
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
 )
 
+//mail form schema definition
 const emailFormSchema = z.object({
   email: z
     .string()
@@ -37,6 +38,7 @@ const emailFormSchema = z.object({
     .email("Please enter a valid email address!"),
 })
 
+//password form schema definition
 const pwFormSchema = z.object({
   password: z
     .string()
@@ -47,6 +49,11 @@ const pwFormSchema = z.object({
   currPassword: z.string().min(1, { message: "Current password cannot be empty." }),
 })
 
+/**
+ * Renders the Profile component.
+ *
+ * @return {JSX.Element} The rendered Profile component.
+ */
 const Profile = () => {
   const { user } = useAuthContext()
   const isDesktop = useMediaQuery("(min-width: 768px)")
@@ -56,10 +63,21 @@ const Profile = () => {
   const [isPwLoading, setIsPwLoading] = useState<boolean>(false)
   const [isEmLoading, setIsEmLoading] = useState<boolean>(false)
 
+  /**
+   * Toggles the visibility of the password.
+   *
+   * @return {void} This function does not return anything.
+   */
   const handlePw1Visibility = () => {
     setPw1Visible((current) => !current)
   }
 
+  /**
+   * Generates a random password of a specified length.
+   *
+   * @param {number} length - The length of the password to generate.
+   * @return {void} This function does not return anything.
+   */
   const handleGeneratePassword = (length: number) => {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_=+"
 
@@ -77,7 +95,7 @@ const Profile = () => {
     pwForm.setValue("password", tempPW)
   }
 
-  // 1. Define forms.
+  // email form definition
   const emailForm = useForm<z.infer<typeof emailFormSchema>>({
     resolver: zodResolver(emailFormSchema),
     defaultValues: {
@@ -85,6 +103,7 @@ const Profile = () => {
     },
   })
 
+  // password form definition
   const pwForm = useForm<z.infer<typeof pwFormSchema>>({
     resolver: zodResolver(pwFormSchema),
     defaultValues: {
@@ -93,7 +112,12 @@ const Profile = () => {
     },
   })
 
-  // 2. submit functions
+  /**
+   * A function to handle the submission of an email form.
+   *
+   * @param {z.infer<typeof emailFormSchema>} values - The values from the email form.
+   * @return {void} This function does not return anything.
+   */
   async function handleEmailFormSubmit(values: z.infer<typeof emailFormSchema>) {
     setIsEmLoading(true)
     const payload: changeEmailPayload = {
@@ -111,6 +135,12 @@ const Profile = () => {
     })
   }
 
+  /**
+   * Submits the password form and updates the user's password.
+   *
+   * @param {z.infer<typeof pwFormSchema>} values - The form values containing the current password and new password.
+   * @return {void} This function does not return anything.
+   */
   function handlePwFormSubmit(values: z.infer<typeof pwFormSchema>) {
     setIsPwLoading(true)
     const payload: changePasswordPayload = {
@@ -129,6 +159,11 @@ const Profile = () => {
     })
   }
 
+  /**
+   * Renders the email form with sections for current and new email addresses, and a button to submit the form.
+   *
+   * @return {void} This function does not return anything directly.
+   */
   const renderEmailForm = () => {
     return (
       <>
@@ -175,6 +210,11 @@ const Profile = () => {
     )
   }
 
+  /**
+   * Renders the password form with sections for current and new passwords, and a button to submit the form.
+   *
+   * @return {JSX.Element} The JSX element representing the password form.
+   */
   const renderPwForm = () => {
     return (
       <>

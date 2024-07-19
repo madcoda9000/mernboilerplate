@@ -5,6 +5,7 @@ import RoleChecker from "@/components/Auth/RoleChecker"
 import LdapSettingsForm from "@/components/Forms/LdapSettingsForm"
 import { isMobile } from "react-device-detect"
 
+// Sidebar nav items
 const sidebarNavItems = [
   {
     title: "Application Settings",
@@ -24,6 +25,11 @@ const sidebarNavItems = [
   },
 ]
 
+/**
+ * Renders the LdapSettings component.
+ *
+ * @return {JSX.Element} The rendered LdapSettings component.
+ */
 const LdapSettings = () => {
   return (
     <>

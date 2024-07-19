@@ -20,6 +20,14 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
+/**
+ * ThemeProvider function that provides theming functionality for the application.
+ *
+ * @param {ThemeProviderProps} children - The child components to be themed.
+ * @param {Theme} defaultTheme - The default theme to be used if no theme is set.
+ * @param {string} storageKey - The key used to store the theme in local storage.
+ * @return {JSX.Element} The themed components wrapped in ThemeProviderContext.Provider.
+ */
 export function ThemeProvider({
   children,
   defaultTheme = "system",

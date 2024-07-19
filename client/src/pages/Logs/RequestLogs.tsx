@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { SettingsSidebar } from "@/components/Forms/SettingsSidebar"
 import { AuditEntryPayload } from "@/Interfaces/PayLoadINterfaces"
 
+// sidebarNavItems
 const sidebarNavItems = [
   {
     title: "System Logs",
@@ -29,11 +30,17 @@ const sidebarNavItems = [
   },
 ]
 
+/**
+ * Renders the Request Logs page with data fetched from the server.
+ *
+ * @returns {JSX.Element} The rendered Request Logs page.
+ */
 const RequestLogs = () => {
   const [data, setData] = useState<SystemLog[]>([])
   const [isLoading, SetIsLoading] = useState<boolean>(true)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
+  // get data
   useEffect(() => {
     const getData = () => {
       LogsService.getRequestLogs(1, 90000, "").then((response) => {
