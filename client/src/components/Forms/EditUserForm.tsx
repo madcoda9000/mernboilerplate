@@ -199,7 +199,9 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
    *
    * @return {void} This function does not return anything.
    */
-  const handlePwVisibility = () => {
+  const handlePwVisibility = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     setPwVisible((current) => !current)
   }
 
@@ -209,7 +211,9 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
    * @param {number} length - The length of the password to generate.
    * @return {void} This function does not return anything.
    */
-  const handleGeneratePassword = (length: number) => {
+  const handleGeneratePassword = (e: React.MouseEvent, length: number) => {
+    e.preventDefault()
+    e.stopPropagation()
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_=+"
 
     const getRandomInt = (max: number) => {
@@ -347,12 +351,12 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                   />
                 </div>
 
-                <div className="">
+                <div className="relative ml-[12px] mr-[12px]">
                   <FormField
                     control={form.control}
                     name="accountLocked"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+                      <FormItem className="flex flex-row items-center justify-between p-0">
                         <div className="space-y-0.5">
                           <FormLabel className="">Account Status</FormLabel>
                           <FormDescription className=" pr-3">
@@ -370,12 +374,12 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                     )}
                   />
                 </div>
-                <div className="">
+                <div className="relative ml-[12px] mr-[12px]">
                   <FormField
                     control={form.control}
                     name="mfaEnforced"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+                      <FormItem className="flex flex-row items-center justify-between p-02">
                         <div className="space-y-0.5">
                           <FormLabel className="">MFA Enforcement</FormLabel>
                           <FormDescription className=" pr-3">
@@ -393,12 +397,12 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                     )}
                   />
                 </div>
-                <div className="">
+                <div className="relative ml-[12px] mr-[12px]">
                   <FormField
                     control={form.control}
                     name="ldapEnabled"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+                      <FormItem className="flex flex-row items-center justify-between p-0">
                         <div className="space-y-0.5">
                           <FormLabel className="">LDAP SIgnin</FormLabel>
                           <FormDescription className=" pr-3">
@@ -416,12 +420,12 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                     )}
                   />
                 </div>
-                <div className="">
+                <div className="relative ml-[12px] mr-[12px]">
                   <FormField
                     control={form.control}
                     name="emailVerified"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+                      <FormItem className="flex flex-row items-center justify-between p-0">
                         <div className="space-y-0.5">
                           <FormLabel className="">Email verification</FormLabel>
                           <FormDescription className=" pr-3">
@@ -469,7 +473,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                         className="relative top-[-57px] left-[146px] -translate-y-1/2 transform h-[16px] w-[16px]"
                         style={{ cursor: "pointer", color: "2b90ef" }}
                         title="generate a secure password..."
-                        onClick={() => handleGeneratePassword(12)}
+                        onClick={(e) => handleGeneratePassword(e, 12)}
                       />
                     </TooltipTrigger>
                     <TooltipContent>
@@ -486,7 +490,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                           className="relative top-[-57px] left-[156px] -translate-y-1/2 transform h-[16px] w-[16px]"
                           style={{ cursor: "pointer", color: "#25c281" }}
                           title="generate a secure password..."
-                          onClick={() => handlePwVisibility()}
+                          onClick={(e) => handlePwVisibility(e)}
                         />
                       </TooltipTrigger>
                     </Tooltip>
@@ -497,10 +501,10 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                           <p>toggle password visibility.</p>
                         </TooltipContent>
                         <Icons.eyeyOpen
-                          className="relative top-[-57px] left-[140px] -translate-y-1/2 transform h-[16px] w-[16px]"
+                          className="relative top-[-57px] left-[156px] -translate-y-1/2 transform h-[16px] w-[16px]"
                           style={{ cursor: "pointer" }}
                           title="generate a secure password..."
-                          onClick={() => handlePwVisibility()}
+                          onClick={(e) => handlePwVisibility(e)}
                         />
                       </TooltipTrigger>
                     </Tooltip>

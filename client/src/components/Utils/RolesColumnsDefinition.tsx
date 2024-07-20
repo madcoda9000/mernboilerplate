@@ -38,19 +38,17 @@ export const rolesClomns: ColumnDef<Role>[] = [
     accessorKey: "_id",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Id" />,
     cell: ({ row }) => {
-      return <div className="max-w-[160px] w-[160px]">{row.getValue("_id")}</div>
+      return <div className="max-w-[130px] w-[130px]">{row.getValue("_id")}</div>
     },
-    size: 160,
+    size: 130,
     maxSize: 160,
   },
   {
     accessorKey: "roleName",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
     cell: ({ row }) => {
-      return <div className="flex w-[60px] max-w-[60px]">{row.getValue("roleName")}</div>
+      return <div className="flex w-[400px]">{row.getValue("roleName")}</div>
     },
-    size: 60,
-    maxSize: 60,
   } /*
   {
     id: "actions",

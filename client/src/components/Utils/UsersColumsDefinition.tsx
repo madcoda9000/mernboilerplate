@@ -18,8 +18,19 @@ import { toast } from "sonner"
 import LogsService from "@/Services/LogsService"
 import { AuditEntryPayload, userIdPayload } from "@/Interfaces/PayLoadINterfaces"
 import UsersService from "@/Services/UsersService"
+import { useNavigate } from "react-router-dom"
 
 type ToastType = "info" | "success" | "error"
+
+/**
+ * Redirects to the specified target.
+ *
+ * @param {string} target - The target URL to redirect to
+ * @return {void}
+ */
+const makeRedirect = (target: string) => {
+  window.location.href = target
+}
 
 /**
  * Shows a toast message based on the type and message provided.
@@ -76,6 +87,42 @@ const handleMfaEnforcement = (user: User) => {
   }
 }
 
+/**
+ * Handles the account status of a user by locking or unlocking the account based on the user's accountLocked status.
+ *
+ * @param {User} user - The user object for which the account status is being handled.
+ */
+const handleAccountStatus = (user: User) => {
+  const pl: userIdPayload = {
+    _id: user._id,
+  }
+  if (user.accountLocked === true) {
+    UsersService.unlockUser(pl).then((response) => {
+      if (response && !response.data.error) {
+        const adpl: AuditEntryPayload = {
+          user: JSON.parse(sessionStorage.getItem("user")!).userName,
+          level: "warn",
+          message: `User account ${user.userName} successfully unlocked!`,
+        }
+        LogsService.createAuditEntry(adpl)
+        showToast("success", `User account ${user.userName} unlocked!`)
+      }
+    })
+  } else {
+    UsersService.lockUser(pl).then((response) => {
+      if (response && !response.data.error) {
+        const adpl: AuditEntryPayload = {
+          user: JSON.parse(sessionStorage.getItem("user")!).userName,
+          level: "warn",
+          message: `User account ${user.userName} successfully locked!`,
+        }
+        LogsService.createAuditEntry(adpl)
+        showToast("success", `User account ${user.userName} locked!`)
+      }
+    })
+  }
+}
+
 export const usersClomns: ColumnDef<User>[] = [
   /*
   {
@@ -115,7 +162,7 @@ export const usersClomns: ColumnDef<User>[] = [
                 <Icons.circleCross
                   className="inline mr-3 text-destructive cursor-pointer"
                   title="activate account"
-                  onClick={() => handleMfaEnforcement(row.original)}
+                  onClick={() => handleAccountStatus(row.original)}
                 />
               </TooltipTrigger>
               <TooltipContent>
@@ -128,7 +175,7 @@ export const usersClomns: ColumnDef<User>[] = [
                 <Icons.circleCheck
                   className="inline mr-3 text-success cursor-pointer"
                   title="activate account"
-                  onClick={() => handleMfaEnforcement(row.original)}
+                  onClick={() => handleAccountStatus(row.original)}
                 />
               </TooltipTrigger>
               <TooltipContent>
@@ -259,22 +306,14 @@ export const usersClomns: ColumnDef<User>[] = [
                 <Icons.clipboardCopy className="inline mr-3" />
                 Copy user name
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => {
+                  makeRedirect("/Admin/EditUser/" + row.original._id)
+                }}
+              >
                 <Icons.pencil className="inline mr-3" />
                 Edit User
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                {row.original.accountLocked.toString() === "true" ? (
-                  <>
-                    <Icons.lockOpen className="inline mr-3" />
-                    Unlock User
-                  </>
-                ) : (
-                  <>
-                    <Icons.lockOpen className="inline mr-3" />
-                    Lock User
-                  </>
-                )}
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
                 <Icons.circleCross className="inline mr-3" />
