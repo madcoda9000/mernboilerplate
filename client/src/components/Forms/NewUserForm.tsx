@@ -65,13 +65,14 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
   const [hintText, setHintText] = useState("")
   const [btnLoading, SetBtnLoading] = useState<boolean>(false)
 
+  // form schema definition
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      _userName: user?.userName,
-      _firstName: user?.firstName,
-      _lastName: user?.lastName,
-      _email: user?.email,
+      _userName: user?.userName || "",
+      _firstName: user?.firstName || "",
+      _lastName: user?.lastName || "",
+      _email: user?.email || "",
       _mfaEnforced: false,
       _ldapEnabled: false,
       _emailVerified: false,
@@ -79,21 +80,38 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
     },
   })
 
+  /**
+   * Asynchronously fetches data based on certain conditions.
+   *
+   * @return {void} No return value
+   */
   useEffect(() => {
-    if (!allRoles) {
-      RolesService.getRoles(1, 1000, "").then((response) => {
-        if (response.data.error) {
-          setErrMsg(response.data.message)
-        } else {
-          setAllRoles(response.data.paginatedResult)
+    const fetchData = async () => {
+      try {
+        if (!allRoles) {
+          const response = await RolesService.getRoles(1, 1000, "")
+          if (response.data.error) {
+            setErrMsg(response.data.message)
+          } else {
+            setAllRoles(response.data.paginatedResult)
+          }
         }
-      })
+        if (!user) {
+          setUser(new UserClass({ roles: [] }))
+        }
+      } catch (error) {
+        setErrMsg("Error fetching roles: " + error.message)
+      }
     }
-    if (!user) {
-      setUser(new UserClass({ roles: [] }))
-    }
+    fetchData()
   }, [allRoles, user])
 
+  /**
+   * Validates and updates the selected checkbox and related user roles.
+   *
+   * @param {string} e - The id of the checkbox element.
+   * @return {void} This function does not return anything.
+   */
   const valChkBx = (e: string) => {
     const selBox = document.getElementById(e) as HTMLInputElement | null
     const nameAttr = selBox?.getAttribute("name")
@@ -137,16 +155,38 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
     })
   }
 
+  /**
+   * Updates the state variable 'nPassword' with the value from the input element.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The event object representing the change in the input field.
+   * @return {void} This function does not return anything.
+   */
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     setnPassword(value)
   }
 
-  const handlePwVisibility = () => {
+  /**
+   * Toggles the visibility of the password.
+   *
+   * @param {void} This function does not take any parameters.
+   * @return {void} This function does not return anything.
+   */
+  const handlePwVisibility = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     setPwVisible((current) => !current)
   }
 
-  const handleGeneratePassword = (length: number) => {
+  /**
+   * Generates a random password of a specified length using a given character set.
+   *
+   * @param {number} length - The length of the password to generate.
+   * @return {void} This function does not return anything.
+   */
+  const handleGeneratePassword = (e: React.MouseEvent, length: number) => {
+    e.preventDefault()
+    e.stopPropagation()
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_=+"
 
     const getRandomInt = (max: number) => {
@@ -166,7 +206,14 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
     setnPassword(tempPW)
   }
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  /**
+   * Submits the form data to create a new user.
+   *
+   * @param {z.infer<typeof FormSchema>} data - The form data containing the user information.
+   * @return {void} This function does not return anything.
+   * @throws {Error} If the password is empty or undefined, or if no roles are selected for the user.
+   */
+  function submitForm(data: z.infer<typeof FormSchema>) {
     if (nPassword === "" || nPassword === undefined) {
       setErrMsg("Please enter a password for the new User!")
     } else if (user?.roles.length === 0) {
@@ -229,7 +276,7 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
             </Alert>
           )}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form>
               <div className="grid gap-3">
                 <div className="">
                   <FormField
@@ -288,12 +335,12 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                   />
                 </div>
 
-                <div className="">
+                <div className="relative ml-[12px] mr-[12px]">
                   <FormField
                     control={form.control}
                     name="_accountLocked"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+                      <FormItem className="flex flex-row items-center justify-between p-0">
                         <div className="space-y-0.5">
                           <FormLabel className="">Account Status</FormLabel>
                           <FormDescription className=" pr-3">
@@ -311,12 +358,12 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                     )}
                   />
                 </div>
-                <div className="">
+                <div className="relative ml-[12px] mr-[12px]">
                   <FormField
                     control={form.control}
                     name="_mfaEnforced"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+                      <FormItem className="flex flex-row items-center justify-between p-0">
                         <div className="space-y-0.5">
                           <FormLabel className="">MFA Enforcement</FormLabel>
                           <FormDescription className=" pr-3">
@@ -334,12 +381,12 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                     )}
                   />
                 </div>
-                <div className="">
+                <div className="relative ml-[12px] mr-[12px]">
                   <FormField
                     control={form.control}
                     name="_ldapEnabled"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+                      <FormItem className="flex flex-row items-center justify-between p-0">
                         <div className="space-y-0.5">
                           <FormLabel className="">LDAP SIgnin</FormLabel>
                           <FormDescription className=" pr-3">
@@ -357,12 +404,12 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                     )}
                   />
                 </div>
-                <div className="">
+                <div className="relative ml-[12px] mr-[12px]">
                   <FormField
                     control={form.control}
                     name="_emailVerified"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+                      <FormItem className="flex flex-row items-center justify-between p-0">
                         <div className="space-y-0.5">
                           <FormLabel className="">Email verification</FormLabel>
                           <FormDescription className=" pr-3">
@@ -410,7 +457,7 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                         className="relative top-[-57px] left-[146px] -translate-y-1/2 transform h-[16px] w-[16px]"
                         style={{ cursor: "pointer", color: "2b90ef" }}
                         title="generate a secure password..."
-                        onClick={() => handleGeneratePassword(12)}
+                        onClick={(e) => handleGeneratePassword(e, 14)}
                       />
                     </TooltipTrigger>
                     <TooltipContent>
@@ -421,13 +468,13 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                     <Tooltip>
                       <TooltipTrigger>
                         <TooltipContent>
-                          <p>toggle password visibilityd.</p>
+                          <p>toggle password visibility.</p>
                         </TooltipContent>
                         <Icons.eyeClosed
                           className="relative top-[-57px] left-[156px] -translate-y-1/2 transform h-[16px] w-[16px]"
                           style={{ cursor: "pointer", color: "#25c281" }}
                           title="generate a secure password..."
-                          onClick={() => handlePwVisibility()}
+                          onClick={(e) => handlePwVisibility(e)}
                         />
                       </TooltipTrigger>
                     </Tooltip>
@@ -438,10 +485,10 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                           <p>toggle password visibility.</p>
                         </TooltipContent>
                         <Icons.eyeyOpen
-                          className="relative top-[-57px] left-[140px] -translate-y-1/2 transform h-[16px] w-[16px]"
+                          className="relative top-[-57px] left-[156px] -translate-y-1/2 transform h-[16px] w-[16px]"
                           style={{ cursor: "pointer" }}
                           title="generate a secure password..."
-                          onClick={() => handlePwVisibility()}
+                          onClick={(e) => handlePwVisibility(e)}
                         />
                       </TooltipTrigger>
                     </Tooltip>
@@ -480,7 +527,7 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                   <Button onClick={() => nav("/Admin/Users")} variant={"outline"}>
                     Cancel
                   </Button>
-                  <Button type="submit">
+                  <Button type="button" onClick={form.handleSubmit(submitForm)}>
                     {btnLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}save new
                     user.....
                   </Button>
