@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "@/components/Utils/DataTableColumnHeader"
 import { Role } from "@/Interfaces/GlobalInterfaces"
+import { Checkbox } from "../ui/checkbox"
 
 /**
  * Defines the columns for displaying roles in a table format.
@@ -10,7 +11,6 @@ import { Role } from "@/Interfaces/GlobalInterfaces"
  * @param {ColumnDef<Role>[]} rolesClomns - Array of column definitions for the roles table.
  */
 export const rolesClomns: ColumnDef<Role>[] = [
-  /*
   {
     id: "select",
     header: ({ table }) => (
@@ -33,7 +33,7 @@ export const rolesClomns: ColumnDef<Role>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },*/
+  },
   {
     accessorKey: "_id",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Id" />,

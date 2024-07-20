@@ -283,8 +283,8 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                     control={form.control}
                     name="_userName"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="relative ml-[12px]">The username</FormLabel>
+                      <FormItem className="flex items-center space-x-3">
+                        <FormLabel className="relative ml-[12px]">Username</FormLabel>
                         <FormControl>
                           <Input type="text" value={field.value} onChange={field.onChange} />
                         </FormControl>
@@ -297,8 +297,8 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                     control={form.control}
                     name="_firstName"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="relative ml-[12px]">The Firstname</FormLabel>
+                      <FormItem className="flex items-center space-x-3">
+                        <FormLabel className="relative ml-[12px]">Firstname</FormLabel>
                         <FormControl>
                           <Input type="text" value={field.value} onChange={field.onChange} />
                         </FormControl>
@@ -311,8 +311,8 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                     control={form.control}
                     name="_lastName"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="relative ml-[12px]">The Lastname</FormLabel>
+                      <FormItem className="flex items-center space-x-3">
+                        <FormLabel className="relative ml-[12px]">Lastname</FormLabel>
                         <FormControl>
                           <Input type="text" value={field.value} onChange={field.onChange} />
                         </FormControl>
@@ -325,8 +325,8 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
                     control={form.control}
                     name="_email"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="relative ml-[12px]">The email adress</FormLabel>
+                      <FormItem className="flex items-center space-x-9">
+                        <FormLabel className="relative ml-[12px]">Email</FormLabel>
                         <FormControl>
                           <Input type="text" value={field.value} onChange={field.onChange} />
                         </FormControl>

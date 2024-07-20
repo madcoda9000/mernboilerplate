@@ -18,7 +18,7 @@ import { toast } from "sonner"
 import LogsService from "@/Services/LogsService"
 import { AuditEntryPayload, userIdPayload } from "@/Interfaces/PayLoadINterfaces"
 import UsersService from "@/Services/UsersService"
-import { useNavigate } from "react-router-dom"
+import { Checkbox } from "../../components/ui/checkbox"
 
 type ToastType = "info" | "success" | "error"
 
@@ -124,7 +124,6 @@ const handleAccountStatus = (user: User) => {
 }
 
 export const usersClomns: ColumnDef<User>[] = [
-  /*
   {
     id: "select",
     header: ({ table }) => (
@@ -147,7 +146,7 @@ export const usersClomns: ColumnDef<User>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },*/
+  },
   {
     accessorKey: "accountLocked",
     header: ({ column }) => (
