@@ -1,6 +1,6 @@
 "use client"
 
-import { AuditEntryPayload } from "@/Interfaces/PayLoadINterfaces"
+import { AuditEntryPayload, disableMfaPayload, userIdPayload } from "@/Interfaces/PayLoadINterfaces"
 import LogsService from "@/Services/LogsService"
 import UsersService from "@/Services/UsersService"
 import MfaChecker from "@/components/Auth/MfaChecker"
@@ -10,31 +10,10 @@ import { isMobile } from "react-device-detect"
 import { User } from "@/Interfaces/GlobalInterfaces"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { SettingsSidebar } from "@/components/Forms/SettingsSidebar"
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCell,
-  TableCaption,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal } from "lucide-react"
-import { Icons } from "@/components/Icons"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { DataTable } from "@/components/Utils/DataTable"
 import { usersClomns } from "@/components/Utils/UsersColumsDefinition"
 
@@ -108,6 +87,126 @@ const Users = () => {
     toastMap[typ]?.(message, { description })
   }
 
+  /**
+   * Handles the account status of a user by locking or unlocking the account based on the user's accountLocked status.
+   *
+   * @param {User} user - The user object for which the account status is being handled.
+   * @return {void}
+   */
+  const handleAccountStatus = (user: User) => {
+    const pl: userIdPayload = {
+      _id: user._id,
+    }
+
+    if (user.accountLocked) {
+      UsersService.unlockUser(pl).then((response) => {
+        if (response && !response.data.error) {
+          const adpl: AuditEntryPayload = {
+            user: JSON.parse(sessionStorage.getItem("user")!).userName,
+            level: "warn",
+            message: `User account ${user.userName} successfully unlocked!`,
+          }
+          LogsService.createAuditEntry(adpl)
+          showToast("success", `User account ${user.userName} unlocked!`)
+
+          // Update the user in the data array
+          setData((prevData) =>
+            prevData.map((u) => (u._id === user._id ? { ...u, accountLocked: false } : u))
+          )
+        }
+      })
+    } else {
+      UsersService.lockUser(pl).then((response) => {
+        if (response && !response.data.error) {
+          const adpl: AuditEntryPayload = {
+            user: JSON.parse(sessionStorage.getItem("user")!).userName,
+            level: "warn",
+            message: `User account ${user.userName} successfully locked!`,
+          }
+          LogsService.createAuditEntry(adpl)
+          showToast("success", `User account ${user.userName} locked!`)
+
+          // Update the user in the data array
+          setData((prevData) =>
+            prevData.map((u) => (u._id === user._id ? { ...u, accountLocked: true } : u))
+          )
+        }
+      })
+    }
+  }
+
+  /**
+   * Handles the MFA enforcement status of a user by setting the mfaenforcement property to true or false.
+   *
+   * @param {User} user - The user object for which the MFA enforcement status is being handled.
+   * @return {void}
+   */
+  const handleMfaEnforcementStatus = (user: User) => {
+    const pl: userIdPayload = {
+      _id: user._id,
+    }
+
+    if (user.mfaEnforced) {
+      UsersService.disableMfaEnforce(pl).then((response) => {
+        if (response && !response.data.error) {
+          const adpl: AuditEntryPayload = {
+            user: JSON.parse(sessionStorage.getItem("user")!).userName,
+            level: "warn",
+            message: `MFA enforcementfor user ${user.userName} disabled successfully!`,
+          }
+          LogsService.createAuditEntry(adpl)
+          showToast("success", `MFA enforcement for user ${user.userName} disabled successfully!`)
+
+          // Update the user in the data array
+          setData((prevData) =>
+            prevData.map((u) => (u._id === user._id ? { ...u, mfaEnforced: false } : u))
+          )
+        }
+      })
+    } else {
+      UsersService.enableMfaEnforce(pl).then((response) => {
+        if (response && !response.data.error) {
+          const adpl: AuditEntryPayload = {
+            user: JSON.parse(sessionStorage.getItem("user")!).userName,
+            level: "warn",
+            message: `MFA enforcement for user ${user.userName} enabled successfully!`,
+          }
+          LogsService.createAuditEntry(adpl)
+          showToast("success", `MFA enforcement for user ${user.userName} enabled successfully!`)
+
+          // Update the user in the data array
+          setData((prevData) =>
+            prevData.map((u) => (u._id === user._id ? { ...u, mfaEnforced: true } : u))
+          )
+        }
+      })
+    }
+  }
+
+  const handleMfaDisable = (user: User) => {
+    const pl: disableMfaPayload = {
+      execUserId: JSON.parse(sessionStorage.getItem("user")!)._id,
+      _id: user._id,
+    }
+
+    UsersService.disableMfa(pl).then((response) => {
+      if (response && !response.data.error) {
+        const adpl: AuditEntryPayload = {
+          user: JSON.parse(sessionStorage.getItem("user")!).userName,
+          level: "warn",
+          message: `MFA for user ${user.userName} disabled successfully!`,
+        }
+        LogsService.createAuditEntry(adpl)
+        showToast("success", `MFA for for user ${user.userName} disabled successfully!`)
+
+        // Update the user in the data array
+        setData((prevData) =>
+          prevData.map((u) => (u._id === user._id ? { ...u, mfaEnabled: false } : u))
+        )
+      }
+    })
+  }
+
   if (isLoading) {
     return (
       <>
@@ -152,7 +251,14 @@ const Users = () => {
                       </div>
                     </>
                   ) : (
-                    <DataTable data={data} columns={usersClomns} />
+                    <DataTable
+                      data={data}
+                      columns={usersClomns({
+                        handleAccountStatus,
+                        handleMfaEnforcementStatus,
+                        handleMfaDisable,
+                      })}
+                    />
                   )}
                 </div>
               </div>

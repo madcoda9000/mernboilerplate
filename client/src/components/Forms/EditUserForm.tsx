@@ -26,6 +26,7 @@ import { User, UserClass } from "@/Interfaces/GlobalInterfaces"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import RolesService from "@/Services/RolesService"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import SettingsService from "@/Services/SettingsService"
 
 const FormSchema = z.object({
   userName: z.string().min(1, {
@@ -71,6 +72,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
   const [allRoles, setAllRoles] = useState(null)
   const [hintText, setHintText] = useState("")
   const [btnLoading, SetBtnLoading] = useState<boolean>(false)
+  const [ldapGloballyEnabled, setLdapGloballyEnabled] = useState<boolean>(false)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -131,7 +133,18 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
       }
     }
 
+    const getLdapConfig = async () => {
+      const res = await SettingsService.getLdapSettings()
+      if (!res.data.error) {
+        setLdapGloballyEnabled(res.data.settings.ldapEnabled === "true" ? true : false)
+      } else {
+        console.error("Error fetching ldap settings:", res.data.message)
+        setErrMsg("An error occurred while fetching ldap settings.")
+      }
+    }
+
     fetchData()
+    getLdapConfig()
   }, [form, userId])
 
   /**
@@ -406,7 +419,11 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                         <div className="space-y-0.5">
                           <FormLabel className="">LDAP SIgnin</FormLabel>
                           <FormDescription className=" pr-3">
-                            Wether to enable ldap signin for this account.
+                            {ldapGloballyEnabled === false ? (
+                              <span className="text-red-500">LDAP is disabled in backend.</span>
+                            ) : (
+                              "Wether to enable ldap signin for this account."
+                            )}
                           </FormDescription>
                         </div>
                         <FormControl>
@@ -414,6 +431,7 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                             id="ldapEnabled"
                             checked={field.value}
                             onCheckedChange={field.onChange}
+                            disabled={ldapGloballyEnabled === false ? true : false}
                           />
                         </FormControl>
                       </FormItem>
@@ -450,8 +468,11 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
                       <Icons.infoCircle className="relative text-blue top-[11px] left-[3px] -translate-y-1/2 transform h-[16px] w-[16px]" />
                     </PopoverTrigger>
                     <PopoverContent className="bg-blue text-white">
-                      <b>Note:</b> If you don't want to change the users password, simply leave the
-                      field empty!
+                      <b>Note 1:</b> If you don't want to change the users password, simply leave
+                      the field empty!
+                      <br />
+                      <b>Note 2:</b> If ldap signin is enabled for this account simply enter any
+                      password here as it is not used on signin.
                     </PopoverContent>
                   </Popover>
 

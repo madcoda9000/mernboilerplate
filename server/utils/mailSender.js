@@ -6,6 +6,7 @@ import { enviromentConfig } from "../config/enviromentConfig.js"
 import { handlebarsConfig } from "../config/handlebarsConfig.js"
 import Setting from "../models/Setting.js"
 import e from "express"
+import { Console } from "console"
 
 async function getSmtpConfigFromDatabase() {
   // Annahme: Die Datenbank enthält Werte für host, port, userName und password
@@ -38,8 +39,8 @@ async function createTransporter() {
 // method to check if we have to send a object change notification
 export async function sendNotifOnObjectUpdate() {
   var sett = await Setting.find({ scope: "notif", name: "sendNotifOnObjectUpdate" })
-  if (sett.length > 0) {
-    if (sett[0].value === "true") {
+  if (sett.length > 0) {    
+    if (sett[0].value == "true") {
       return true
     } else {
       return false
@@ -237,7 +238,6 @@ export async function sendObjectMail(objectName, objectType, action) {
   var notifReceiverLastname = await Setting.find({ scope: "notif", name: "notifReceiverLastname" })
   var notifSender = await Setting.find({ scope: "mail", name: "smtpSenderAddress" })
   const ms_transporter = await createTransporter()
-  console.log(notifSender[0].value)
   const ms_mailOptions = {
     from: notifSender[0].value, // sender address
     template: "object", // the name of the template file, i.e., email.handlebars

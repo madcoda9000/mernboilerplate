@@ -19,6 +19,8 @@ import LogsService from "@/Services/LogsService"
 import { AuditEntryPayload, userIdPayload } from "@/Interfaces/PayLoadINterfaces"
 import UsersService from "@/Services/UsersService"
 import { Checkbox } from "../../components/ui/checkbox"
+import { useState } from "react"
+import { Switch } from "../ui/switch"
 
 type ToastType = "info" | "success" | "error"
 
@@ -56,74 +58,16 @@ const showToast = (typ: ToastType, message: string) => {
   toastMap[typ]?.(message, { description })
 }
 
-const handleMfaEnforcement = (user: User) => {
-  const pl: userIdPayload = {
-    _id: user._id,
-  }
-  if (user.mfaEnforced === true) {
-    UsersService.disableMfaEnforce(pl).then((response) => {
-      if (response && !response.data.error) {
-        const adpl: AuditEntryPayload = {
-          user: JSON.parse(sessionStorage.getItem("user")!).userName,
-          level: "info",
-          message: `MFA Enforcement disabled for ${user.userName}`,
-        }
-        LogsService.createAuditEntry(adpl)
-        showToast("success", `MFA Enforcement disabled for ${user.userName}`)
-      }
-    })
-  } else {
-    UsersService.enableMfaEnforce(pl).then((response) => {
-      if (response && !response.data.error) {
-        const adpl: AuditEntryPayload = {
-          user: JSON.parse(sessionStorage.getItem("user")!).userName,
-          level: "info",
-          message: `MFA Enforcement enabled for ${user.userName}`,
-        }
-        LogsService.createAuditEntry(adpl)
-        showToast("success", `MFA Enforcement enabled for ${user.userName}`)
-      }
-    })
-  }
-}
-
-/**
- * Handles the account status of a user by locking or unlocking the account based on the user's accountLocked status.
- *
- * @param {User} user - The user object for which the account status is being handled.
- */
-const handleAccountStatus = (user: User) => {
-  const pl: userIdPayload = {
-    _id: user._id,
-  }
-  if (user.accountLocked === true) {
-    UsersService.unlockUser(pl).then((response) => {
-      if (response && !response.data.error) {
-        const adpl: AuditEntryPayload = {
-          user: JSON.parse(sessionStorage.getItem("user")!).userName,
-          level: "warn",
-          message: `User account ${user.userName} successfully unlocked!`,
-        }
-        LogsService.createAuditEntry(adpl)
-        showToast("success", `User account ${user.userName} unlocked!`)
-      }
-    })
-  } else {
-    UsersService.lockUser(pl).then((response) => {
-      if (response && !response.data.error) {
-        const adpl: AuditEntryPayload = {
-          user: JSON.parse(sessionStorage.getItem("user")!).userName,
-          level: "warn",
-          message: `User account ${user.userName} successfully locked!`,
-        }
-        LogsService.createAuditEntry(adpl)
-        showToast("success", `User account ${user.userName} locked!`)
-      }
-    })
-  }
-}
-
-export const usersClomns: ColumnDef<User>[] = [
+//export const usersClomns: ColumnDef<User>[] = [
+export const usersClomns = ({
+  handleAccountStatus,
+  handleMfaEnforcementStatus,
+  handleMfaDisable,
+}: {
+  handleAccountStatus: (user: User) => void
+  handleMfaEnforcementStatus: (user: User) => void
+  handleMfaDisable: (user: User) => void
+}): ColumnDef<User>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -155,32 +99,45 @@ export const usersClomns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       return (
         <div className="max-w-[30px] w-[30px]">
-          {row.original.accountLocked ? (
-            <Tooltip>
-              <TooltipTrigger>
-                <Icons.circleCross
-                  className="inline mr-3 text-destructive cursor-pointer"
-                  title="activate account"
-                  onClick={() => handleAccountStatus(row.original)}
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Activate account</p>
-              </TooltipContent>
-            </Tooltip>
+          {row.original.userName === "super.admin" ? (
+            <>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Switch checked={true} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>super.admin cannot be deactivated!</p>
+                </TooltipContent>
+              </Tooltip>
+            </>
           ) : (
-            <Tooltip>
-              <TooltipTrigger>
-                <Icons.circleCheck
-                  className="inline mr-3 text-success cursor-pointer"
-                  title="activate account"
-                  onClick={() => handleAccountStatus(row.original)}
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Deactivate account</p>
-              </TooltipContent>
-            </Tooltip>
+            <>
+              {row.original.accountLocked ? (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Switch
+                      checked={false}
+                      onCheckedChange={() => handleAccountStatus(row.original)}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Activate account</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Switch
+                      checked={true}
+                      onCheckedChange={() => handleAccountStatus(row.original)}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Deactivate account</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </>
           )}
         </div>
       )
@@ -199,18 +156,14 @@ export const usersClomns: ColumnDef<User>[] = [
           {row.original.mfaEnabled ? (
             <Tooltip>
               <TooltipTrigger>
-                <Icons.circleCheck
-                  className="inline mr-3 text-success cursor-pointer"
-                  title="Disable 2FA Authentication"
-                  onClick={() => showToast("info", "2FA Authenticationt disabled")}
-                />
+                <Switch checked={true} onCheckedChange={() => handleMfaDisable(row.original)} />
               </TooltipTrigger>
               <TooltipContent>
                 <p>Disable 2FA Authentication</p>
               </TooltipContent>
             </Tooltip>
           ) : (
-            <Icons.circleCross className="inline mr-3 text-destructive" title="2FA Auth disabled" />
+            <Switch checked={false} disabled={true} />
           )}
         </div>
       )
@@ -229,10 +182,9 @@ export const usersClomns: ColumnDef<User>[] = [
           {row.original.mfaEnforced ? (
             <Tooltip>
               <TooltipTrigger>
-                <Icons.circleCheck
-                  className="inline mr-3 text-warning cursor-pointer"
-                  title="2FA Authentication enforced"
-                  onClick={() => handleMfaEnforcement(row.original)}
+                <Switch
+                  checked={true}
+                  onCheckedChange={() => handleMfaEnforcementStatus(row.original)}
                 />
               </TooltipTrigger>
               <TooltipContent>
@@ -242,10 +194,9 @@ export const usersClomns: ColumnDef<User>[] = [
           ) : (
             <Tooltip>
               <TooltipTrigger>
-                <Icons.circleCross
-                  className="inline mr-3 text-default cursor-pointer"
-                  title="Click to enforce 2FA Authentication"
-                  onClick={() => handleMfaEnforcement(row.original)}
+                <Switch
+                  checked={false}
+                  onCheckedChange={() => handleMfaEnforcementStatus(row.original)}
                 />
               </TooltipTrigger>
               <TooltipContent>

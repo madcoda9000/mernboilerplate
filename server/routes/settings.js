@@ -18,7 +18,7 @@ const router = Router();
  * @example response - 200 - example success response
  * {
   "error": false,
-  "message": "returned mail settings list..",
+  "message": "returned notification settings list..",
   "settings": [
     {
         "scope": "notif",
@@ -72,7 +72,7 @@ router.get("/getNotifSettings", async (req, res) => {
  * @example response - 200 - example success response
  * {
   "error": false,
-  "message": "returned mail settings list..",
+  "message": "returned ldap settings list..",
   "settings": [
     {
         "scope": "ldap",
@@ -278,7 +278,8 @@ router.put("/updateAppSettings", auth, roleCheck("admins"), async (req, res) => 
     await Promise.all(updates.map((update) => Setting.updateOne({ name: update.name }, { $set: { value: update.value } })));
 
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Application settings updated successfully", 200);
-    if (sendNotifOnObjectUpdate()) {
+    var lo = await sendNotifOnObjectUpdate();
+    if (lo) {
       sendObjectMail("App Settings", "Settings", "modified");
     }
     res.status(200).json({ error: false, message: "Application settings updated successfully" });
@@ -343,7 +344,8 @@ router.put("/updateMailSettings", auth, roleCheck("admins"), async (req, res) =>
     await Promise.all(updates.map((update) => Setting.updateOne({ name: update.name }, { $set: { value: update.value } })));
 
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Mail settings updated successfully", 200);
-    if (sendNotifOnObjectUpdate()) {
+    var lo = await sendNotifOnObjectUpdate();
+    if (lo) {
       sendObjectMail("Mail Settings", "Settings", "modified");
     }
     res.status(200).json({ error: false, message: "Mail settings updated successfully" });
@@ -408,7 +410,8 @@ router.put("/updateLdapSettings", auth, roleCheck("admins"), async (req, res) =>
     await Promise.all(updates.map((update) => Setting.updateOne({ name: update.name }, { $set: { value: update.value } })));
 
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Ldap settings updated successfully", 200);
-    if (sendNotifOnObjectUpdate()) {
+    var lo = await sendNotifOnObjectUpdate();
+    if (lo) {
       sendObjectMail("LDAP Settings", "Settings", "modified");
     }
     res.status(200).json({ error: false, message: "Ldap settings updated successfully" });
@@ -473,7 +476,8 @@ router.put("/updateNotifSettings", auth, roleCheck("admins"), async (req, res) =
     await Promise.all(updates.map((update) => Setting.updateOne({ name: update.name }, { $set: { value: update.value } })));
 
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Notification settings updated successfully", 200);
-    if (sendNotifOnObjectUpdate()) {
+    var lo = await sendNotifOnObjectUpdate();
+    if (lo) {
       sendObjectMail("Notification Settings", "Settings", "modified");
     }
     res.status(200).json({ error: false, message: "Notification settings updated successfully" });

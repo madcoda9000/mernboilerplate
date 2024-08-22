@@ -76,7 +76,8 @@ router.put("/updateRole", auth, roleCheck("admins"), async (req, res) => {
 		}
 		await Role.findByIdAndUpdate({ _id: req.body._id }, update);
 		doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Role updated sucessfully", 201);
-		if (sendNotifOnObjectUpdate()) {
+		var lo = await sendNotifOnObjectUpdate();
+		if (lo) {
 			sendObjectMail(idRole.roleName, "Roles", "modified");
 		}
 		res
@@ -144,7 +145,8 @@ router.post("/deleteRole", auth, roleCheck("admins"), async (req, res) => {
 			} else {
 				await idRole.delete();
 				doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Role deleted sucessfully", 200);
-				if (sendNotifOnObjectDeletion()) {
+				var lo = await sendNotifOnObjectDeletion();
+				if (lo) {
 					sendObjectMail(idRole.roleName, "Roles", "deleted");
 				}
 				res
@@ -214,7 +216,8 @@ router.post("/createRole", auth, roleCheck("admins"), async (req, res) => {
 			});
 			await newRole.save();
 			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Role " + req.body.roleName + " created sucessfully", 201);
-			if (sendNotifOnObjectCreation()) {
+			var lo = await sendNotifOnObjectCreation();
+			if (lo) {
 				sendObjectMail(req.body.roleName, "Roles", "created");
 			}
 			res
