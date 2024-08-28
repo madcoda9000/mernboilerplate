@@ -26,8 +26,9 @@ const SeedQuotes = async () => {
         const endIndex = Math.min((i + 1) * batchSize, totalQuotes)
         const batchQuotes = jsonData.slice(startIndex, endIndex)
 
-        await Quote.insertMany(batchQuotes)
-        logger.info(`SEEDER | Imported ${endIndex} quotes out of ${totalQuotes}`)
+        await Quote.insertMany(batchQuotes).then(function() {
+          logger.info(`SEEDER | Imported ${endIndex} quotes out of ${totalQuotes}`)
+        })        
       }
 
       logger.info("SEEDER | Quotes seeded successfully!")

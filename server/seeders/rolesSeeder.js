@@ -19,7 +19,7 @@ const SeedRoles = async () => {
         ];
 
         Roles.map(async (p, index) => {
-            await p.save((err, result) => {
+            p.save().then(function() {
                 if (index === Roles.length - 1) {
                     logger.info("SEEDER | users role seeded successfully!");
                 }
@@ -37,7 +37,7 @@ const SeedRoles = async () => {
         ];
 
         Roles.map(async (p, index) => {
-            await p.save((err, result) => {
+            p.save().then(function(){
                 if (index === Roles.length - 1) {
                     logger.info("SEEDER | admins role seeded successfully!");
                 }

@@ -15,11 +15,7 @@ import { Icons } from "@/components/Icons"
 import { User } from "@/Interfaces/GlobalInterfaces"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { toast } from "sonner"
-import LogsService from "@/Services/LogsService"
-import { AuditEntryPayload, userIdPayload } from "@/Interfaces/PayLoadINterfaces"
-import UsersService from "@/Services/UsersService"
 import { Checkbox } from "../../components/ui/checkbox"
-import { useState } from "react"
 import { Switch } from "../ui/switch"
 
 type ToastType = "info" | "success" | "error"
@@ -58,7 +54,19 @@ const showToast = (typ: ToastType, message: string) => {
   toastMap[typ]?.(message, { description })
 }
 
-//export const usersClomns: ColumnDef<User>[] = [
+/**
+ * Defines the columns for displaying users in a table format.
+ *
+ * This function returns an array of column definitions for the users table.
+ * Each column definition specifies the accessor key, header, cell, size, and maxSize
+ * properties for each column.
+ *
+ * @param {Object} handlers - An object containing the following handler functions:
+ *   - handleAccountStatus: A function that handles the account status change.
+ *   - handleMfaEnforcementStatus: A function that handles the MFA enforcement status change.
+ *   - handleMfaDisable: A function that handles the MFA disable action.
+ * @return {Array} An array of column definitions for the users table.
+ */
 export const usersClomns = ({
   handleAccountStatus,
   handleMfaEnforcementStatus,
@@ -265,7 +273,11 @@ export const usersClomns = ({
                 <Icons.pencil className="inline mr-3" />
                 Edit User
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => makeRedirect("/Admin/delUser/" + row.original._id)}
+                disabled={row.original.userName === "super.admin"}
+              >
                 <Icons.circleCross className="inline mr-3" />
                 Delete User
               </DropdownMenuItem>

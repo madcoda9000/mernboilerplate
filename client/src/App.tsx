@@ -37,6 +37,7 @@ import Users from "@/pages/Admin/Users"
 import EditUser from "@/pages/Admin/EditUser"
 import NewUser from "@/pages/Admin/NewUser"
 import Roles from "@/pages/Admin/Roles"
+import DelUser from "@/pages/Admin/delUser"
 
 /**
  * Renders the main application component.
@@ -216,6 +217,14 @@ function App() {
                   element={
                     <ProtectedRoute accessBy="authenticated" request="/Admin/EditUser">
                       <EditUser />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  path="/Admin/delUser/:userId"
+                  element={
+                    <ProtectedRoute accessBy="authenticated" request="/Admin/delUser">
+                      <DelUser />
                     </ProtectedRoute>
                   }
                 ></Route>

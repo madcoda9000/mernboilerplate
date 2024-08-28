@@ -31,7 +31,7 @@ const SeedUsers = async () => {
         ];
 
         Users.map(async (p, index) => {
-            await p.save((err, result) => {
+            p.save().then(function() {
                 if (index === Users.length - 1) {
                     logger.info("SEEDER | users seeded successfully!");
                 }

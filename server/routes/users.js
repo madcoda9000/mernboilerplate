@@ -339,8 +339,8 @@ router.post("/createUser", auth, roleCheck("admins"), async (req, res) => {
  * }
  */
 router.post("/deleteUser", auth, roleCheck("admins"), async (req, res) => {
-  try {
-    const mid = crypto.randomBytes(16).toString("hex");
+  const mid = crypto.randomBytes(16).toString("hex");
+  try {    
     doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
     const { error } = deleteUserValidation(req.body);
@@ -357,16 +357,16 @@ router.post("/deleteUser", auth, roleCheck("admins"), async (req, res) => {
         message: "User with id " + req.body._id + " not found!",
       });
     } else {
-      await iduser.delete();
+      await iduser.deleteOne();
+      var lo = await sendNotifOnObjectDeletion();
+    if (lo) {
+      sendObjectMail(req.body.userName, "User", "deleted");
+    }
       doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "User deleted sucessfully", 200);
       res.status(200).json({ error: false, message: "User deleted sucessfully" });
     }
   } catch (err) {
-    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-    var lo = await sendNotifOnObjectDeletion();
-    if (lo) {
-      sendObjectMail(req.body.userName, "User", "deleted");
-    }
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);    
     logger.error("API|users.js|/deleteUser|" + err.message);
     res.status(500).json({ message: err.message });
   }
