@@ -9,12 +9,24 @@ import mongoosePaginate from "mongoose-paginate-v2"
  * @property {string} value - the value of the settings
  */
 const logsSchema = new mongoose.Schema({
+  /**
+   * the settings scope
+   * @type {string}
+   */
   scope: {
     type: String,
   },
+  /**
+   * the name of the settings parameter
+   * @type {string}
+   */
   name: {
     type: String,
   },
+  /**
+   * the value of the settings
+   * @type {string}
+   */
   value: {
     type: String,
   },

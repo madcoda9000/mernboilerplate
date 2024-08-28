@@ -41,6 +41,14 @@ const Users = () => {
   type ToastType = "info" | "success" | "error"
 
   useEffect(() => {
+    /**
+     * Fetches paginated user data from the UsersService and updates the
+     * component state with the received data. If the response is not
+     * successful, an empty array is set to the state.
+     *
+     * @return {Promise<void>} A promise that resolves when the data has been
+     * fetched and the component state has been updated.
+     */
     const getData = () => {
       UsersService.getUsersPaginated(1, 90000, "").then((response) => {
         if (response && !response.data.error) {
@@ -61,6 +69,35 @@ const Users = () => {
 
     getData()
   }, [])
+
+  /**
+   * Copies the provided value to the user's clipboard.
+   *
+   * @param {string} value - The value to be copied to the clipboard.
+   * @return {Promise<void>} A promise that resolves when the value has been successfully copied to the clipboard.
+   */
+  const copyValueToClippBoard = async (value: string) => {
+    try {
+      let copyValue = ""
+
+      if (!navigator.clipboard) {
+        throw new Error("Browser don't have support for native clipboard.")
+      }
+
+      if (value) {
+        copyValue = value
+      }
+
+      await navigator.clipboard.writeText(copyValue)
+      showToast("success", "Value copied to clipboard successfully!")
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.toString())
+      } else {
+        console.log("An unknown error occurred.")
+      }
+    }
+  }
 
   /**
    * Displays a toast message with the specified type and message.
@@ -257,6 +294,7 @@ const Users = () => {
                         handleAccountStatus,
                         handleMfaEnforcementStatus,
                         handleMfaDisable,
+                        copyValueToClippBoard,
                       })}
                     />
                   )}

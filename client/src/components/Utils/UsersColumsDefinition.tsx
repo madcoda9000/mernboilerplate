@@ -71,10 +71,12 @@ export const usersClomns = ({
   handleAccountStatus,
   handleMfaEnforcementStatus,
   handleMfaDisable,
+  copyValueToClippBoard,
 }: {
   handleAccountStatus: (user: User) => void
   handleMfaEnforcementStatus: (user: User) => void
   handleMfaDisable: (user: User) => void
+  copyValueToClippBoard: (value: string) => void
 }): ColumnDef<User>[] => [
   {
     id: "select",
@@ -259,7 +261,14 @@ export const usersClomns = ({
               </DropdownMenuLabel>
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => navigator.clipboard.writeText(row.original.userName)}
+                onClick={() => copyValueToClippBoard(row.original._id)}
+              >
+                <Icons.clipboardCopy className="inline mr-3" />
+                Copy user ID
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => copyValueToClippBoard(row.original.userName)}
               >
                 <Icons.clipboardCopy className="inline mr-3" />
                 Copy user name

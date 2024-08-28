@@ -9,12 +9,24 @@ import mongoosePaginate from "mongoose-paginate-v2"
  * @property {string} genre - the quote genre
  */
 const quoteSchema = new mongoose.Schema({
+  /**
+   * the quote
+   * @type {string}
+   */
   quote: {
     type: String,
   },
+  /**
+   * the author of the quote
+   * @type {string}
+   */
   author: {
     type: String,
   },
+  /**
+   * the quote genre
+   * @type {string}
+   */
   genre: {
     type: String,
   },
