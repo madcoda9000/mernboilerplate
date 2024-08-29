@@ -758,68 +758,82 @@ router.post("/logIn", async (req, res) => {
                     "Your account is locked! Please contact your administrator."
             });
         }
+        // TODO: implement ldap login
+        let authSuccess = false;
+        if(user.ldapEnabled === true) {
 
-        const verifiedPassword = await bcrypt.compare(
-            req.body.password,
-            user.password
-        );
-        if (!verifiedPassword) {
+        } else {
+            // verify users password
+            const verifiedPassword = await bcrypt.compare(
+                req.body.password,
+                user.password
+            );
+            if (!verifiedPassword) {
+                doHttpLog(
+                    "RES",
+                    mid,
+                    req.method,
+                    req.originalUrl,
+                    req.ip,
+                    "Invalid username or password",
+                    401
+                );
+                return res
+                    .status(401)
+                    .json({ error: true, message: "Invalid username or password" });
+            }    
+            authSuccess = true;
+        }
+
+        if(authSuccess === true) {
+            // reset mfaverified flag
+            const update = {
+                mfaVerified: false
+            };
+            
+            // fetch current user and clear password & mfaToken fields
+            await User.findByIdAndUpdate({ _id: user._id }, update);
+            user.password = "";
+            user.mfaToken = "";
+    
+            // generate jwt token
+            const { accessToken, refreshToken } = await generateTokens(user);
             doHttpLog(
                 "RES",
                 mid,
                 req.method,
                 req.originalUrl,
                 req.ip,
-                "Invalid username or password",
-                401
+                user.ldapEnabled===false ? req.body.userName + " database login sucessful!" : req.body.userName + " ldap login sucessful!",
+                200
             );
-            return res
-                .status(401)
-                .json({ error: true, message: "Invalid username or password" });
+    
+            // Set HTTP-only cookie with the access token
+            let mdate = new Date();
+            let rDate = new Date();
+            mdate.setTime(mdate.getTime() + 1 * 60 * 1000);
+            res.cookie("accessToken", accessToken, {
+                httpOnly: true,
+                secure: false, // Set to true in production if using HTTPS
+                sameSite: "strict", // Adjust as needed based on your application's requirements
+                expires: mdate
+            });
+            rDate.setDate(rDate.getDate() + 1);
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: false, // Set to true in production if using HTTPS
+                sameSite: "strict", // Adjust as needed based on your application's requirements
+                expires: rDate
+            });
+            res.status(200).json({
+                error: false,
+                accessToken,
+                refreshToken,
+                user,
+                message: "Logged in sucessfully"
+            });
         }
-
-        const update = {
-            mfaVerified: false
-        };
-        await User.findByIdAndUpdate({ _id: user._id }, update);
-        user.password = "";
-        user.mfaToken = "";
-
-        const { accessToken, refreshToken } = await generateTokens(user);
-        doHttpLog(
-            "RES",
-            mid,
-            req.method,
-            req.originalUrl,
-            req.ip,
-            req.body.userName + " logged in sucessfully",
-            200
-        );
-
-        // Set HTTP-only cookie with the access token
-        let mdate = new Date();
-        let rDate = new Date();
-        mdate.setTime(mdate.getTime() + 1 * 60 * 1000);
-        res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: false, // Set to true in production if using HTTPS
-            sameSite: "strict", // Adjust as needed based on your application's requirements
-            expires: mdate
-        });
-        rDate.setDate(rDate.getDate() + 1);
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: false, // Set to true in production if using HTTPS
-            sameSite: "strict", // Adjust as needed based on your application's requirements
-            expires: rDate
-        });
-        res.status(200).json({
-            error: false,
-            accessToken,
-            refreshToken,
-            user,
-            message: "Logged in sucessfully"
-        });
+        
     } catch (err) {
         doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, err, 500);
         logger.error("API|auth.js|/login|" + err.message);
