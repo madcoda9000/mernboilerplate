@@ -258,6 +258,7 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
             }
             LogsService.createAuditEntry(adpl)
             setErrMsg("")
+            form.reset()
             SetSuccMsg(response.data.message)
             SetBtnLoading(false)
           }
