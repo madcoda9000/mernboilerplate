@@ -15,7 +15,7 @@
 ##       'fix' is for bug fixes
 ##       'new' is for new features, big improvement
 ##
-##   AUDIENCE is optional and one of 'dev', 'usr', 'pkg', 'test', 'doc'
+##   AUDIENCE is optional and one of 'dev', 'usr', 'pkg', 'test', 'doc', 'client', 'api'
 ##
 ##       Is WHO is concerned by the change.
 ##
