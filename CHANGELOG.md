@@ -5,6 +5,10 @@
 
 ### New
 
+* Bruno Clien Documentation. [Sascha Heimann]
+
+  added complete API Documentation for Bruno REST Client
+
 * Added changelog.md. [madcoda9000]
 
 * Added user deletion. [madcoda9000]
@@ -75,6 +79,10 @@
 * Initial Commit. [Sascha Heimann]
 
 ### Changes
+
+* Added auth for settings update endpoints. [Sascha Heimann]
+
+  added authentication to the update endpoints for ldap, notification, application and mail settings
 
 * 2024-08-30 10:19:55 modified gitchangelog.rc. [Sascha Heimann]
 

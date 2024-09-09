@@ -641,7 +641,7 @@ router.post("/signUp", async (req, res) => {
     });
   } catch (err) {
     doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, err, 500);
-    logger.error("API|auth.js|/signUp|" + err.message);
+    logger.error("API|auth.js|/signUp|Line:" + err.stack.split("\n")[4] +"|" + err);
     res.status(500).json({ error: true, message: "Internal Server Error" });
   }
 });

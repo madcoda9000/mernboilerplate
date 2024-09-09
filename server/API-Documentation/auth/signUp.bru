@@ -10,16 +10,25 @@ post {
   auth: none
 }
 
-headers {
-  Origin: http://postman.local
-}
-
 body:json {
   {
     "firstName": "John",
     "lastName": "Doe",
     "userName": "user.name",
     "email": "user.name@domain.com",
-    "password": "P@ssW0rd!"
+    "password": "Test1000!"
   }
+}
+
+tests {
+  // test if register request is successful
+  test("should be able to register", function() {
+    const data = res.getBody();
+    expect(res.getStatus()).to.equal(201);
+  });
+  // test if response has no error
+  test("should receive error=false", function() {
+    const data = res.getBody();
+    expect(data.error).to.eq(false)
+  });
 }

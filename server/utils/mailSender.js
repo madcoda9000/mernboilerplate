@@ -97,7 +97,7 @@ export async function sendWelcomeMailOnUserCreation() {
 }
 
 export async function sendConfirmMail(User) {
-  var notifSender = await Setting.find({ scope: "mail", name: "smtpSenderAddres" })
+  var notifSender = await Setting.find({ scope: "mail", name: "smtpSenderAddress" })
   const ms_transporter = await createTransporter()
   const ms_mailOptions = {
     from: notifSender[0].value, // sender address
@@ -147,7 +147,7 @@ export async function sendConfirmMail(User) {
 }
 
 export async function sendPwResetMail(user, token) {
-  var notifSender = await Setting.find({ scope: "mail", name: "smtpSenderAddres" })
+  var notifSender = await Setting.find({ scope: "mail", name: "smtpSenderAddress" })
   const ms_transporter = await createTransporter()
   const ms_mailOptions = {
     from: notifSender[0].value, // sender address
@@ -191,7 +191,7 @@ export async function sendPwResetMail(user, token) {
 }
 
 export async function sendWelcomeMail(user) {
-  var notifSender = await Setting.find({ scope: "mail", name: "smtpSenderAddres" })
+  var notifSender = await Setting.find({ scope: "mail", name: "smtpSenderAddress" })
   const ms_transporter = await createTransporter()
   const ms_mailOptions = {
     from: notifSender[0].value, // sender address

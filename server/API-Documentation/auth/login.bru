@@ -22,16 +22,34 @@ body:json {
 }
 
 script:post-response {
+  // save cookies
   const cookies = res.getHeader('set-cookie');
-  
   if(cookies) {
     bru.setVar("cookie", cookies.join('; '));
   }
-}
-
-tests {
+  // save variables
   const responseJson = res.getBody();
   bru.setEnvVar("accessToken", responseJson.accessToken);
   bru.setEnvVar("refreshToken", responseJson.refreshToken);
   bru.setEnvVar("currentUserId", responseJson.user._id);
+}
+
+tests {
+  // test if login request is successful
+  test("should be able to login", function() {
+    const data = res.getBody();
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  // test if accessToken is received
+  test("should receive the access token", function() {
+    const data = res.getBody();
+    expect(data.accessToken).to.be.a('string');
+  });
+  
+  // test if refresh token is received
+  test("should receive the refresh token", function() {
+    const data = res.getBody();
+    expect(data.refreshToken).to.be.a('string');
+  });
 }

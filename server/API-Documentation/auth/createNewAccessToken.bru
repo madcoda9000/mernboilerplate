@@ -35,9 +35,21 @@ script:post-response {
   if(cookies) {
     bru.setVar("cookie", cookies.join('; '));
   }
+  const responseJson = res.getBody();
+  bru.setEnvVar("accessToken", responseJson.accessToken);
 }
 
 tests {
-  const responseJson = res.getBody();
-  bru.setEnvVar("accessToken", responseJson.accessToken);
+  // test if request is successful
+  test("response 200", function() {
+    const data = res.getBody();
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  // test if there is no error
+  test("error should be false", function() {
+    const data = res.getBody();
+    expect(data.error).to.eq(false);
+  });
+  
 }
