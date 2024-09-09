@@ -1,0 +1,30 @@
+meta {
+  name: logout
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{protocol}}://{{host}}:{{port}}/v1/auth/logout
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+  x-access-token: {{accessToken}}
+}
+
+body:json {
+  {
+    "refreshToken":"{{refreshToken}}"
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

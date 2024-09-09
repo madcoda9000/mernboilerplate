@@ -1,0 +1,23 @@
+meta {
+  name: forgotPw2
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{protocol}}://{{host}}:{{port}}/v1/users/users/forgotPw2
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+}
+
+body:json {
+  {
+    "email": "john.doe@mail.com",
+    "token": "s6gd4ds654ghd64hdf64hfg6jgf4u7958tr7h8trf",
+    "password": "&%$Rbkjbkb)(654dfsgf)"
+  }
+}

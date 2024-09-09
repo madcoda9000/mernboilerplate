@@ -1,0 +1,29 @@
+meta {
+  name: updateNotifSettings
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{protocol}}://{{host}}:{{port}}/v1/settings/updateNotifSettings
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "sendNotifOnObjectCreation": "false",
+    "sendNotifOnObjectDeletion": "flase",
+    "sendNotifOnObjectUpdate": "false",
+    "sendNotifOnUserSelfRegister": "false",
+    "sendWelcomeMailOnUserCreation": "false"
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

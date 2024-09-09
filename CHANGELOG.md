@@ -76,6 +76,8 @@
 
 ### Changes
 
+* 2024-08-30 10:19:55 modified gitchangelog.rc. [Sascha Heimann]
+
 * Implemented form reset after saving a new user. [Sascha Heimann]
 
 * Started implementing ldap login. [madcoda9000]

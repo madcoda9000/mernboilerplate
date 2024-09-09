@@ -3,9 +3,9 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import generateTokens from "../utils/generateTokens.js";
 import {
-    signUpBodyValidation,
-    logInBodyValidation,
-    confirmEmailValidation
+  signUpBodyValidation,
+  logInBodyValidation,
+  confirmEmailValidation
 } from "../utils/validationSchema.js";
 import doHttpLog from "../utils/httpLogger.js";
 import auth from "../middleware/auth.js";
@@ -19,12 +19,12 @@ import { serialize } from "v8";
 const router = Router();
 
 const generateRandomBase32 = () => {
-    const buffer = crypto.randomBytes(15);
-    const bbase32 = base32.default
-        .encode(buffer)
-        .replace(/=/g, "")
-        .substring(0, 24);
-    return bbase32;
+  const buffer = crypto.randomBytes(15);
+  const bbase32 = base32.default
+    .encode(buffer)
+    .replace(/=/g, "")
+    .substring(0, 24);
+  return bbase32;
 };
 
 /**
@@ -52,83 +52,83 @@ const generateRandomBase32 = () => {
  * }
  */
 router.post("/startMfaSetup", auth, async (req, res) => {
-    const mid = crypto.randomBytes(16).toString("hex");
-    try {
-        doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+  const mid = crypto.randomBytes(16).toString("hex");
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
-        if (req.body._id === null) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "The id parameter is required!",
-                400
-            );
-            return res
-                .status(400)
-                .json({ error: true, message: "The User id is required!" });
-        }
-
-        const user = await User.findOne({ _id: req.body._id });
-
-        if (!user) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "No user with id " + req.body._id + " exist!",
-                400
-            );
-            return res.status(400).json({
-                error: true,
-                message: "No user with id " + req.body._id + " exist!"
-            });
-        }
-
-        const base32_secret = generateRandomBase32();
-
-        let totp = new OTPAuth.TOTP({
-            issuer: process.env.APPLICATION_COMPANYNAME,
-            label: process.env.APPLICATION_SWAGGER_APPNAME,
-            algorithm: "SHA1",
-            digits: 6,
-            secret: base32_secret
-        });
-
-        let otpauth_url = totp.toString();
-
-        const update = {
-            mfaToken: base32_secret
-        };
-
-        let erg = await User.findByIdAndUpdate({ _id: req.body._id }, update);
-        doHttpLog(
-            "RES",
-            mid,
-            req.method,
-            req.originalUrl,
-            req.ip,
-            "OTP for user " + req.body._id + " generated successfully",
-            400
-        );
-        res.status(200).json({
-            error: false,
-            message: "OTP for user " + req.body._id + " generated successfully",
-            base32: base32_secret,
-            otpUrl: otpauth_url
-        });
-    } catch (err) {
-        doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-        logger.error("API|auth.js|/startMfaSetup|" + err.message);
-        res.status(500).json({
-            error: true,
-            message: err.message
-        });
+    if (req.body._id === null) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "The id parameter is required!",
+        400
+      );
+      return res
+        .status(400)
+        .json({ error: true, message: "The User id is required!" });
     }
+
+    const user = await User.findOne({ _id: req.body._id });
+
+    if (!user) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "No user with id " + req.body._id + " exist!",
+        400
+      );
+      return res.status(400).json({
+        error: true,
+        message: "No user with id " + req.body._id + " exist!"
+      });
+    }
+
+    const base32_secret = generateRandomBase32();
+
+    let totp = new OTPAuth.TOTP({
+      issuer: process.env.APPLICATION_COMPANYNAME,
+      label: process.env.APPLICATION_SWAGGER_APPNAME,
+      algorithm: "SHA1",
+      digits: 6,
+      secret: base32_secret
+    });
+
+    let otpauth_url = totp.toString();
+
+    const update = {
+      mfaToken: base32_secret
+    };
+
+    let erg = await User.findByIdAndUpdate({ _id: req.body._id }, update);
+    doHttpLog(
+      "RES",
+      mid,
+      req.method,
+      req.originalUrl,
+      req.ip,
+      "OTP for user " + req.body._id + " generated successfully",
+      400
+    );
+    res.status(200).json({
+      error: false,
+      message: "OTP for user " + req.body._id + " generated successfully",
+      base32: base32_secret,
+      otpUrl: otpauth_url
+    });
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
+    logger.error("API|auth.js|/startMfaSetup|" + err.message);
+    res.status(500).json({
+      error: true,
+      message: err.message
+    });
+  }
 });
 
 /**
@@ -155,115 +155,115 @@ router.post("/startMfaSetup", auth, async (req, res) => {
  * }
  */
 router.post("/finishMfaSetup", auth, async (req, res) => {
-    const mid = crypto.randomBytes(16).toString("hex");
-    try {
-        doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+  const mid = crypto.randomBytes(16).toString("hex");
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
-        if (req.body._id === null) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "The id parameter is required!",
-                400
-            );
-            return res
-                .status(400)
-                .json({ error: true, message: "The User id is required!" });
-        }
-        if (req.body.otpToken === null) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "The otpToken parameter is required!",
-                400
-            );
-            return res
-                .status(400)
-                .json({
-                    error: true,
-                    message: "The User otpToken is required!"
-                });
-        }
-        const token = req.body.token;
-        const user = await User.findById({ _id: req.body._id });
-
-        if (!user) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "No user with id " + req.body._id + " exist!",
-                400
-            );
-            return res.status(400).json({
-                error: true,
-                message: "No user with id " + req.body._id + " exist!"
-            });
-        }
-
-        let totp = new OTPAuth.TOTP({
-            issuer: process.env.APPLICATION_COMPANYNAME,
-            label: process.env.APPLICATION_SWAGGER_APPNAME,
-            algorithm: "SHA1",
-            digits: 6,
-            secret: user.mfaToken
-        });
-
-        let delta = totp.validate({ token });
-
-        if (delta === null) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "OTP Token is invalid!",
-                200
-            );
-            return res.status(200).json({
-                error: true,
-                message: "OTP Token is invalid!"
-            });
-        }
-
-        const update = {
-            mfaEnabled: true,
-            mfaVerified: true,
-            mfaEnforced: false
-        };
-        await User.findByIdAndUpdate({ _id: user._id }, update);
-
-        doHttpLog(
-            "RES",
-            mid,
-            req.method,
-            req.originalUrl,
-            req.ip,
-            user.userName + " finished 2fa setup successfully",
-            200
-        );
-        res.status(200).json({
-            error: false,
-            message: user.userName + " finished 2fa setup successfully"
-        });
-    } catch (err) {
-        doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-        logger.error("API|auth.js|/finishMfaSetup|" + err.message);
-        console.log(err);
-        res.status(500).json({
-            error: true,
-            message: err.message
+    if (req.body._id === null) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "The id parameter is required!",
+        400
+      );
+      return res
+        .status(400)
+        .json({ error: true, message: "The User id is required!" });
+    }
+    if (req.body.otpToken === null) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "The otpToken parameter is required!",
+        400
+      );
+      return res
+        .status(400)
+        .json({
+          error: true,
+          message: "The User otpToken is required!"
         });
     }
+    const token = req.body.token;
+    const user = await User.findById({ _id: req.body._id });
+
+    if (!user) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "No user with id " + req.body._id + " exist!",
+        400
+      );
+      return res.status(400).json({
+        error: true,
+        message: "No user with id " + req.body._id + " exist!"
+      });
+    }
+
+    let totp = new OTPAuth.TOTP({
+      issuer: process.env.APPLICATION_COMPANYNAME,
+      label: process.env.APPLICATION_SWAGGER_APPNAME,
+      algorithm: "SHA1",
+      digits: 6,
+      secret: user.mfaToken
+    });
+
+    let delta = totp.validate({ token });
+
+    if (delta === null) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "OTP Token is invalid!",
+        200
+      );
+      return res.status(200).json({
+        error: true,
+        message: "OTP Token is invalid!"
+      });
+    }
+
+    const update = {
+      mfaEnabled: true,
+      mfaVerified: true,
+      mfaEnforced: false
+    };
+    await User.findByIdAndUpdate({ _id: user._id }, update);
+
+    doHttpLog(
+      "RES",
+      mid,
+      req.method,
+      req.originalUrl,
+      req.ip,
+      user.userName + " finished 2fa setup successfully",
+      200
+    );
+    res.status(200).json({
+      error: false,
+      message: user.userName + " finished 2fa setup successfully"
+    });
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
+    logger.error("API|auth.js|/finishMfaSetup|" + err.message);
+    console.log(err);
+    res.status(500).json({
+      error: true,
+      message: err.message
+    });
+  }
 });
 
 /**
@@ -290,112 +290,112 @@ router.post("/finishMfaSetup", auth, async (req, res) => {
  * }
  */
 router.post("/validateOtp", auth, async (req, res) => {
-    const mid = crypto.randomBytes(16).toString("hex");
-    try {
-        doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+  const mid = crypto.randomBytes(16).toString("hex");
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
 
-        if (req.body._id === null) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "The id parameter is required!",
-                400
-            );
-            return res
-                .status(400)
-                .json({ error: true, message: "The User id is required!" });
-        }
-        if (req.body.otpToken === null) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "The otpToken parameter is required!",
-                400
-            );
-            return res
-                .status(400)
-                .json({
-                    error: true,
-                    message: "The User otpToken is required!"
-                });
-        }
-        const { user_id, token } = req.body;
-        const user = await User.findOne({ _id: req.body._id });
-
-        if (!user) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "No user with id " + req.body._id + " exist!",
-                400
-            );
-            return res.status(400).json({
-                error: true,
-                message: "No user with id " + req.body._id + " exist!"
-            });
-        }
-
-        let totp = new OTPAuth.TOTP({
-            issuer: process.env.APPLICATION_COMPANYNAME,
-            label: process.env.APPLICATION_SWAGGER_APPNAME,
-            algorithm: "SHA1",
-            digits: 6,
-            secret: user.mfaToken
-        });
-
-        let delta = totp.validate({ token });
-
-        if (delta === null) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "OTP Token is invalid!",
-                200
-            );
-            return res.status(200).json({
-                error: true,
-                message: "OTP Token is invalid!"
-            });
-        }
-
-        const update = {
-            mfaVerified: true
-        };
-        await User.findByIdAndUpdate({ _id: req.body._id }, update);
-
-        doHttpLog(
-            "RES",
-            mid,
-            req.method,
-            req.originalUrl,
-            req.ip,
-            user.userName + " verified by 2fa successfully",
-            200
-        );
-        res.status(200).json({
-            error: false,
-            message: user.userName + " verified by 2fa successfully"
-        });
-    } catch (err) {
-        doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-        logger.error("API|auth.js|/validateOtp|" + err.message);
-        res.status(500).json({
-            error: true,
-            message: err.message
+    if (req.body._id === null) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "The id parameter is required!",
+        400
+      );
+      return res
+        .status(400)
+        .json({ error: true, message: "The User id is required!" });
+    }
+    if (req.body.otpToken === null) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "The otpToken parameter is required!",
+        400
+      );
+      return res
+        .status(400)
+        .json({
+          error: true,
+          message: "The User otpToken is required!"
         });
     }
+    const { user_id, token } = req.body;
+    const user = await User.findOne({ _id: req.body._id });
+
+    if (!user) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "No user with id " + req.body._id + " exist!",
+        400
+      );
+      return res.status(400).json({
+        error: true,
+        message: "No user with id " + req.body._id + " exist!"
+      });
+    }
+
+    let totp = new OTPAuth.TOTP({
+      issuer: process.env.APPLICATION_COMPANYNAME,
+      label: process.env.APPLICATION_SWAGGER_APPNAME,
+      algorithm: "SHA1",
+      digits: 6,
+      secret: user.mfaToken
+    });
+
+    let delta = totp.validate({ token });
+
+    if (delta === null) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "OTP Token is invalid!",
+        200
+      );
+      return res.status(200).json({
+        error: true,
+        message: "OTP Token is invalid!"
+      });
+    }
+
+    const update = {
+      mfaVerified: true
+    };
+    await User.findByIdAndUpdate({ _id: req.body._id }, update);
+
+    doHttpLog(
+      "RES",
+      mid,
+      req.method,
+      req.originalUrl,
+      req.ip,
+      user.userName + " verified by 2fa successfully",
+      200
+    );
+    res.status(200).json({
+      error: false,
+      message: user.userName + " verified by 2fa successfully"
+    });
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
+    logger.error("API|auth.js|/validateOtp|" + err.message);
+    res.status(500).json({
+      error: true,
+      message: err.message
+    });
+  }
 });
 
 /**
@@ -423,108 +423,108 @@ router.post("/validateOtp", auth, async (req, res) => {
  * }
  */
 router.post("/confirmEmail", async (req, res) => {
-    console.log(req.body);
-    const mid = crypto.randomBytes(16).toString("hex");
-    try {
-        const { error } = confirmEmailValidation(req.body);
-        if (error) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                error.details[0].message,
-                400
-            );
-            return res
-                .status(400)
-                .json({ error: true, message: error.details[0].message });
-        }
-
-        const mailuser = await User.findOne({ email: req.body.email });
-        if (!mailuser) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "User with given email does not exist",
-                400
-            );
-            return res
-                .status(400)
-                .json({
-                    error: true,
-                    message: "User with given email does not exist"
-                });
-        }
-
-        if (mailuser.emailVerifyToken !== req.body.token) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "Confirmation token is invalid!",
-                400
-            );
-            return res
-                .status(400)
-                .json({
-                    error: true,
-                    message: "Confirmation token is invalid!"
-                });
-        }
-
-        if (mailuser.email !== req.body.email) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "Invalid email address!",
-                400
-            );
-            return res
-                .status(400)
-                .json({ error: true, message: "Invalid email address" });
-        }
-
-        // update user properties
-        const update = {
-            emailVerifyToken: "",
-            emailVerified: true,
-            accountLocked: false
-        };
-
-        await User.findByIdAndUpdate({ _id: req.body._id }, update);
-        logger.info(
-            "AUDIT | " + req.body.email + " | confirmed email sucessfully"
-        );
-        doHttpLog(
-            "RES",
-            mid,
-            req.method,
-            req.originalUrl,
-            req.ip,
-            "Account " + req.body.email + " confirmed email sucessfully",
-            200
-        );
-        res.status(200).json({
-            error: false,
-            message:
-                "Account " + req.body.email + " confirmed email sucessfully"
-        });
-    } catch (err) {
-        console.log(err);
-        doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
-        logger.error("API|auth.js|/confirmEmail|" + err.message);
-        res.status(500).json({ message: err.message });
+  console.log(req.body);
+  const mid = crypto.randomBytes(16).toString("hex");
+  try {
+    const { error } = confirmEmailValidation(req.body);
+    if (error) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        error.details[0].message,
+        400
+      );
+      return res
+        .status(400)
+        .json({ error: true, message: error.details[0].message });
     }
+
+    const mailuser = await User.findOne({ email: req.body.email });
+    if (!mailuser) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "User with given email does not exist",
+        400
+      );
+      return res
+        .status(400)
+        .json({
+          error: true,
+          message: "User with given email does not exist"
+        });
+    }
+
+    if (mailuser.emailVerifyToken !== req.body.token) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "Confirmation token is invalid!",
+        400
+      );
+      return res
+        .status(400)
+        .json({
+          error: true,
+          message: "Confirmation token is invalid!"
+        });
+    }
+
+    if (mailuser.email !== req.body.email) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "Invalid email address!",
+        400
+      );
+      return res
+        .status(400)
+        .json({ error: true, message: "Invalid email address" });
+    }
+
+    // update user properties
+    const update = {
+      emailVerifyToken: "",
+      emailVerified: true,
+      accountLocked: false
+    };
+
+    await User.findByIdAndUpdate({ _id: req.body._id }, update);
+    logger.info(
+      "AUDIT | " + req.body.email + " | confirmed email sucessfully"
+    );
+    doHttpLog(
+      "RES",
+      mid,
+      req.method,
+      req.originalUrl,
+      req.ip,
+      "Account " + req.body.email + " confirmed email sucessfully",
+      200
+    );
+    res.status(200).json({
+      error: false,
+      message:
+        "Account " + req.body.email + " confirmed email sucessfully"
+    });
+  } catch (err) {
+    console.log(err);
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500);
+    logger.error("API|auth.js|/confirmEmail|" + err.message);
+    res.status(500).json({ message: err.message });
+  }
 });
 
 /**
@@ -554,96 +554,96 @@ router.post("/confirmEmail", async (req, res) => {
  * }
  */
 router.post("/signUp", async (req, res) => {
-    const mid = crypto.randomBytes(16).toString("hex");
-    try {
-        doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
-        const { error } = signUpBodyValidation(req.body);
-        if (error) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                error.details[0].message,
-                400
-            );
-            return res
-                .status(400)
-                .json({ error: true, message: error.details[0].message });
-        }
-
-        const mailuser = await User.findOne({ email: req.body.email });
-        if (mailuser) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "User with given email already exist",
-                400
-            );
-            return res
-                .status(400)
-                .json({
-                    error: true,
-                    message: "User with given email already exist"
-                });
-        }
-
-        const nameuser = await User.findOne({ userName: req.body.userName });
-        if (nameuser) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "User with given username already exist",
-                400
-            );
-            return res.status(400).json({
-                error: true,
-                message: "User with given username already exist"
-            });
-        }
-
-        const salt = await bcrypt.genSalt(Number(process.env.SALT));
-        const hashPassword = await bcrypt.hash(req.body.password, salt);
-
-        await new User({
-            ...req.body,
-            password: hashPassword,
-            emailVerifyToken: crypto.randomUUID(),
-            accountLocked: true
-        }).save();
-        doHttpLog(
-            "RES",
-            mid,
-            req.method,
-            req.originalUrl,
-            req.ip,
-            "Account " + req.body.email + " created sucessfully",
-            201
-        );
-        logger.info(
-            "AUDIT | " +
-                req.body.userName +
-                " | registered a new account sucessfully"
-        );
-        const createdUser = await User.findOne({ email: req.body.email });
-        await sendConfirmMail(createdUser);
-
-        res.status(201).json({
-            error: false,
-            message: "Account " + req.body.email + " created sucessfully"
-        });
-    } catch (err) {
-        doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, err, 500);
-        logger.error("API|auth.js|/signUp|" + err.message);
-        res.status(500).json({ error: true, message: "Internal Server Error" });
+  const mid = crypto.randomBytes(16).toString("hex");
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+    const { error } = signUpBodyValidation(req.body);
+    if (error) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        error.details[0].message,
+        400
+      );
+      return res
+        .status(400)
+        .json({ error: true, message: error.details[0].message });
     }
+
+    const mailuser = await User.findOne({ email: req.body.email });
+    if (mailuser) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "User with given email already exist",
+        400
+      );
+      return res
+        .status(400)
+        .json({
+          error: true,
+          message: "User with given email already exist"
+        });
+    }
+
+    const nameuser = await User.findOne({ userName: req.body.userName });
+    if (nameuser) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "User with given username already exist",
+        400
+      );
+      return res.status(400).json({
+        error: true,
+        message: "User with given username already exist"
+      });
+    }
+
+    const salt = await bcrypt.genSalt(Number(process.env.SALT));
+    const hashPassword = await bcrypt.hash(req.body.password, salt);
+
+    await new User({
+      ...req.body,
+      password: hashPassword,
+      emailVerifyToken: crypto.randomUUID(),
+      accountLocked: true
+    }).save();
+    doHttpLog(
+      "RES",
+      mid,
+      req.method,
+      req.originalUrl,
+      req.ip,
+      "Account " + req.body.email + " created sucessfully",
+      201
+    );
+    logger.info(
+      "AUDIT | " +
+      req.body.userName +
+      " | registered a new account sucessfully"
+    );
+    const createdUser = await User.findOne({ email: req.body.email });
+    await sendConfirmMail(createdUser);
+
+    res.status(201).json({
+      error: false,
+      message: "Account " + req.body.email + " created sucessfully"
+    });
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, err, 500);
+    logger.error("API|auth.js|/signUp|" + err.message);
+    res.status(500).json({ error: true, message: "Internal Server Error" });
+  }
 });
 
 /**
@@ -690,155 +690,156 @@ router.post("/signUp", async (req, res) => {
  * }
  */
 router.post("/logIn", async (req, res) => {
-    const mid = crypto.randomBytes(16).toString("hex");
-    try {
-        doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
-        const { error } = logInBodyValidation(req.body);
-        if (error) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                error.details[0].message,
-                400
-            );
-            return res
-                .status(400)
-                .json({ error: true, message: error.details[0].message });
-        }
-
-        const user = await User.findOne({ userName: req.body.userName });
-        if (!user) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "Invalid username or password",
-                401
-            );
-            return res
-                .status(401)
-                .json({ error: true, message: "Invalid username or password" });
-        }
-
-        if (user.pwResetToken.trim() !== "") {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "There is an open password reset request.",
-                401
-            );
-            return res.status(401).json({
-                error: true,
-                message:
-                    "Your account is locked currently due to an open password reset request! Please finish your password reset or contact your administrator."
-            });
-        }
-
-        if (user.accountLocked === true) {
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                "Account locked.",
-                401
-            );
-            return res.status(401).json({
-                error: true,
-                message:
-                    "Your account is locked! Please contact your administrator."
-            });
-        }
-        // TODO: implement ldap login
-        let authSuccess = false;
-        if(user.ldapEnabled === true) {
-
-        } else {
-            // verify users password
-            const verifiedPassword = await bcrypt.compare(
-                req.body.password,
-                user.password
-            );
-            if (!verifiedPassword) {
-                doHttpLog(
-                    "RES",
-                    mid,
-                    req.method,
-                    req.originalUrl,
-                    req.ip,
-                    "Invalid username or password",
-                    401
-                );
-                return res
-                    .status(401)
-                    .json({ error: true, message: "Invalid username or password" });
-            }    
-            authSuccess = true;
-        }
-
-        if(authSuccess === true) {
-            // reset mfaverified flag
-            const update = {
-                mfaVerified: false
-            };
-            
-            // fetch current user and clear password & mfaToken fields
-            await User.findByIdAndUpdate({ _id: user._id }, update);
-            user.password = "";
-            user.mfaToken = "";
-    
-            // generate jwt token
-            const { accessToken, refreshToken } = await generateTokens(user);
-            doHttpLog(
-                "RES",
-                mid,
-                req.method,
-                req.originalUrl,
-                req.ip,
-                user.ldapEnabled===false ? req.body.userName + " database login sucessful!" : req.body.userName + " ldap login sucessful!",
-                200
-            );
-    
-            // Set HTTP-only cookie with the access token
-            let mdate = new Date();
-            let rDate = new Date();
-            mdate.setTime(mdate.getTime() + 1 * 60 * 1000);
-            res.cookie("accessToken", accessToken, {
-                httpOnly: true,
-                secure: false, // Set to true in production if using HTTPS
-                sameSite: "strict", // Adjust as needed based on your application's requirements
-                expires: mdate
-            });
-            rDate.setDate(rDate.getDate() + 1);
-            res.cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-                secure: false, // Set to true in production if using HTTPS
-                sameSite: "strict", // Adjust as needed based on your application's requirements
-                expires: rDate
-            });
-            res.status(200).json({
-                error: false,
-                accessToken,
-                refreshToken,
-                user,
-                message: "Logged in sucessfully"
-            });
-        }
-        
-    } catch (err) {
-        doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, err, 500);
-        logger.error("API|auth.js|/login|" + err.message);
-        res.status(500).json({ error: true, message: "Internal Server Error" });
+  const mid = crypto.randomBytes(16).toString("hex");
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
+    const { error } = logInBodyValidation(req.body);
+    if (error) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        error.details[0].message,
+        400
+      );
+      return res
+        .status(400)
+        .json({ error: true, message: error.details[0].message });
     }
+
+    const user = await User.findOne({ userName: req.body.userName });
+    if (!user) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "Invalid username or password",
+        401
+      );
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid username or password" });
+    }
+
+    if (user.pwResetToken.trim() !== "") {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "There is an open password reset request.",
+        401
+      );
+      return res.status(401).json({
+        error: true,
+        message:
+          "Your account is locked currently due to an open password reset request! Please finish your password reset or contact your administrator."
+      });
+    }
+
+    if (user.accountLocked === true) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "Account locked.",
+        401
+      );
+      return res.status(401).json({
+        error: true,
+        message:
+          "Your account is locked! Please contact your administrator."
+      });
+    }
+    // TODO: implement ldap login
+    let authSuccess = false;
+    if (user.ldapEnabled === true) {
+
+    } else {
+      // verify users password
+      const verifiedPassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+      if (!verifiedPassword) {
+        doHttpLog(
+          "RES",
+          mid,
+          req.method,
+          req.originalUrl,
+          req.ip,
+          "Invalid username or password",
+          401
+        );
+        return res
+          .status(401)
+          .json({ error: true, message: "Invalid username or password" });
+      }
+      // TODO: implement ldap check
+      authSuccess = true;
+    }
+
+    if (authSuccess === true) {
+      // reset mfaverified flag
+      const update = {
+        mfaVerified: false
+      };
+
+      // fetch current user and clear password & mfaToken fields
+      await User.findByIdAndUpdate({ _id: user._id }, update);
+      user.password = "";
+      user.mfaToken = "";
+
+      // generate jwt token
+      const { accessToken, refreshToken } = await generateTokens(user);
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        user.ldapEnabled === false ? req.body.userName + " database login sucessful!" : req.body.userName + " ldap login sucessful!",
+        200
+      );
+
+      // Set HTTP-only cookie with the access token
+      let mdate = new Date();
+      let rDate = new Date();
+      mdate.setTime(mdate.getTime() + 1 * 60 * 1000);
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: false, // Set to true in production if using HTTPS
+        sameSite: "strict", // Adjust as needed based on your application's requirements
+        expires: mdate
+      });
+      rDate.setDate(rDate.getDate() + 1);
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false, // Set to true in production if using HTTPS
+        sameSite: "strict", // Adjust as needed based on your application's requirements
+        expires: rDate
+      });
+      res.status(200).json({
+        error: false,
+        accessToken,
+        refreshToken,
+        user,
+        message: "Logged in sucessfully"
+      });
+    }
+
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, err, 500);
+    logger.error("API|auth.js|/login|" + err.message);
+    res.status(500).json({ error: true, message: "Internal Server Error" });
+  }
 });
 
 export default router;

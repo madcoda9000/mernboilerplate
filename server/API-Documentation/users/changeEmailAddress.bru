@@ -1,0 +1,30 @@
+meta {
+  name: changeEmailAddress
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{protocol}}://{{host}}:{{port}}/v1/users/changeEmailAddress
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+}
+
+body:json {
+  {
+    "_id":"{{currentUserId}}",
+    "email":"super.admin@local.app"
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

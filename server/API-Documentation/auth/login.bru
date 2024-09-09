@@ -1,0 +1,37 @@
+meta {
+  name: login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{protocol}}://{{host}}:{{port}}/v1/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+}
+
+body:json {
+  {
+    "userName": "super.admin",
+    "password": "Test1000!"
+  }
+}
+
+script:post-response {
+  const cookies = res.getHeader('set-cookie');
+  
+  if(cookies) {
+    bru.setVar("cookie", cookies.join('; '));
+  }
+}
+
+tests {
+  const responseJson = res.getBody();
+  bru.setEnvVar("accessToken", responseJson.accessToken);
+  bru.setEnvVar("refreshToken", responseJson.refreshToken);
+  bru.setEnvVar("currentUserId", responseJson.user._id);
+}

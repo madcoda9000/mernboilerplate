@@ -1,0 +1,29 @@
+meta {
+  name: updateMailSettings
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{protocol}}://{{host}}:{{port}}/v1/settings/updateMailSettings
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "smtpServer": "",
+    "smtpPort": "",
+    "smtpUsername": "",
+    "smtpPassword": "",
+    "smtpTls": ""
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

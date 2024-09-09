@@ -1,0 +1,34 @@
+meta {
+  name: createUser
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{protocol}}://{{host}}:{{port}}/v1/users/createUser
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+}
+
+body:json {
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "userName": "user.name",
+    "email": "user.name@domain.com",
+    "password": "P@ssW0rd!",
+    "roles": ["users"]
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

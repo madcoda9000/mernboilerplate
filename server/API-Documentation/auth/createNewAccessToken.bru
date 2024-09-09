@@ -1,0 +1,43 @@
+meta {
+  name: createNewAccessToken
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{protocol}}://{{host}}:{{port}}/v1/auth/createNewAccessToken
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+  x-access-token: {{accessToken}}
+}
+
+body:json {
+  {
+    "refreshToken":"{{refreshToken}}"
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}
+
+script:post-response {
+  const cookies = res.getHeader('set-cookie');
+  
+  if(cookies) {
+    bru.setVar("cookie", cookies.join('; '));
+  }
+}
+
+tests {
+  const responseJson = res.getBody();
+  bru.setEnvVar("accessToken", responseJson.accessToken);
+}

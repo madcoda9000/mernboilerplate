@@ -1,0 +1,32 @@
+meta {
+  name: updateRole
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{protocol}}://{{host}}:{{port}}/v1/roles/updateRole
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+  x-access-token: {{accessToken}}
+}
+
+body:json {
+  {
+    "_id": "3465644556734573541",
+    "oldRoleName": "oldRoleNameHere",
+    "roleName": "newRoleNameHere"
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

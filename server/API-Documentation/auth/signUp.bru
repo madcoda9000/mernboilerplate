@@ -1,0 +1,25 @@
+meta {
+  name: signUp
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{protocol}}://{{host}}:{{port}}/v1/auth/signUp
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+}
+
+body:json {
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "userName": "user.name",
+    "email": "user.name@domain.com",
+    "password": "P@ssW0rd!"
+  }
+}

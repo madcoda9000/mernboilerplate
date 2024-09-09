@@ -1,0 +1,37 @@
+meta {
+  name: updateUser
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{protocol}}://{{host}}:{{port}}/v1/users/updateUser
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+}
+
+body:json {
+  {
+   "_id": "{{currentUserId}}",
+   "firstName": "Super",
+   "lastName": "Admin",
+   "userName": "super.admin",
+   "email": "super.admin@local.app",
+   "roles": ["admins","Group1","Group"],
+   "mfaEnforced": false,
+   "mfaEnabled": false,
+   "ldapEnabled": false
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

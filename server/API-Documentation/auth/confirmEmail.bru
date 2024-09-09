@@ -1,0 +1,31 @@
+meta {
+  name: confirmEmail
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{protocol}}://{{host}}:{{port}}/v1/auth/confirmEmail
+  body: json
+  auth: none
+}
+
+headers {
+  origin: http://postman.local
+}
+
+body:json {
+  {
+    "_id": "32645543466443664456",
+    "email": "user.name@domain.com",
+    "token": "00a6fa25-df29-4701-9077-557932591766"
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

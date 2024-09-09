@@ -1,0 +1,19 @@
+meta {
+  name: getMailSettings
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{protocol}}://{{host}}:{{port}}/v1/settings/getMailSettings
+  body: none
+  auth: none
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

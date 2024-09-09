@@ -1,0 +1,29 @@
+meta {
+  name: lockUser
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{protocol}}://{{host}}:{{port}}/v1/users/lockUser
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+}
+
+body:json {
+  {
+    "_id": "{{currentUserId}}"
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

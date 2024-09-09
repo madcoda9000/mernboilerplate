@@ -1,0 +1,24 @@
+meta {
+  name: paginated
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{protocol}}://{{host}}:{{port}}/v1/roles/paginated/1/10
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: http://postman.local
+  x-access-token: {{accessToken}}
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

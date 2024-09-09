@@ -1,0 +1,27 @@
+meta {
+  name: updateAppSettings
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{protocol}}://{{host}}:{{port}}/v1/settings/updateAppSettings
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "showMfaEnableBanner": "true",
+    "showRegisterLink": "true",
+    "showResetPasswordLink": "true"
+  }
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}
