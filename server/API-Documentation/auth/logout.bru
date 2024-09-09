@@ -4,27 +4,22 @@ meta {
   seq: 4
 }
 
-post {
+get {
   url: {{protocol}}://{{host}}:{{port}}/v1/auth/logout
   body: json
   auth: none
 }
 
-headers {
-  Origin: http://postman.local
-  x-access-token: {{accessToken}}
-}
-
-body:json {
-  {
-    "refreshToken":"{{refreshToken}}"
-  }
-}
-
-script:pre-request {
-  const cookie = bru.getVar("cookie");
+tests {
+  // test if request is successful
+  test("response 200", function() {
+    const data = res.getBody();
+    expect(res.getStatus()).to.equal(200);
+  });
   
-  if(cookie) {
-    req.setHeader("Cookie", cookie)
-  }
+  // test if there is no error
+  test("error should be false", function() {
+    const data = res.getBody();
+    expect(data.error).to.eq(false);
+  });
 }

@@ -10,10 +10,6 @@ post {
   auth: none
 }
 
-headers {
-  Origin: http://postman.local
-}
-
 body:json {
   {
     "firstName": "John",
@@ -31,4 +27,17 @@ script:pre-request {
   if(cookie) {
     req.setHeader("Cookie", cookie)
   }
+}
+
+tests {
+  // test server response
+  test("server response should be 201", function() {
+    const data = res.getBody();
+    expect(res.getStatus()).to.equal(201);
+  });
+  // test if response has no error
+  test("should receive error=false", function() {
+    const data = res.getBody();
+    expect(data.error).to.eq(false)
+  });
 }

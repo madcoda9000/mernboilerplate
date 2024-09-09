@@ -10,14 +10,23 @@ get {
   auth: none
 }
 
-headers {
-  Origin: http://postman.local
-}
-
 script:pre-request {
   const cookie = bru.getVar("cookie");
   
   if(cookie) {
     req.setHeader("Cookie", cookie)
   }
+}
+
+tests {
+  // test server response
+  test("server response should be 200", function() {
+    const data = res.getBody();
+    expect(res.getStatus()).to.equal(200);
+  });
+  // test if response has no error
+  test("should receive error=false", function() {
+    const data = res.getBody();
+    expect(data.error).to.eq(false)
+  });
 }

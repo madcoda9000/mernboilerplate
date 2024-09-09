@@ -10,14 +10,23 @@ post {
   auth: none
 }
 
-headers {
-  Origin: http://postman.local
-}
-
 body:json {
   {
     "email": "john.doe@mail.com",
     "token": "s6gd4ds654ghd64hdf64hfg6jgf4u7958tr7h8trf",
     "password": "&%$Rbkjbkb)(654dfsgf)"
   }
+}
+
+tests {
+  // test server response
+  test("server response should be 201", function() {
+    const data = res.getBody();
+    expect(res.getStatus()).to.equal(201);
+  });
+  // test if response has no error
+  test("should receive error=false", function() {
+    const data = res.getBody();
+    expect(data.error).to.eq(false)
+  });
 }
