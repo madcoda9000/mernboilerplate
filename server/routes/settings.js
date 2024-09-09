@@ -33,7 +33,7 @@ const router = Router();
   ]
 }
  */
-router.get("/getNotifSettings", async (req, res) => {
+router.get("/getNotifSettings", auth, async (req, res) => {
   const mid = crypto.randomBytes(16).toString("hex");
   try {
     doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
@@ -87,7 +87,7 @@ router.get("/getNotifSettings", async (req, res) => {
   ]
 }
  */
-router.get("/getLdapSettings", async (req, res) => {
+router.get("/getLdapSettings", auth, async (req, res) => {
   const mid = crypto.randomBytes(16).toString("hex");
   try {
     doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
@@ -141,7 +141,7 @@ router.get("/getLdapSettings", async (req, res) => {
   ]
 }
  */
-router.get("/getMailSettings", async (req, res) => {
+router.get("/getMailSettings", auth, async (req, res) => {
   const mid = crypto.randomBytes(16).toString("hex");
   try {
     doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip);
