@@ -1,0 +1,1170 @@
+{
+  "name": "API-Documentation",
+  "version": "1",
+  "items": [
+    {
+      "type": "folder",
+      "name": "auth",
+      "items": [
+        {
+          "type": "http",
+          "name": "confirmEmail",
+          "seq": 5,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/auth/confirmEmail",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"_id\": \"32645543466443664456\",\n  \"email\": \"user.name@domain.com\",\n  \"token\": \"00a6fa25-df29-4701-9077-557932591766\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "createNewAccessToken",
+          "seq": 3,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/auth/createNewAccessToken",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Origin",
+                "value": "http://postman.local",
+                "enabled": true
+              },
+              {
+                "name": "x-access-token",
+                "value": "{{accessToken}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"refreshToken\":\"{{refreshToken}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}",
+              "res": "const cookies = res.getHeader('set-cookie');\n\nif(cookies) {\n  bru.setVar(\"cookie\", cookies.join('; '));\n}\nconst responseJson = res.getBody();\nbru.setEnvVar(\"accessToken\", responseJson.accessToken);"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test if request is successful\ntest(\"response 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n\n// test if there is no error\ntest(\"error should be false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false);\n});\n",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "finishMfaSetup",
+          "seq": 7,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/auth/finishMfaSetup",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"_id\": \"32645543466443664456\",\n  \"token\": \"00a6fa25-df29-4701-9077-557932591766\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "login",
+          "seq": 2,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/auth/login",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"userName\": \"super.admin\",\r\n  \"password\": \"Test1000!\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "// save cookies\nconst cookies = res.getHeader('set-cookie');\nif(cookies) {\n  bru.setVar(\"cookie\", cookies.join('; '));\n}\n// save variables\nconst responseJson = res.getBody();\nbru.setEnvVar(\"accessToken\", responseJson.accessToken);\nbru.setEnvVar(\"refreshToken\", responseJson.refreshToken);\nbru.setEnvVar(\"currentUserId\", responseJson.user._id);"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test if login request is successful\ntest(\"should be able to login\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n\n// test if accessToken is received\ntest(\"should receive the access token\", function() {\n  const data = res.getBody();\n  expect(data.accessToken).to.be.a('string');\n});\n\n// test if refresh token is received\ntest(\"should receive the refresh token\", function() {\n  const data = res.getBody();\n  expect(data.refreshToken).to.be.a('string');\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "logout",
+          "seq": 4,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/auth/logout",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "// test if request is successful\ntest(\"response 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n\n// test if there is no error\ntest(\"error should be false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false);\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "signUp",
+          "seq": 1,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/auth/signUp",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"userName\": \"user.name\",\n  \"email\": \"user.name@domain.com\",\n  \"password\": \"Test1000!\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "// test if register request is successful\ntest(\"should be able to register\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(201);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "startMfaSetup",
+          "seq": 6,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/auth/startMfaSetup",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"_id\": \"32645543466443664456\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "validateOtp",
+          "seq": 8,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/auth/validateOtp",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"_id\": \"32645543466443664456\",\n  \"token\": \"00a6fa25-df29-4701-9077-557932591766\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "logs",
+      "items": [
+        {
+          "type": "http",
+          "name": "createAuditEntry",
+          "seq": 5,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/logs/createAuditEntry",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"user\": \"john.doe\",\n  \"level\": \"info warn or error\",\n  \"message\": \"message goes here\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 201\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(201);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getAuditLogs",
+          "seq": 4,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/logs/getAuditLogs/1/5",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getMailLogs",
+          "seq": 1,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/logs/getMailLogs/1/5",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getRequestLogs",
+          "seq": 3,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/logs/getRequestLogs/1/5",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getSystemLogs",
+          "seq": 2,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/logs/getSystemLogs/1/5",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "roles",
+      "items": [
+        {
+          "type": "http",
+          "name": "createRole",
+          "seq": 4,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/roles/createRole",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"roleName\": \"newRole1\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 201\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(201);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "deleteRole",
+          "seq": 3,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/roles/deleteRole",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"6555eacfab3a582340139555\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "paginated",
+          "seq": 1,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/roles/paginated/1/10",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "updateRole",
+          "seq": 2,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/roles/updateRole",
+            "method": "PUT",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"3465644556734573541\",\r\n  \"oldRoleName\": \"oldRoleNameHere\",\r\n  \"roleName\": \"newRoleNameHere\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 201\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(201);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "settings",
+      "items": [
+        {
+          "type": "http",
+          "name": "getAppSettings",
+          "seq": 1,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/settings/getAppsettings",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getLdapSettings",
+          "seq": 3,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/settings/getLdapSettings",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getMailSettings",
+          "seq": 4,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/settings/getMailSettings",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getNotifSettings",
+          "seq": 2,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/settings/getNotifSettings",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "updateAppSettings",
+          "seq": 5,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/settings/updateAppSettings",
+            "method": "PUT",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"showMfaEnableBanner\": \"true\",\n  \"showRegisterLink\": \"true\",\n  \"showResetPasswordLink\": \"true\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "updateLdapSettings",
+          "seq": 7,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/settings/updateLdapSettings",
+            "method": "PUT",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"LdapBaseDn\": \"\",\n  \"LdapDomainController\": \"\",\n  \"LdapDomainName\": \"\",\n  \"LdapEnabled\": \"false\",\n  \"LdapGroup\": \"\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "updateMailSettings",
+          "seq": 6,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/settings/updateMailSettings",
+            "method": "PUT",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"smtpServer\": \"\",\n  \"smtpPort\": \"\",\n  \"smtpUsername\": \"\",\n  \"smtpPassword\": \"\",\n  \"smtpTls\": \"\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "updateNotifSettings",
+          "seq": 8,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/settings/updateNotifSettings",
+            "method": "PUT",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"sendNotifOnObjectCreation\": \"false\",\n  \"sendNotifOnObjectDeletion\": \"flase\",\n  \"sendNotifOnObjectUpdate\": \"false\",\n  \"sendNotifOnUserSelfRegister\": \"false\",\n  \"sendWelcomeMailOnUserCreation\": \"false\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "users",
+      "items": [
+        {
+          "type": "http",
+          "name": "changeEmailAddress",
+          "seq": 3,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/changeEmailAddress",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\":\"{{currentUserId}}\",\r\n  \"email\":\"super.admin@local.app\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "createUser",
+          "seq": 6,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/createUser",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Doe\",\r\n  \"userName\": \"user.name\",\r\n  \"email\": \"user.name@domain.com\",\r\n  \"password\": \"P@ssW0rd!\",\r\n  \"roles\": [\"users\"]\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 201\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(201);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "deleteUser",
+          "seq": 5,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/users/deleteUser",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "disableLdap",
+          "seq": 10,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/disableLdap",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "disableMfa",
+          "seq": 13,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/disableMfa",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "enableLdap",
+          "seq": 9,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/enableLdap",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "enforceMfa",
+          "seq": 11,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/enforceMfa",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "forgotPw1",
+          "seq": 14,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/users/forgotPw1",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"email\": \"john.doe@mail.com\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "forgotPw2",
+          "seq": 15,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/users/forgotPw2",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"email\": \"john.doe@mail.com\",\n  \"token\": \"s6gd4ds654ghd64hdf64hfg6jgf4u7958tr7h8trf\",\n  \"password\": \"&%$Rbkjbkb)(654dfsgf)\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 201\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(201);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "lockUser",
+          "seq": 7,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/lockUser",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "paginated",
+          "seq": 2,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/paginated/1/10",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "unenforceMfa",
+          "seq": 12,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/unenforceMfa",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "unlockUser",
+          "seq": 8,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/unlockUser",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "updateUser",
+          "seq": 4,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/updateUser",
+            "method": "PUT",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n \"_id\": \"{{currentUserId}}\",\r\n \"firstName\": \"Super\",\r\n \"lastName\": \"Admin\",\r\n \"userName\": \"super.admin\",\r\n \"email\": \"super.admin@local.app\",\r\n \"roles\": [\"admins\",\"Group1\",\"Group\"],\r\n \"mfaEnforced\": false,\r\n \"mfaEnabled\": false,\r\n \"ldapEnabled\": false\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 201\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(201);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "user",
+          "seq": 1,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/users/user/{{currentUserId}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "req": "const cookie = bru.getVar(\"cookie\");\n\nif(cookie) {\n  req.setHeader(\"Cookie\", cookie)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "quotes",
+      "items": [
+        {
+          "type": "http",
+          "name": "getQuoteOfTheDay",
+          "seq": 1,
+          "request": {
+            "url": "{{protocol}}://{{host}}:{{port}}/v1/quotes/getQuoteOfTheDay",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "// test server response\ntest(\"server response should be 200\", function() {\n  const data = res.getBody();\n  expect(res.getStatus()).to.equal(200);\n});\n// test if response has no error\ntest(\"should receive error=false\", function() {\n  const data = res.getBody();\n  expect(data.error).to.eq(false)\n});\n// quote should be a string\ntest(\"quote should be a string\", function() {\n  const data = res.getBody();\n  expect(data.quote.quote).to.be.a('string')\n});\n// author should be a string\ntest(\"author should be a string\", function() {\n  const data = res.getBody();\n  expect(data.quote.author).to.be.a('string')\n});",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "activeEnvironmentUid": "Enu6F5u8SrnDz3wIK0qix",
+  "environments": [
+    {
+      "variables": [
+        {
+          "name": "host",
+          "value": "127.0.0.1",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "port",
+          "value": "3001",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "protocol",
+          "value": "http",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "refreshToken",
+          "value": "",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "accessToken",
+          "value": "",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        }
+      ],
+      "name": "DEV"
+    }
+  ],
+  "root": {
+    "request": {
+      "headers": [
+        {
+          "name": "origin",
+          "value": "http://postman.local",
+          "enabled": true,
+          "uid": "SB9HVCDH7JiEzZ2VhGuFY"
+        }
+      ]
+    }
+  },
+  "brunoConfig": {
+    "version": "1",
+    "name": "API-Documentation",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ],
+    "presets": {
+      "requestType": "http",
+      "requestUrl": "{{protocol}}://{{host}}:{{port}}/v1/"
+    }
+  }
+}

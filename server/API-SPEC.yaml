@@ -1,0 +1,924 @@
+openapi: 3.0.0
+info:
+  title: API-SPEC
+  version: 1.0.0
+paths:
+  /v1/auth/confirmEmail:
+    post:
+      summary: confirmEmail
+      operationId: confirmEmail
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/confirmemail'
+  /v1/auth/createNewAccessToken:
+    get:
+      summary: createNewAccessToken
+      operationId: createNewAccessToken
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Origin
+          in: header
+          description: ''
+          required: true
+          example: http://postman.local
+        - name: x-access-token
+          in: header
+          description: ''
+          required: true
+          example: '{{accessToken}}'
+      requestBody:
+        $ref: '#/components/requestBodies/createnewaccesstoken'
+  /v1/auth/finishMfaSetup:
+    post:
+      summary: finishMfaSetup
+      operationId: finishMfaSetup
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/finishmfasetup'
+  /v1/auth/login:
+    post:
+      summary: login
+      operationId: login
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/login'
+  /v1/auth/logout:
+    get:
+      summary: logout
+      operationId: logout
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/auth/signUp:
+    post:
+      summary: signUp
+      operationId: signUp
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/signup'
+  /v1/auth/startMfaSetup:
+    post:
+      summary: startMfaSetup
+      operationId: startMfaSetup
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/startmfasetup'
+  /v1/auth/validateOtp:
+    post:
+      summary: validateOtp
+      operationId: validateOtp
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/validateotp'
+  /v1/logs/createAuditEntry:
+    post:
+      summary: createAuditEntry
+      operationId: createAuditEntry
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/createauditentry'
+  /v1/logs/getAuditLogs/1/5:
+    get:
+      summary: getAuditLogs
+      operationId: getAuditLogs
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/logs/getMailLogs/1/5:
+    get:
+      summary: getMailLogs
+      operationId: getMailLogs
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/logs/getRequestLogs/1/5:
+    get:
+      summary: getRequestLogs
+      operationId: getRequestLogs
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/logs/getSystemLogs/1/5:
+    get:
+      summary: getSystemLogs
+      operationId: getSystemLogs
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/quotes/getQuoteOfTheDay:
+    get:
+      summary: getQuoteOfTheDay
+      operationId: getQuoteOfTheDay
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/roles/createRole:
+    post:
+      summary: createRole
+      operationId: createRole
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/createrole'
+  /v1/roles/deleteRole:
+    post:
+      summary: deleteRole
+      operationId: deleteRole
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/deleterole'
+  /v1/roles/paginated/1/10:
+    get:
+      summary: paginated
+      operationId: paginated
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/roles/updateRole:
+    put:
+      summary: updateRole
+      operationId: updateRole
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/updaterole'
+  /v1/settings/getAppsettings:
+    get:
+      summary: getAppSettings
+      operationId: getAppSettings
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/settings/getLdapSettings:
+    get:
+      summary: getLdapSettings
+      operationId: getLdapSettings
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/settings/getMailSettings:
+    get:
+      summary: getMailSettings
+      operationId: getMailSettings
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/settings/getNotifSettings:
+    get:
+      summary: getNotifSettings
+      operationId: getNotifSettings
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/settings/updateAppSettings:
+    put:
+      summary: updateAppSettings
+      operationId: updateAppSettings
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/updateappsettings'
+  /v1/settings/updateLdapSettings:
+    put:
+      summary: updateLdapSettings
+      operationId: updateLdapSettings
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/updateldapsettings'
+  /v1/settings/updateMailSettings:
+    put:
+      summary: updateMailSettings
+      operationId: updateMailSettings
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/updatemailsettings'
+  /v1/settings/updateNotifSettings:
+    put:
+      summary: updateNotifSettings
+      operationId: updateNotifSettings
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/updatenotifsettings'
+  /v1/users/changeEmailAddress:
+    patch:
+      summary: changeEmailAddress
+      operationId: changeEmailAddress
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/changeemailaddress'
+  /v1/users/createUser:
+    post:
+      summary: createUser
+      operationId: createUser
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/createuser'
+  /v1/users/users/deleteUser:
+    post:
+      summary: deleteUser
+      operationId: deleteUser
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/deleteuser'
+  /v1/users/disableLdap:
+    patch:
+      summary: disableLdap
+      operationId: disableLdap
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/disableldap'
+  /v1/users/disableMfa:
+    patch:
+      summary: disableMfa
+      operationId: disableMfa
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/disablemfa'
+  /v1/users/enableLdap:
+    patch:
+      summary: enableLdap
+      operationId: enableLdap
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/enableldap'
+  /v1/users/enforceMfa:
+    patch:
+      summary: enforceMfa
+      operationId: enforceMfa
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/enforcemfa'
+  /v1/users/users/forgotPw1:
+    post:
+      summary: forgotPw1
+      operationId: forgotPw1
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/forgotpw1'
+  /v1/users/users/forgotPw2:
+    post:
+      summary: forgotPw2
+      operationId: forgotPw2
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/forgotpw2'
+  /v1/users/lockUser:
+    patch:
+      summary: lockUser
+      operationId: lockUser
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/lockuser'
+  /v1/users/paginated/1/10:
+    get:
+      summary: paginated
+      operationId: paginated
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+  /v1/users/unenforceMfa:
+    patch:
+      summary: unenforceMfa
+      operationId: unenforceMfa
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/unenforcemfa'
+  /v1/users/unlockUser:
+    patch:
+      summary: unlockUser
+      operationId: unlockUser
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/unlockuser'
+  /v1/users/updateUser:
+    put:
+      summary: updateUser
+      operationId: updateUser
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/updateuser'
+  /v1/users/user/%7B%7BcurrentUserId%7D%7D:
+    get:
+      summary: user
+      operationId: user
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+servers:
+  - url: http://127.0.0.1:3001
+components:
+  schemas:
+    confirmemail:
+      type: object
+      properties:
+        _id:
+          type: string
+        email:
+          type: string
+        token:
+          type: string
+    createnewaccesstoken:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+    finishmfasetup:
+      type: object
+      properties:
+        _id:
+          type: string
+        token:
+          type: string
+    login:
+      type: object
+      properties:
+        userName:
+          type: string
+        password:
+          type: string
+    signup:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    startmfasetup:
+      type: object
+      properties:
+        _id:
+          type: string
+    validateotp:
+      type: object
+      properties:
+        _id:
+          type: string
+        token:
+          type: string
+    createauditentry:
+      type: object
+      properties:
+        user:
+          type: string
+        level:
+          type: string
+        message:
+          type: string
+    createrole:
+      type: object
+      properties:
+        roleName:
+          type: string
+    deleterole:
+      type: object
+      properties:
+        _id:
+          type: string
+    updaterole:
+      type: object
+      properties:
+        _id:
+          type: string
+        oldRoleName:
+          type: string
+        roleName:
+          type: string
+    updateappsettings:
+      type: object
+      properties:
+        showMfaEnableBanner:
+          type: string
+        showRegisterLink:
+          type: string
+        showResetPasswordLink:
+          type: string
+    updateldapsettings:
+      type: object
+      properties:
+        LdapBaseDn:
+          type: string
+        LdapDomainController:
+          type: string
+        LdapDomainName:
+          type: string
+        LdapEnabled:
+          type: string
+        LdapGroup:
+          type: string
+    updatemailsettings:
+      type: object
+      properties:
+        smtpServer:
+          type: string
+        smtpPort:
+          type: string
+        smtpUsername:
+          type: string
+        smtpPassword:
+          type: string
+        smtpTls:
+          type: string
+    updatenotifsettings:
+      type: object
+      properties:
+        sendNotifOnObjectCreation:
+          type: string
+        sendNotifOnObjectDeletion:
+          type: string
+        sendNotifOnObjectUpdate:
+          type: string
+        sendNotifOnUserSelfRegister:
+          type: string
+        sendWelcomeMailOnUserCreation:
+          type: string
+    changeemailaddress:
+      type: object
+      properties:
+        _id:
+          type: string
+        email:
+          type: string
+    createuser:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+          properties:
+            '0':
+              type: string
+    deleteuser:
+      type: object
+      properties:
+        _id:
+          type: string
+    disableldap:
+      type: object
+      properties:
+        _id:
+          type: string
+    disablemfa:
+      type: object
+      properties:
+        _id:
+          type: string
+    enableldap:
+      type: object
+      properties:
+        _id:
+          type: string
+    enforcemfa:
+      type: object
+      properties:
+        _id:
+          type: string
+    forgotpw1:
+      type: object
+      properties:
+        email:
+          type: string
+    forgotpw2:
+      type: object
+      properties:
+        email:
+          type: string
+        token:
+          type: string
+        password:
+          type: string
+    lockuser:
+      type: object
+      properties:
+        _id:
+          type: string
+    unenforcemfa:
+      type: object
+      properties:
+        _id:
+          type: string
+    unlockuser:
+      type: object
+      properties:
+        _id:
+          type: string
+    updateuser:
+      type: object
+      properties:
+        _id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+          properties:
+            '0':
+              type: string
+            '1':
+              type: string
+            '2':
+              type: string
+        mfaEnforced:
+          type: boolean
+        mfaEnabled:
+          type: boolean
+        ldapEnabled:
+          type: boolean
+  requestBodies:
+    confirmemail:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/confirmemail'
+      description: ''
+      required: true
+    createnewaccesstoken:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/createnewaccesstoken'
+      description: ''
+      required: true
+    finishmfasetup:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/finishmfasetup'
+      description: ''
+      required: true
+    login:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/login'
+      description: ''
+      required: true
+    signup:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/signup'
+      description: ''
+      required: true
+    startmfasetup:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/startmfasetup'
+      description: ''
+      required: true
+    validateotp:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/validateotp'
+      description: ''
+      required: true
+    createauditentry:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/createauditentry'
+      description: ''
+      required: true
+    createrole:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/createrole'
+      description: ''
+      required: true
+    deleterole:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/deleterole'
+      description: ''
+      required: true
+    updaterole:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/updaterole'
+      description: ''
+      required: true
+    updateappsettings:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/updateappsettings'
+      description: ''
+      required: true
+    updateldapsettings:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/updateldapsettings'
+      description: ''
+      required: true
+    updatemailsettings:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/updatemailsettings'
+      description: ''
+      required: true
+    updatenotifsettings:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/updatenotifsettings'
+      description: ''
+      required: true
+    changeemailaddress:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/changeemailaddress'
+      description: ''
+      required: true
+    createuser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/createuser'
+      description: ''
+      required: true
+    deleteuser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/deleteuser'
+      description: ''
+      required: true
+    disableldap:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/disableldap'
+      description: ''
+      required: true
+    disablemfa:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/disablemfa'
+      description: ''
+      required: true
+    enableldap:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/enableldap'
+      description: ''
+      required: true
+    enforcemfa:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/enforcemfa'
+      description: ''
+      required: true
+    forgotpw1:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/forgotpw1'
+      description: ''
+      required: true
+    forgotpw2:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/forgotpw2'
+      description: ''
+      required: true
+    lockuser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/lockuser'
+      description: ''
+      required: true
+    unenforcemfa:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/unenforcemfa'
+      description: ''
+      required: true
+    unlockuser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/unlockuser'
+      description: ''
+      required: true
+    updateuser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/updateuser'
+      description: ''
+      required: true
+  securitySchemes: {}

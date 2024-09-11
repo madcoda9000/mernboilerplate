@@ -5,6 +5,10 @@
 
 ### New
 
+* Added test for api calls. [Sascha Heimann]
+
+  added test for each api definition in bruno config
+
 * Bruno Clien Documentation. [Sascha Heimann]
 
   added complete API Documentation for Bruno REST Client
@@ -122,6 +126,10 @@
 * Cleanup. [Sascha Heimann]
 
 ### Fix
+
+* 09-09-15:2416:30  fixed error in auth route. [Sascha Heimann]
+
+  fixed error in signup method of auth route.
 
 * Fixes for edit and create user. [madcoda9000]
 

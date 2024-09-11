@@ -1,0 +1,2146 @@
+{
+  "info": {
+    "name": "API-Documentation",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "confirmEmail",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/auth/confirmEmail",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"_id\": \"32645543466443664456\",\n  \"email\": \"user.name@domain.com\",\n  \"token\": \"00a6fa25-df29-4701-9077-557932591766\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "createNewAccessToken",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test if request is successful",
+                  "test(\"response 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "",
+                  "// test if there is no error",
+                  "test(\"error should be false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false);",
+                  "});",
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Origin",
+                "value": "http://postman.local",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "x-access-token",
+                "value": "{{accessToken}}",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/auth/createNewAccessToken",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"refreshToken\":\"{{refreshToken}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "finishMfaSetup",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/auth/finishMfaSetup",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"_id\": \"32645543466443664456\",\n  \"token\": \"00a6fa25-df29-4701-9077-557932591766\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test if login request is successful",
+                  "test(\"should be able to login\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "",
+                  "// test if accessToken is received",
+                  "test(\"should receive the access token\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.accessToken).to.be.a('string');",
+                  "});",
+                  "",
+                  "// test if refresh token is received",
+                  "test(\"should receive the refresh token\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.refreshToken).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/auth/login",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userName\": \"super.admin\",\r\n  \"password\": \"Test1000!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test if request is successful",
+                  "test(\"response 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "",
+                  "// test if there is no error",
+                  "test(\"error should be false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/auth/logout",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "signUp",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test if register request is successful",
+                  "test(\"should be able to register\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(201);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/auth/signUp",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"userName\": \"user.name\",\n  \"email\": \"user.name@domain.com\",\n  \"password\": \"Test1000!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "startMfaSetup",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/auth/startMfaSetup",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"_id\": \"32645543466443664456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "validateOtp",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/auth/validateOtp",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"_id\": \"32645543466443664456\",\n  \"token\": \"00a6fa25-df29-4701-9077-557932591766\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "logs",
+      "item": [
+        {
+          "name": "createAuditEntry",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 201\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(201);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/logs/createAuditEntry",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": \"john.doe\",\n  \"level\": \"info warn or error\",\n  \"message\": \"message goes here\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "getAuditLogs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/logs/getAuditLogs/1/5",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getMailLogs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/logs/getMailLogs/1/5",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getRequestLogs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/logs/getRequestLogs/1/5",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getSystemLogs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/logs/getSystemLogs/1/5",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "roles",
+      "item": [
+        {
+          "name": "createRole",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 201\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(201);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/roles/createRole",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"roleName\": \"newRole1\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "deleteRole",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/roles/deleteRole",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"6555eacfab3a582340139555\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "paginated",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/roles/paginated/1/10",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "updateRole",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 201\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(201);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/roles/updateRole",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"3465644556734573541\",\r\n  \"oldRoleName\": \"oldRoleNameHere\",\r\n  \"roleName\": \"newRoleNameHere\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "item": [
+        {
+          "name": "getAppSettings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/settings/getAppsettings",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getLdapSettings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/settings/getLdapSettings",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getMailSettings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/settings/getMailSettings",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getNotifSettings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/settings/getNotifSettings",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "updateAppSettings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/settings/updateAppSettings",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"showMfaEnableBanner\": \"true\",\n  \"showRegisterLink\": \"true\",\n  \"showResetPasswordLink\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "updateLdapSettings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/settings/updateLdapSettings",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"LdapBaseDn\": \"\",\n  \"LdapDomainController\": \"\",\n  \"LdapDomainName\": \"\",\n  \"LdapEnabled\": \"false\",\n  \"LdapGroup\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "updateMailSettings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/settings/updateMailSettings",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"smtpServer\": \"\",\n  \"smtpPort\": \"\",\n  \"smtpUsername\": \"\",\n  \"smtpPassword\": \"\",\n  \"smtpTls\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "updateNotifSettings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/settings/updateNotifSettings",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sendNotifOnObjectCreation\": \"false\",\n  \"sendNotifOnObjectDeletion\": \"flase\",\n  \"sendNotifOnObjectUpdate\": \"false\",\n  \"sendNotifOnUserSelfRegister\": \"false\",\n  \"sendWelcomeMailOnUserCreation\": \"false\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "users",
+      "item": [
+        {
+          "name": "changeEmailAddress",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/changeEmailAddress",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\":\"{{currentUserId}}\",\r\n  \"email\":\"super.admin@local.app\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "createUser",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 201\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(201);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/createUser",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Doe\",\r\n  \"userName\": \"user.name\",\r\n  \"email\": \"user.name@domain.com\",\r\n  \"password\": \"P@ssW0rd!\",\r\n  \"roles\": [\"users\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "deleteUser",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/users/deleteUser",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "disableLdap",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/disableLdap",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "disableMfa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/disableMfa",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "enableLdap",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/enableLdap",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "enforceMfa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/enforceMfa",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "forgotPw1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/users/forgotPw1",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@mail.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "forgotPw2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 201\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(201);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/users/forgotPw2",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@mail.com\",\n  \"token\": \"s6gd4ds654ghd64hdf64hfg6jgf4u7958tr7h8trf\",\n  \"password\": \"&%$Rbkjbkb)(654dfsgf)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "lockUser",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/lockUser",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "paginated",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/paginated/1/10",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "unenforceMfa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/unenforceMfa",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "unlockUser",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/unlockUser",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"_id\": \"{{currentUserId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "updateUser",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 201\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(201);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/updateUser",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \"_id\": \"{{currentUserId}}\",\r\n \"firstName\": \"Super\",\r\n \"lastName\": \"Admin\",\r\n \"userName\": \"super.admin\",\r\n \"email\": \"super.admin@local.app\",\r\n \"roles\": [\"admins\",\"Group1\",\"Group\"],\r\n \"mfaEnforced\": false,\r\n \"mfaEnabled\": false,\r\n \"ldapEnabled\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const cookie = bru.getVar(\"cookie\");",
+                  "",
+                  "if(cookie) {",
+                  "  req.setHeader(\"Cookie\", cookie)",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/users/user/{{currentUserId}}",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "bruno",
+      "event": []
+    },
+    {
+      "name": "quotes",
+      "item": [
+        {
+          "name": "getQuoteOfTheDay",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// test server response",
+                  "test(\"server response should be 200\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(res.getStatus()).to.equal(200);",
+                  "});",
+                  "// test if response has no error",
+                  "test(\"should receive error=false\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.error).to.eq(false)",
+                  "});",
+                  "// quote should be a string",
+                  "test(\"quote should be a string\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.quote.quote).to.be.a('string')",
+                  "});",
+                  "// author should be a string",
+                  "test(\"author should be a string\", function() {",
+                  "  const data = res.getBody();",
+                  "  expect(data.quote.author).to.be.a('string')",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "",
+            "url": {
+              "raw": "{{protocol}}://{{host}}:{{port}}/v1/quotes/getQuoteOfTheDay",
+              "host": [],
+              "path": [],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "protocol",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "host",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "port",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "currentUserId",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
