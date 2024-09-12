@@ -71,12 +71,12 @@ const Users = () => {
   }, [])
 
   /**
-   * Copies the provided value to the user's clipboard.
+   * Copies the provided string value to the user's clipboard.
    *
-   * @param {string} value - The value to be copied to the clipboard.
+   * @param {string} value - The string value to be copied to the clipboard.
    * @return {Promise<void>} A promise that resolves when the value has been successfully copied to the clipboard.
    */
-  const copyValueToClippBoard = async (value: string) => {
+  const copyValueToClippBoard = async (value: string): Promise<void> => {
     try {
       let copyValue = ""
 
@@ -125,25 +125,26 @@ const Users = () => {
   }
 
   /**
-   * Handles the account status of a user by locking or unlocking the account based on the user's accountLocked status.
+   * Handles the account status of a user by locking or unlocking the account based on the user's `accountLocked` status.
    *
    * @param {User} user - The user object for which the account status is being handled.
-   * @return {void}
+   * @returns {Promise<void>}
    */
-  const handleAccountStatus = (user: User) => {
+  const handleAccountStatus = async (user: User): Promise<void> => {
     const pl: userIdPayload = {
       _id: user._id,
     }
 
     if (user.accountLocked) {
-      UsersService.unlockUser(pl).then((response) => {
+      try {
+        const response = await UsersService.unlockUser(pl)
         if (response && !response.data.error) {
           const adpl: AuditEntryPayload = {
             user: JSON.parse(sessionStorage.getItem("user")!).userName,
             level: "warn",
             message: `User account ${user.userName} successfully unlocked!`,
           }
-          LogsService.createAuditEntry(adpl)
+          await LogsService.createAuditEntry(adpl)
           showToast("success", `User account ${user.userName} unlocked!`)
 
           // Update the user in the data array
@@ -151,16 +152,23 @@ const Users = () => {
             prevData.map((u) => (u._id === user._id ? { ...u, accountLocked: false } : u))
           )
         }
-      })
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log(error.toString())
+        } else {
+          console.log("An unknown error occurred.")
+        }
+      }
     } else {
-      UsersService.lockUser(pl).then((response) => {
+      try {
+        const response = await UsersService.lockUser(pl)
         if (response && !response.data.error) {
           const adpl: AuditEntryPayload = {
             user: JSON.parse(sessionStorage.getItem("user")!).userName,
             level: "warn",
             message: `User account ${user.userName} successfully locked!`,
           }
-          LogsService.createAuditEntry(adpl)
+          await LogsService.createAuditEntry(adpl)
           showToast("success", `User account ${user.userName} locked!`)
 
           // Update the user in the data array
@@ -168,7 +176,13 @@ const Users = () => {
             prevData.map((u) => (u._id === user._id ? { ...u, accountLocked: true } : u))
           )
         }
-      })
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log(error.toString())
+        } else {
+          console.log("An unknown error occurred.")
+        }
+      }
     }
   }
 
@@ -176,72 +190,75 @@ const Users = () => {
    * Handles the MFA enforcement status of a user by setting the mfaenforcement property to true or false.
    *
    * @param {User} user - The user object for which the MFA enforcement status is being handled.
-   * @return {void}
+   * @returns {Promise<void>}
    */
-  const handleMfaEnforcementStatus = (user: User) => {
+  const handleMfaEnforcementStatus = async (user: User): Promise<void> => {
     const pl: userIdPayload = {
       _id: user._id,
     }
 
     if (user.mfaEnforced) {
-      UsersService.disableMfaEnforce(pl).then((response) => {
-        if (response && !response.data.error) {
-          const adpl: AuditEntryPayload = {
-            user: JSON.parse(sessionStorage.getItem("user")!).userName,
-            level: "warn",
-            message: `MFA enforcementfor user ${user.userName} disabled successfully!`,
-          }
-          LogsService.createAuditEntry(adpl)
-          showToast("success", `MFA enforcement for user ${user.userName} disabled successfully!`)
-
-          // Update the user in the data array
-          setData((prevData) =>
-            prevData.map((u) => (u._id === user._id ? { ...u, mfaEnforced: false } : u))
-          )
-        }
-      })
-    } else {
-      UsersService.enableMfaEnforce(pl).then((response) => {
-        if (response && !response.data.error) {
-          const adpl: AuditEntryPayload = {
-            user: JSON.parse(sessionStorage.getItem("user")!).userName,
-            level: "warn",
-            message: `MFA enforcement for user ${user.userName} enabled successfully!`,
-          }
-          LogsService.createAuditEntry(adpl)
-          showToast("success", `MFA enforcement for user ${user.userName} enabled successfully!`)
-
-          // Update the user in the data array
-          setData((prevData) =>
-            prevData.map((u) => (u._id === user._id ? { ...u, mfaEnforced: true } : u))
-          )
-        }
-      })
-    }
-  }
-
-  const handleMfaDisable = (user: User) => {
-    const pl: disableMfaPayload = {
-      execUserId: JSON.parse(sessionStorage.getItem("user")!)._id,
-      _id: user._id,
-    }
-
-    UsersService.disableMfa(pl).then((response) => {
+      const response = await UsersService.disableMfaEnforce(pl)
       if (response && !response.data.error) {
         const adpl: AuditEntryPayload = {
           user: JSON.parse(sessionStorage.getItem("user")!).userName,
           level: "warn",
-          message: `MFA for user ${user.userName} disabled successfully!`,
+          message: `MFA enforcementfor user ${user.userName} disabled successfully!`,
         }
-        LogsService.createAuditEntry(adpl)
-        showToast("success", `MFA for for user ${user.userName} disabled successfully!`)
+        await LogsService.createAuditEntry(adpl)
+        showToast("success", `MFA enforcement for user ${user.userName} disabled successfully!`)
 
         // Update the user in the data array
         setData((prevData) =>
-          prevData.map((u) => (u._id === user._id ? { ...u, mfaEnabled: false } : u))
+          prevData.map((u) => (u._id === user._id ? { ...u, mfaEnforced: false } : u))
         )
       }
-    })
+    } else {
+      const response = await UsersService.enableMfaEnforce(pl)
+      if (response && !response.data.error) {
+        const adpl: AuditEntryPayload = {
+          user: JSON.parse(sessionStorage.getItem("user")!).userName,
+          level: "warn",
+          message: `MFA enforcement for user ${user.userName} enabled successfully!`,
+        }
+        await LogsService.createAuditEntry(adpl)
+        showToast("success", `MFA enforcement for user ${user.userName} enabled successfully!`)
+
+        // Update the user in the data array
+        setData((prevData) =>
+          prevData.map((u) => (u._id === user._id ? { ...u, mfaEnforced: true } : u))
+        )
+      }
+    }
+  }
+
+  /**
+   * Handles the MFA disable status of a user by disabling MFA for the user.
+   *
+   * @param {User} user - The user object for which the MFA status is being disabled.
+   * @returns {Promise<void>}
+   */
+  const handleMfaDisable = async (user: User): Promise<void> => {
+    const pl: disableMfaPayload = {
+      execUserId: JSON.parse(sessionStorage.getItem("user")!)._id as string,
+      _id: user._id as string,
+    }
+
+    const response = await UsersService.disableMfa(pl)
+    if (response && !response.data.error) {
+      const adpl: AuditEntryPayload = {
+        user: JSON.parse(sessionStorage.getItem("user")!).userName as string,
+        level: "warn",
+        message: `MFA for user ${user.userName} disabled successfully!`,
+      }
+      await LogsService.createAuditEntry(adpl)
+      showToast("success", `MFA for for user ${user.userName} disabled successfully!`)
+
+      // Update the user in the data array
+      setData((prevData) =>
+        prevData.map((u) => (u._id === user._id ? { ...u, mfaEnabled: false } : u))
+      )
+    }
   }
 
   if (isLoading) {
