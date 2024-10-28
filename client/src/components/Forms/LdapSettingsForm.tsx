@@ -42,6 +42,13 @@ const FormSchema = z.object({
   ldapEnabled: z.boolean(),
 })
 
+/**
+ * Form for managing Ldap settings.
+ *
+ * This form is used to manage the settings for Ldap login.
+ *
+ * @returns A form with fields for managing Ldap settings.
+ */
 const LdapSettingsForm = () => {
   const [settings, setSettings] = useState<ldapSettingsPayload | null>(null)
   const [isLoading, SetIsLoading] = useState<boolean>(true)
@@ -66,6 +73,12 @@ const LdapSettingsForm = () => {
   })
 
   useEffect(() => {
+    /**
+     * @description fetches ldap settings from the server and updates the component state accordingly
+     * @function
+     * @async
+     * @returns {Promise<void>}
+     */
     const fetchData = async () => {
       try {
         if (isMobile) {
@@ -103,6 +116,11 @@ const LdapSettingsForm = () => {
     fetchData()
   }, [form])
 
+  /**
+   * @description method to update ldap settings
+   * @param {ldapSettingsPayload} data the json payload
+   * @returns {Promise<void>}
+   */
   function onSubmit(data: z.infer<typeof FormSchema>) {
     SetBtnLoading(true)
     console.log(data)

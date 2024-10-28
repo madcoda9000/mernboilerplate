@@ -133,6 +133,16 @@ export function EditUserForm({ className, ...props }: EditUserFormProps) {
       }
     }
 
+    /**
+     * Asynchronously retrieves LDAP configuration settings from the server.
+     *
+     * Fetches LDAP settings using the SettingsService and updates the
+     * state to reflect whether LDAP is globally enabled. If an error
+     * occurs during the fetch, logs the error to the console and sets
+     * an error message state.
+     *
+     * @return {Promise<void>} No return value.
+     */
     const getLdapConfig = async () => {
       const res = await SettingsService.getLdapSettings()
       if (!res.data.error) {

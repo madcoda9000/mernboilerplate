@@ -41,6 +41,21 @@ const FormSchema = z.object({
   smtpSenderAddress: z.string().min(1, { message: "Smtp Sender address should not be empty!" }),
 })
 
+/**
+ * AppsettingsForm is a React component that manages the mail settings form.
+ *
+ * This component fetches the current mail settings from the server, displays
+ * them in a form, and allows users to update them. It handles form validation,
+ * loading states, and displays success or error messages based on the server
+ * response.
+ *
+ * The form includes fields for SMTP server settings such as server name, port,
+ * username, password, TLS enablement, and sender address. It uses the `zod`
+ * schema for form validation and integrates with `react-hook-form` for form
+ * handling.
+ *
+ * @returns {JSX.Element} The rendered mail settings form component.
+ */
 const AppsettingsForm = () => {
   const [settings, setSettings] = useState<mailSettingsPayload | null>(null)
   const [isLoading, SetIsLoading] = useState<boolean>(true)
@@ -66,6 +81,12 @@ const AppsettingsForm = () => {
   })
 
   useEffect(() => {
+    /**
+     * @description fetches mail settings from the server and updates the component state accordingly
+     * @function
+     * @async
+     * @returns {Promise<void>}
+     */
     const fetchData = async () => {
       try {
         if (isMobile) {
@@ -104,6 +125,11 @@ const AppsettingsForm = () => {
     fetchData()
   }, [form])
 
+  /**
+   * @description Handles the form submission
+   * @param {z.infer<typeof FormSchema>} data The form data
+   * @returns {Promise<void>}
+   */
   function onSubmit(data: z.infer<typeof FormSchema>) {
     SetBtnLoading(true)
     const settingsPl: mailSettingsPayload = {

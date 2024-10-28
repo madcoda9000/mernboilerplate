@@ -20,6 +20,16 @@ const apiurl = window.BASE_URL
 
 interface FormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/**
+ * The MfaLoginForm component is a form to verify a user's OTP.
+ * It features an input field for the user to enter the OTP.
+ * It also features a button to submit the form data to verify the OTP.
+ * If the OTP is valid, the user is granted access to the application.
+ * If the OTP is invalid, an error message is displayed.
+ * The form also features a button to cancel the OTP verification and return to the login page.
+ * @param {{ className: string; [x: string]: any }} props - The component props.
+ * @returns {JSX.Element} - The form component.
+ */
 export function MfaLoginForm({ className, ...props }: FormProps) {
   const { user, logout, refreshContext } = useAuthContext()
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
@@ -29,6 +39,20 @@ export function MfaLoginForm({ className, ...props }: FormProps) {
   const [succMsg, setSuccMsg] = React.useState<string>("")
   const [activatedSuccessfully, setActivatedSuccessfully] = React.useState<boolean>(false)
 
+  /**
+   * Handles the OTP verification process for a user attempting to log in.
+   *
+   * @param {React.SyntheticEvent} e - The event object from the form submission.
+   *
+   * This function performs the following:
+   * 1. Prevents the default form submission behavior.
+   * 2. Constructs a payload containing the user's ID and OTP token.
+   * 3. Calls the `validateOtp` function from the `UsersService` to verify the OTP.
+   * 4. If the OTP verification fails, sets an error message and creates a warning audit entry.
+   * 5. If the OTP verification succeeds, requests a new access token, updates session storage,
+   *    refreshes the context, and creates an informational audit entry.
+   * 6. Navigates the user to the home page upon successful verification.
+   */
   const verifyOtp = (e: React.SyntheticEvent) => {
     if (user) {
       e.preventDefault()
@@ -85,16 +109,31 @@ export function MfaLoginForm({ className, ...props }: FormProps) {
     }
   }
 
+  /**
+   * Clears the given interval and navigates the user to the home page.
+   *
+   * @param {NodeJS.Timeout} intervalId - The interval ID to be cleared.
+   */
   function goHome(intervalId: NodeJS.Timeout) {
     clearInterval(intervalId)
     navigate("/Home")
   }
 
+  /**
+   * Handles a change to the OTP input field
+   *
+   * @param {number} e - The new OTP value
+   */
   const handleChange = (e: number) => {
     //console.log(e);
     setOtpToken(e)
   }
 
+  /**
+   * Cancels the MFA login process by logging the user out and navigating the user to the login page.
+   *
+   * @return {void}
+   */
   const cancelMfaLogin = () => {
     logout()
     navigate("/login")

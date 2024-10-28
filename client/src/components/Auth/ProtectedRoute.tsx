@@ -8,13 +8,13 @@ interface ProtectedRouteProps {
 }
 
 /**
- * Renders the protected route component.
+ * This component is used to protect routes from unauthorized access.
  *
- * @param {ProtectedRouteProps} props - The props for the component.
- * @param {React.ReactNode} props.children - The child components to render.
- * @param {string} props.accessBy - The access level required for the route.
- * @param {string} props.request - The request type.
- * @return {React.ReactNode} The rendered component.
+ * @param {React.ReactNode} children - The components to be rendered
+ * @param {string} accessBy - The type of access required, either "non-authenticated" or "authenticated"
+ * @param {string} request - The request to be made
+ *
+ * @returns {React.ReactElement} The protected route component
  */
 const ProtectedRoute: FC<ProtectedRouteProps> = ({ children, accessBy, request }) => {
   const { user } = useAuthContext()

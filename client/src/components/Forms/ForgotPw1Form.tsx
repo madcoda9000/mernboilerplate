@@ -26,6 +26,15 @@ export function ForgotPw1Form({ className, ...props }: FormProps) {
   const uMail = React.useRef<HTMLInputElement>(null)
   const nav = useNavigate()
 
+  /**
+   * Validates the email input field in the password reset form.
+   *
+   * This function checks if the email address is provided and
+   * correctly formatted. It updates the error message state if
+   * any validation fails.
+   *
+   * @return {boolean} Returns true if there are validation errors, otherwise false.
+   */
   const validate = () => {
     let hasErrors = false
     let msg = ""

@@ -25,6 +25,19 @@ interface TimeoutWarningModalProps {
   onLogout: () => void
 }
 
+/**
+ * A modal component that warns the user about session timeout due to inactivity.
+ *
+ * The component adapts its layout based on screen size. On desktop screens, it
+ * displays a dialog, while on smaller screens, it uses a drawer.
+ *
+ * Props:
+ * - `isOpen`: A boolean indicating whether the modal is open.
+ * - `onClose`: A function to be called when the user chooses to stay logged in.
+ * - `onLogout`: A function to be called when the user chooses to log off.
+ *
+ * The modal presents the user with options to either stay signed in or log off.
+ */
 const TimeoutWarningModal: FC<TimeoutWarningModalProps> = ({ isOpen, onClose, onLogout }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 

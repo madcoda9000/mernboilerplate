@@ -31,15 +31,32 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
   const [pwScoreWarning, setPwScoreWarning] = useState<string>("")
   const [pwVisible, setPwVisible] = useState<boolean>(false)
 
+  /**
+   * Updates the state variable 'nPassword' with the value from the input element.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The event object representing the change in the input field.
+   * @return {void} This function does not return anything.
+   */
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     setnPassword(value)
   }
 
+  /**
+   * Toggles the visibility state of the password input.
+   *
+   * @return {void} This function does not return anything.
+   */
   const handlePwVisibility = () => {
     setPwVisible((current) => !current)
   }
 
+  /**
+   * Generates a random password of the specified length using a given character set.
+   *
+   * @param {number} length - The length of the password to generate.
+   * @return {void} This function does not return anything.
+   */
   const handleGeneratePassword = (length: number) => {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_=+"
 
@@ -60,10 +77,25 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     setnPassword(tempPW)
   }
 
+  /**
+   * Validates the registration form fields to ensure all mandatory fields are filled,
+   * the email address is formatted correctly, and the password meets strength criteria.
+   * Updates the error message state with a list of issues if validation fails.
+   *
+   * @return {boolean} Returns true if there are validation errors, otherwise false.
+   */
   const validateForm = () => {
     let hasErrors = false
     let msg = "<ol>"
 
+    /**
+     * Checks if a field is mandatory and if the value is not empty.
+     * Updates the error message state if the field is mandatory and empty.
+     *
+     * @param {HTMLInputElement | null} field - The input field to check.
+     * @param {string} fieldName - The name of the field to use in the error message.
+     * @return {void} This function does not return anything.
+     */
     const checkMandatoryField = (field: HTMLInputElement | null, fieldName: string) => {
       if (field && !field?.value.trim()) {
         hasErrors = true
@@ -71,6 +103,13 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
       }
     }
 
+    /**
+     * Checks if the email address is formatted correctly.
+     * Updates the error message state if the email address is not valid.
+     *
+     * @param {HTMLInputElement | null} field - The input field to check.
+     * @return {void} This function does not return anything.
+     */
     const checkEmailField = (field: HTMLInputElement | null) => {
       const emailRegex =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -102,6 +141,16 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
     return hasErrors
   }
 
+  /**
+   * Handles the form submission for the registration form. It prevents the default
+   * form submission behavior, sets loading state to true, validates the form fields,
+   * and sends a request to the server to create a new user. It then updates the
+   * loading state based on the response from the server and sets error or success
+   * messages accordingly.
+   *
+   * @param {React.SyntheticEvent} event - The event object representing the form
+   *                                        submission event.
+   */
   async function onSubmit(event: React.SyntheticEvent) {
     console.log(pwScore)
     event.preventDefault()

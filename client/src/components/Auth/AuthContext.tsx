@@ -37,6 +37,12 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
     return null
   })
 
+  /**
+   * Handles user authentication actions after a successful login response.
+   *
+   * @param {AxiosResponse} apiResponse - The response object from the API.
+   * @param {string | null} action - The action to be taken after successful login. Can be "login" or null.
+   */
   const handleUserAction = (apiResponse: AxiosResponse, action: string | null) => {
     sessionStorage.setItem("user", JSON.stringify(apiResponse.data.user))
     setUser(apiResponse.data.user)
@@ -66,6 +72,14 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
     }
   }
 
+  /**
+   * Performs a login request to the API using the given payload.
+   * If the request is successful, sets the user object in the context and navigates to the home page.
+   * If the request fails, returns the error message.
+   *
+   * @param {LoginPayload} payload - The payload to be sent to the API.
+   * @returns {Promise<string | undefined>} - A promise that resolves to an error message if the request fails, or undefined if the request is successful.
+   */
   const login = async (payload: LoginPayload): Promise<string | undefined> => {
     try {
       const apiResponse = await axios.post(apiurl + "/v1/auth/login", payload, {
@@ -86,6 +100,12 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
     }
   }
 
+  /**
+   * Logs the user out by removing the user from session storage and making a request to the API to invalidate the user's session.
+   * After the request is made, navigates the user to the login page with a query parameter indicating that the user was logged out.
+   *
+   * @returns {Promise<void>} - A promise that resolves when the user is logged out.
+   */
   const logout = async (): Promise<void> => {
     await axios.get(apiurl + "/v1/auth/logout", { withCredentials: true })
 
@@ -95,6 +115,11 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
     navigate("/login?msg=lgo")
   }
 
+  /**
+   * Refreshes the user object in the context by reading the user from session storage again.
+   * This function is used in case the user object has been changed outside of the context, for example
+   * when the user's role has been updated in the database.
+   */
   const refreshContext = () => {
     const tok = sessionStorage.getItem("user")
     setUser(JSON.parse(tok!))
@@ -107,7 +132,6 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
   )
 }
 
-// Hook für den einfacheren Zugriff auf den AuthContext
 export const useAuthContext = (): AuthContextProps => {
   const context = useContext(AuthContext)
   if (!context) {

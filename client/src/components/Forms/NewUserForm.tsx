@@ -50,6 +50,18 @@ const FormSchema = z.object({
 
 interface NewUserFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/**
+ * The NewUserForm component is a form to create a new user in the system.
+ * It features an input field for the user name, first name, last name, email address, and password.
+ * It also has a switch to enable or disable ldap signin for the user.
+ * The form also features a button to generate a secure password.
+ * The form also features a switch to set the user account as verified or not.
+ * The form also features a switch to set the user account as locked or not.
+ * The form also features a switch to enforce MFA for the user.
+ * The form also features a button to submit the form data to create a new user.
+ * @param {{ className: string; [x: string]: any }} props - The component props.
+ * @returns {JSX.Element} - The form component.
+ */
 export function NewUserForm({ className, ...props }: NewUserFormProps) {
   const [user, setUser] = React.useState<User | null>(null)
   const [errMsg, setErrMsg] = useState<string>("")
@@ -106,6 +118,16 @@ export function NewUserForm({ className, ...props }: NewUserFormProps) {
       }
     }
 
+    /**
+     * Asynchronously retrieves LDAP configuration settings from the server.
+     *
+     * Fetches LDAP settings using the SettingsService and updates the
+     * state to reflect whether LDAP is globally enabled. If an error
+     * occurs during the fetch, logs the error to the console and sets
+     * an error message state.
+     *
+     * @return {Promise<void>} No return value.
+     */
     const getLdapConfig = async () => {
       const res = await SettingsService.getLdapSettings()
       if (!res.data.error) {

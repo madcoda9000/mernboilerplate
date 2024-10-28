@@ -16,6 +16,17 @@ import { useNavigate } from "react-router-dom"
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/**
+ * The LoginForm component is a form to verify a user's credentials.
+ * It features an input field for the user to enter their username and password.
+ * It also features a button to submit the form data to verify the user's credentials.
+ * If the user's credentials are valid, the user is granted access to the application.
+ * If the user's credentials are invalid, an error message is displayed.
+ * The form also features a link to the registration page if the user does not have an account.
+ * The form also features a link to the forgot password page if the user has forgotten their password.
+ * @param {{ className: string; [x: string]: any }} props - The component props.
+ * @returns {JSX.Element} - The form component.
+ */
 export function LoginForm({ className, ...props }: LoginFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const userName = React.useRef<HTMLInputElement>(null)
@@ -51,6 +62,16 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
     sessionStorage.setItem("showBanner", "true")
   }
 
+  /**
+   * Validates the input fields for the login form.
+   *
+   * @returns {boolean} - Returns `true` if there are validation errors, otherwise `false`.
+   *
+   * This function performs the following checks:
+   * 1. Checks if the username field is empty, and if so, appends an error message.
+   * 2. Checks if the password field is empty, and if so, appends an error message.
+   * 3. Updates the error message state with the accumulated error messages.
+   */
   const validate = () => {
     let hasErrors = false
     let msg = ""
@@ -75,6 +96,15 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
     return hasErrors
   }
 
+  /**
+   * Handles the submission of the login form. It prevents the default form submission
+   * behavior, sets the loading state to true, validates the input fields, and sends
+   * the login payload to the authentication context's login function. If there is an
+   * error returned from the login function, it updates the error message state.
+   *
+   * @param {React.SyntheticEvent} event - The event object representing the form submission event.
+   * @returns {Promise<void>} - A promise that resolves when the submission process is complete.
+   */
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault()
     setIsLoading(true)

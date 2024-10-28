@@ -11,6 +11,16 @@ interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   }[]
 }
 
+/**
+ * Renders a sidebar with a list of links to settings pages. The active link
+ * (based on the current pathname) has a different style to indicate which
+ * page is currently being viewed.
+ *
+ * @param {SidebarNavProps} props Component props
+ * @param {string} [props.className] Additional className for the outermost element
+ * @param {{ href: string; title: string }[]} props.items List of links to render
+ * @param {React.HTMLAttributes<HTMLElement>} [props.props] Additional props for the outermost element
+ */
 export function SettingsSidebar({ className, items, ...props }: SidebarNavProps) {
   const pathname = window.location.pathname
   const nav = useNavigate()

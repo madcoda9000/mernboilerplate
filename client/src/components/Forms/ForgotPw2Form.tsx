@@ -34,18 +34,44 @@ export function ForgotPw2Form({ className, ...props }: FormProps) {
   const nav = useNavigate()
   const [btnDisabled, setBtnDisabled] = React.useState<boolean>(true)
 
+  /**
+   * Handles the change event for the new password input.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The event object representing the change in the input field.
+   * @return {void} This function does not return anything.
+   */
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     setNewPw(value)
   }
 
+  /**
+   * Toggles the visibility state of the password input field.
+   *
+   * @return {void} This function does not return anything.
+   */
   const handlePwVisibility = () => {
     setPwVisible((current) => !current)
   }
 
+  /**
+   * Generates a random password of the specified length using a given character set.
+   *
+   * @param {number} length - The length of the password to generate.
+   * @return {void} This function does not return anything.
+   */
   const handleGeneratePassword = (length: number) => {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_=+"
 
+    /**
+     * Generates a random number between 0 and max (inclusive) using the Web
+     * Cryptography API. The random number is generated using the
+     * `crypto.getRandomValues` function, which is a secure PRNG that cannot be
+     * seeded or influenced by any external factors.
+     *
+     * @param {number} max - The upper bound of the range of values to generate.
+     * @return {number} A random number between 0 and max (inclusive).
+     */
     const getRandomInt = (max: number) => {
       const randomBuffer = new Uint32Array(1)
       crypto.getRandomValues(randomBuffer)
@@ -76,12 +102,13 @@ export function ForgotPw2Form({ className, ...props }: FormProps) {
     }
   }, [searchParams])
 
-  /*
-  const handleChange = (e) => {
-    const { value } = e.target
-    setNewPw(value)
-  }
-*/
+  /**
+   * Validates the form fields for password reset, ensuring mandatory fields are filled
+   * and the password strength meets the required criteria. Updates the error message
+   * state with a list of validation issues if any are found.
+   *
+   * @return {boolean} Returns true if there are validation errors, otherwise false.
+   */
   const validateForm = () => {
     let hasError = false
     let msg = "<ul style='margin-left:20px;'>"
@@ -113,6 +140,14 @@ export function ForgotPw2Form({ className, ...props }: FormProps) {
     return hasError
   }
 
+  /**
+   * Handles the form submission for the password reset page.
+   * Validates the form fields, sets the loading state, sends the request to the server
+   * and updates the error message state based on the response from the server.
+   *
+   * @param {React.ChangeEvent<HTMLFormElement>} e - The event object representing the form submission.
+   * @return {void} This function does not return anything.
+   */
   const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)

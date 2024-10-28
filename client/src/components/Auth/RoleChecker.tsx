@@ -6,11 +6,14 @@ interface RoleCheckerProps {
 }
 
 /**
- * A React functional component that checks the user's role and redirects if necessary.
+ * A React functional component that checks the user's roles and navigates based on the required role.
+ * It retrieves the user from session storage, parses their roles, and compares them to the required role.
+ * If the user is not found or if their role does not match the required role, it redirects them to appropriate pages.
  *
- * @param {RoleCheckerProps} props - The properties of the component.
- * @param {string} props.requiredRole - The required role for the user.
- * @return {React.ReactNode} The rendered component.
+ * @param {RoleCheckerProps} props - The properties passed to the component.
+ * @param {string} props.requiredRole - The role required to access the component. Use 'any' to allow all roles.
+ *
+ * @return {null} This component does not render anything; it only performs navigation.
  */
 const RoleChecker: React.FC<RoleCheckerProps> = (props) => {
   const navigate = useNavigate()

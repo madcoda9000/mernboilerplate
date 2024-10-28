@@ -70,6 +70,12 @@ const AppsettingsForm = () => {
   })
 
   useEffect(() => {
+    /**
+     * @description fetches notification settings
+     * @function
+     * @async
+     * @returns {Promise<void>}
+     */
     const fetchData = async () => {
       try {
         if (isMobile) {
@@ -125,6 +131,16 @@ const AppsettingsForm = () => {
     fetchData()
   }, [form])
 
+  /**
+   * Handles the form submission for updating notification settings.
+   *
+   * @param {z.infer<typeof FormSchema>} data - The form data containing notification settings.
+   *
+   * Converts the form data into a `notifSettingsPayload` object and sends it to the
+   * backend service to update the notification settings. Displays a success message
+   * if the update is successful, otherwise displays an error message. Also logs an
+   * audit entry for the modification of notification settings.
+   */
   function onSubmit(data: z.infer<typeof FormSchema>) {
     SetBtnLoading(true)
     console.log(data)

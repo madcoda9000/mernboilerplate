@@ -54,6 +54,12 @@ const AppsettingsForm = () => {
   })
 
   useEffect(() => {
+    /**
+     * @description fetches application settings from the server and updates the component state accordingly
+     * @function
+     * @async
+     * @returns {Promise<void>}
+     */
     const fetchData = () => {
       try {
         SettingsService.getApplicationSettings().then((res) => {
@@ -96,6 +102,16 @@ const AppsettingsForm = () => {
     fetchData()
   }, [form])
 
+  /**
+   * Handles the form submission for updating application settings.
+   *
+   * @param {z.infer<typeof FormSchema>} data - The form data containing application settings.
+   *
+   * Converts the form data into a `appSettingsPayload` object and sends it to the
+   * backend service to update the application settings. Displays a success message
+   * if the update is successful, otherwise displays an error message. Also logs an
+   * audit entry for the modification of application settings.
+   */
   function onSubmit(data: z.infer<typeof FormSchema>) {
     SetBtnLoading(true)
     console.log(data)

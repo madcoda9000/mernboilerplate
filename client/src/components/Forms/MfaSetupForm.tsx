@@ -21,6 +21,13 @@ import { AccordionContent, AccordionItem, Accordion, AccordionTrigger } from "..
 
 interface FormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/**
+ * MfaSetupForm
+ *
+ * @param {object} props - Component props
+ * @param {string} [props.className] - External class name
+ * @returns {JSX.Element} MfaSetupForm component
+ */
 export function MfaSetupForm({ className, ...props }: FormProps) {
   const { user, logout } = useAuthContext()
   const [qrcodeUrl, setqrcodeUrl] = React.useState<string>("")
@@ -59,11 +66,22 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
     }
   }, [user])
 
+  /**
+   * Handles a change to the OTP input field
+   * @param {number} e The new OTP value
+   */
   const handleChange = (e: number) => {
     //console.log(e);
     setOtpToken(e)
   }
 
+  /**
+   * Verifies the OTP for a user's 2FA setup.
+   *
+   * @param {React.SyntheticEvent} e - The event that triggered the OTP verification
+   *
+   * @return {void}
+   */
   const verifyOtp = (e: React.SyntheticEvent) => {
     if (user) {
       e.preventDefault()
@@ -101,11 +119,27 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
     }
   }
 
+  /**
+   * Navigates the user to the login page and clears the given interval.
+   *
+   * @param {NodeJS.Timeout} intervalId - The interval ID to be cleared.
+   */
   function goHome(intervalId: NodeJS.Timeout) {
     clearInterval(intervalId)
     navigate("/login")
   }
 
+  /**
+   * Cancels the MFA setup process by removing the user from session storage
+   * and navigating the user to the home or login page depending on the
+   * enforcement status of MFA for the user.
+   *
+   * If MFA is enforced for the user, the user is logged out and navigated to
+   * the login page. If MFA is not enforced for the user, the user is simply
+   * navigated to the home page.
+   *
+   * @return {void}
+   */
   const cancelMfaLogin = () => {
     if (user?.mfaEnforced) {
       if (sessionStorage.getItem("user")) {
@@ -120,6 +154,11 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
     }
   }
 
+  /**
+   * Creates an audit log entry for a user aborting their 2FA setup.
+   *
+   * @return {void}
+   */
   const auditMfaSetupAbort = () => {
     if (user) {
       const payload: AuditEntryPayload = {
@@ -131,6 +170,13 @@ export function MfaSetupForm({ className, ...props }: FormProps) {
     }
   }
 
+  /*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Disables MFA for the user by calling the UsersService disableMfa method.
+   *
+   * @return {void}
+   */
+  /******  2fd664ed-8ede-4423-9ec6-bf96f8996dba  *******/
   const disableMfa = () => {
     if (user) {
       setIsLoading(true)
