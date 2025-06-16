@@ -1,19 +1,24 @@
-import { Router } from "express";
-import auth from "../middleware/auth.js";
-import roleCheck from "../middleware/roleCheck.js";
-import Role from "../models/Roles.js";
-import User from "../models/User.js";
-import crypto from "crypto";
-import doHttpLog from "../utils/httpLogger.js";
+import { Router } from "express"
+import auth from "../middleware/auth.js"
+import roleCheck from "../middleware/roleCheck.js"
+import Role from "../models/Roles.js"
+import User from "../models/User.js"
+import crypto from "crypto"
+import doHttpLog from "../utils/httpLogger.js"
 import {
-	createRoleValidation,
-	deleteRoleValidation,
-	updateRoleValidation
-} from "../utils/validationSchema.js";
-import logger from "../services/logger.service.js";
-import { sendNotifOnObjectCreation, sendNotifOnObjectDeletion, sendNotifOnObjectUpdate, sendObjectMail } from "../utils/mailSender.js";
+  createRoleValidation,
+  deleteRoleValidation,
+  updateRoleValidation,
+} from "../utils/validationSchema.js"
+import logger from "../services/logger.service.js"
+import {
+  sendNotifOnObjectCreation,
+  sendNotifOnObjectDeletion,
+  sendNotifOnObjectUpdate,
+  sendObjectMail,
+} from "../utils/mailSender.js"
 
-const router = Router();
+const router = Router()
 
 /**
  * PUT /v1/roles/updateRole
@@ -40,54 +45,68 @@ const router = Router();
  * }
  */
 router.put("/updateRole", auth, roleCheck("admins"), async (req, res) => {
-	const mid = crypto.randomBytes(16).toString("hex");
-	try {
+  const mid = crypto.randomBytes(16).toString("hex")
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip)
 
-		doHttpLog('REQ', mid, req.method, req.originalUrl, req.ip);
+    const { error } = updateRoleValidation(req.body)
+    if (error) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400)
+      return res.status(400).json({ error: true, message: error.details[0].message })
+    }
 
-		const { error } = updateRoleValidation(req.body);
-		if (error) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400);
-			return res
-				.status(400)
-				.json({ error: true, message: error.details[0].message })
-		}
+    if (
+      req.body.oldRoleName.toLowerCase() === "admins" ||
+      req.body.oldRoleName.toLowerCase() === "users"
+    ) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "The roles admins and user cannot be renamed!",
+        400
+      )
+      res.status(400).json({
+        error: true,
+        message: "The roles admins and user cannot be renamed",
+      })
+    }
 
-		if (req.body.oldRoleName.toLowerCase() === "admins" || req.body.oldRoleName.toLowerCase() === "users") {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "The roles admins and user cannot be renamed!", 400);
-			res.status(400).json({
-				error: true,
-				message: "The roles admins and user cannot be renamed",
-			});
-		}
+    const idRole = await Role.findOne({ _id: req.body._id })
+    if (!idRole) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "Role with id " + req.body._id + " not found!",
+        400
+      )
+      res.status(400).json({
+        error: true,
+        message: "Role with id " + req.body._id + " not found!",
+      })
+    }
 
-		const idRole = await Role.findOne({ _id: req.body._id });
-		if (!idRole) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Role with id " + req.body._id + " not found!", 400);
-			res.status(400).json({
-				error: true,
-				message: "Role with id " + req.body._id + " not found!",
-			});
-		}
-
-		// update role properties
-		const update = {
-			roleName: req.body.roleName
-		}
-		await Role.findByIdAndUpdate({ _id: req.body._id }, update);
-		doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Role updated sucessfully", 201);
-		var lo = await sendNotifOnObjectUpdate();
-		if (lo) {
-			sendObjectMail(idRole.roleName, "Roles", "modified");
-		}
-		res
-			.status(201)
-			.json({ error: false, message: "Role updated sucessfully" });
-	} catch (err) {
-		doHttpLog('RES', mid, req.method, req.originalUrl, err.message, 500);
-		res.status(500).json({ message: err.message });
-	}
-});
+    // update role properties
+    const update = {
+      roleName: req.body.roleName,
+    }
+    await Role.findByIdAndUpdate({ _id: req.body._id }, update)
+    doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Role updated sucessfully", 201)
+    var lo = await sendNotifOnObjectUpdate()
+    if (lo) {
+      sendObjectMail(idRole.roleName, "Roles", "modified")
+    }
+    res.status(201).json({ error: false, message: "Role updated sucessfully" })
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500)
+    res.status(500).json({ message: err.message })
+  }
+})
 
 /**
  * POST /v1/roles/deleteRole
@@ -112,53 +131,80 @@ router.put("/updateRole", auth, roleCheck("admins"), async (req, res) => {
  * }
  */
 router.post("/deleteRole", auth, roleCheck("admins"), async (req, res) => {
-	const mid = crypto.randomBytes(16).toString("hex");
-	try {
+  const mid = crypto.randomBytes(16).toString("hex")
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip)
 
-		doHttpLog('REQ', mid, req.method, req.originalUrl, req.ip);
+    const { error } = deleteRoleValidation(req.body)
+    if (error) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400)
+      return res.status(400).json({ error: true, message: error.details[0].message })
+    }
 
-		const { error } = deleteRoleValidation(req.body);
-		if (error) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400);
-			return res
-				.status(400)
-				.json({ error: true, message: error.details[0].message })
-		}
-
-		const idRole = await Role.findOne({ _id: req.body._id });
-		if (!idRole) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Role with id " + req.body._id + " not found!", 400);
-			res.status(400).json({
-				error: true,
-				message: "Role with id " + req.body._id + " not found!",
-			});
-		} else {
-			// check if a user is memeber of the grou to delete
-			var query = { roles: { $regex: '.*' + idRole.roleName + '.*' } };
-			const rUser = await User.findOne(query);
-			if (rUser) {
-				doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Cannot delete role " + idRole.roleName + ". Role contains members!", 200);
-				res.status(200).json({
-					error: true,
-					message: "Cannot delete role " + idRole.roleName + ". Role contains members!",
-				});
-			} else {
-				await idRole.delete();
-				doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Role deleted sucessfully", 200);
-				var lo = await sendNotifOnObjectDeletion();
-				if (lo) {
-					sendObjectMail(idRole.roleName, "Roles", "deleted");
-				}
-				res
-					.status(200)
-					.json({ error: false, message: "Role deleted sucessfully" });
-			}
-		}
-	} catch (err) {
-		doHttpLog('RES', mid, req.method, req.originalUrl, err.message, 500);
-		res.status(500).json({ message: err.message });
-	}
-});
+    const idRole = await Role.findOne({ _id: req.body._id })
+    if (!idRole) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "Role with id " + req.body._id + " not found!",
+        400
+      )
+      res.status(400).json({
+        error: true,
+        message: "Role with id " + req.body._id + " not found!",
+      })
+    } else {
+      // check if the role is not admins or users
+      if (idRole.roleName.toLowerCase() === "admins" || idRole.roleName.toLowerCase() === "users") {
+        doHttpLog(
+          "RES",
+          mid,
+          req.method,
+          req.originalUrl,
+          req.ip,
+          "The roles admins and user cannot be deleted!",
+          400
+        )
+        return res.status(400).json({
+          error: true,
+          message: "The roles admins and user cannot be deleted",
+        })
+      }
+      // check if a user is memeber of the grou to delete
+      var query = { roles: { $regex: ".*" + idRole.roleName + ".*" } }
+      const rUser = await User.findOne(query)
+      if (rUser) {
+        doHttpLog(
+          "RES",
+          mid,
+          req.method,
+          req.originalUrl,
+          req.ip,
+          "Cannot delete role " + idRole.roleName + ". Role contains members!",
+          200
+        )
+        res.status(200).json({
+          error: true,
+          message: "Cannot delete role " + idRole.roleName + ". Role contains members!",
+        })
+      } else {
+        await idRole.delete()
+        doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "Role deleted sucessfully", 200)
+        var lo = await sendNotifOnObjectDeletion()
+        if (lo) {
+          sendObjectMail(idRole.roleName, "Roles", "deleted")
+        }
+        res.status(200).json({ error: false, message: "Role deleted sucessfully" })
+      }
+    }
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500)
+    res.status(500).json({ message: err.message })
+  }
+})
 
 /**
  * POST /v1/roles/createRole
@@ -189,48 +235,60 @@ router.post("/deleteRole", auth, roleCheck("admins"), async (req, res) => {
  * }
  */
 router.post("/createRole", auth, roleCheck("admins"), async (req, res) => {
-	const mid = crypto.randomBytes(16).toString("hex");
-	try {
+  const mid = crypto.randomBytes(16).toString("hex")
+  try {
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip)
 
-		doHttpLog('REQ', mid, req.method, req.originalUrl, req.ip);
+    const { error } = createRoleValidation(req.body)
+    if (error) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400)
+      return res.status(400).json({ error: true, message: error.details[0].message })
+    }
 
-		const { error } = createRoleValidation(req.body);
-		if (error) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400);
-			return res
-				.status(400)
-				.json({ error: true, message: error.details[0].message })
-		}
-
-		const frole = await Role.findOne({ roleName: req.body.roleName });
-		if (frole) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Cannot create role. Role exists already!", 200);
-			res.status(200).json({
-				error: true,
-				message: "Cannot create role. Role exists already!",
-			});
-		} else {
-			// create a new role
-			const newRole = new Role({
-				roleName: req.body.roleName
-			});
-			await newRole.save();
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "Role " + req.body.roleName + " created sucessfully", 201);
-			var lo = await sendNotifOnObjectCreation();
-			if (lo) {
-				sendObjectMail(req.body.roleName, "Roles", "created");
-			}
-			res
-				.status(201)
-				.json({ error: false, message: "Role " + req.body.roleName + " created sucessfully" });
-		}
-
-	} catch (err) {
-		doHttpLog('RES', mid, req.method, req.originalUrl, err.message, 500);
-		logger.error("API|roles.js|/createRole|" + err.message);
-		res.status(500).json({ message: err.message });
-	}
-});
+    const frole = await Role.findOne({ roleName: req.body.roleName })
+    if (frole) {
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "Cannot create role. Role exists already!",
+        200
+      )
+      res.status(200).json({
+        error: true,
+        message: "Cannot create role. Role exists already!",
+      })
+    } else {
+      // create a new role
+      const newRole = new Role({
+        roleName: req.body.roleName,
+      })
+      await newRole.save()
+      doHttpLog(
+        "RES",
+        mid,
+        req.method,
+        req.originalUrl,
+        req.ip,
+        "Role " + req.body.roleName + " created sucessfully",
+        201
+      )
+      var lo = await sendNotifOnObjectCreation()
+      if (lo) {
+        sendObjectMail(req.body.roleName, "Roles", "created")
+      }
+      res
+        .status(201)
+        .json({ error: false, message: "Role " + req.body.roleName + " created sucessfully" })
+    }
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500)
+    logger.error("API|roles.js|/createRole|" + err.message)
+    res.status(500).json({ message: err.message })
+  }
+})
 
 /**
  * GET /v1/roles/paginated/{page}/{pageSize}/{searchParam}
@@ -270,68 +328,108 @@ router.post("/createRole", auth, roleCheck("admins"), async (req, res) => {
  *   "message": "error message goes here..."
  * }
  */
-router.get("/paginated/:page/:pageSize/:searchParam?", auth, roleCheck("admins"), async (req, res) => {
-	const mid = crypto.randomBytes(16).toString("hex");
-	try {
+router.get(
+  "/paginated/:page/:pageSize/:searchParam?",
+  auth,
+  roleCheck("admins"),
+  async (req, res) => {
+    const mid = crypto.randomBytes(16).toString("hex")
+    try {
+      doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip)
 
-		doHttpLog('REQ', mid, req.method, req.originalUrl, req.ip);
+      if (req.params.page === undefined || req.params.page === null) {
+        doHttpLog(
+          "RES",
+          mid,
+          req.method,
+          req.originalUrl,
+          req.ip,
+          "The page parameter is required!",
+          400
+        )
+        return res.status(400).json({ error: true, message: "The page parameter is required!" })
+      }
 
-		if (req.params.page === undefined || req.params.page === null) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "The page parameter is required!", 400);
-			return res
-				.status(400)
-				.json({ error: true, message: "The page parameter is required!" })
-		}
+      if (req.params.pageSize === undefined || req.params.pageSize === null) {
+        doHttpLog(
+          "RES",
+          mid,
+          req.method,
+          req.originalUrl,
+          req.ip,
+          "The pageSize parameter is required!",
+          400
+        )
+        return res.status(400).json({ error: true, message: "The pageSize parameter is required!" })
+      }
 
-		if (req.params.pageSize === undefined || req.params.pageSize === null) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "The pageSize parameter is required!", 400);
-			return res
-				.status(400)
-				.json({ error: true, message: "The pageSize parameter is required!" })
-		}
-
-		if (req.params.searchParam) {
-			var query = { roleName: { $regex: '.*' + req.params.searchParam + '.*' } };
-			Role.paginate(query, { page: req.params.page, limit: req.params.pageSize }, function (error, paginatedResults) {
-				if (error) {
-					doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, error.message, 400);
-					return res.status(400).json({
-						error: true,
-						message: error.message,
-					});
-				} else {
-					doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "returned paginated roles list..", 200);
-					return res.status(200).json({
-						error: false,
-						message: "returned paginated roles list..",
-						paginatedResult: paginatedResults
-					});
-				}
-			});
-		} else {
-			Role.paginate({}, { page: req.params.page, limit: req.params.pageSize }, function (error, paginatedResults) {
-				if (error) {
-					doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, error.message, 400);
-					return res.status(400).json({
-						error: true,
-						message: error.message,
-					});
-				} else {
-					doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "returned paginated roles list..", 200);
-					return res.status(200).json({
-						error: false,
-						message: "returned paginated roles list..",
-						paginatedResult: paginatedResults
-					});
-				}
-			});
-		}
-	} catch (err) {
-		doHttpLog('RES', mid, req.method, req.originalUrl, err.message, 500);
-		logger.error("API|roles.js|/paginated|" + err.message);
-		res.status(500).json({ message: err.message });
-	}
-});
+      if (req.params.searchParam) {
+        var query = { roleName: { $regex: ".*" + req.params.searchParam + ".*" } }
+        Role.paginate(
+          query,
+          { page: req.params.page, limit: req.params.pageSize },
+          function (error, paginatedResults) {
+            if (error) {
+              doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400)
+              return res.status(400).json({
+                error: true,
+                message: error.message,
+              })
+            } else {
+              doHttpLog(
+                "RES",
+                mid,
+                req.method,
+                req.originalUrl,
+                req.ip,
+                "returned paginated roles list..",
+                200
+              )
+              return res.status(200).json({
+                error: false,
+                message: "returned paginated roles list..",
+                paginatedResult: paginatedResults,
+              })
+            }
+          }
+        )
+      } else {
+        Role.paginate(
+          {},
+          { page: req.params.page, limit: req.params.pageSize },
+          function (error, paginatedResults) {
+            if (error) {
+              doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.message, 400)
+              return res.status(400).json({
+                error: true,
+                message: error.message,
+              })
+            } else {
+              doHttpLog(
+                "RES",
+                mid,
+                req.method,
+                req.originalUrl,
+                req.ip,
+                "returned paginated roles list..",
+                200
+              )
+              return res.status(200).json({
+                error: false,
+                message: "returned paginated roles list..",
+                paginatedResult: paginatedResults,
+              })
+            }
+          }
+        )
+      }
+    } catch (err) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500)
+      logger.error("API|roles.js|/paginated|" + err.message)
+      res.status(500).json({ message: err.message })
+    }
+  }
+)
 
 /**
  * POST /v1/roles/checkIfRoleExists
@@ -352,7 +450,7 @@ router.get("/paginated/:page/:pageSize/:searchParam?", auth, roleCheck("admins")
  *   "roleName": "role-one"
  *  }
  * }
-  * @example response - 200 - example role not found response
+ * @example response - 200 - example role not found response
  * {
  * 	"error": false,
  *  "message": "role not found."
@@ -364,38 +462,36 @@ router.get("/paginated/:page/:pageSize/:searchParam?", auth, roleCheck("admins")
  * }
  */
 router.post("/checkIfRoleExists", auth, roleCheck("admins"), async (req, res) => {
-	try {
-		const mid = crypto.randomBytes(16).toString("hex");
-		doHttpLog('REQ', mid, req.method, req.originalUrl, req.ip);
+  try {
+    const mid = crypto.randomBytes(16).toString("hex")
+    doHttpLog("REQ", mid, req.method, req.originalUrl, req.ip)
 
-		const { error } = createRoleValidation(req.body);
-		if (error) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400);
-			return res
-				.status(400)
-				.json({ error: true, message: error.details[0].message })
-		}
+    const { error } = createRoleValidation(req.body)
+    if (error) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, error.details[0].message, 400)
+      return res.status(400).json({ error: true, message: error.details[0].message })
+    }
 
-		const frole = await Role.findOne({ roleName: req.body.roleName });
-		if (frole) {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "role found.", 200);
-			res.status(200).json({
-				error: false,
-				message: "role found.",
-				frole
-			});
-		} else {
-			doHttpLog('RES', mid, req.method, req.originalUrl, req.ip, "role not found.", 200);
-			res.status(200).json({
-				error: false,
-				message: "role not found."
-			});
-		}
-	} catch (err) {
-		doHttpLog('RES', mid, req.method, req.originalUrl, err.message, 500);
-		logger.error("API|roles.js|/checkIfRoleExists|" + err.message);
-		res.status(500).json({ message: err.message });
-	}
-});
+    const frole = await Role.findOne({ roleName: req.body.roleName })
+    if (frole) {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "role found.", 200)
+      res.status(200).json({
+        error: false,
+        message: "role found.",
+        frole,
+      })
+    } else {
+      doHttpLog("RES", mid, req.method, req.originalUrl, req.ip, "role not found.", 200)
+      res.status(200).json({
+        error: false,
+        message: "role not found.",
+      })
+    }
+  } catch (err) {
+    doHttpLog("RES", mid, req.method, req.originalUrl, err.message, 500)
+    logger.error("API|roles.js|/checkIfRoleExists|" + err.message)
+    res.status(500).json({ message: err.message })
+  }
+})
 
-export default router;
+export default router

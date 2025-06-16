@@ -114,7 +114,6 @@ const AppsettingsForm = () => {
    */
   function onSubmit(data: z.infer<typeof FormSchema>) {
     SetBtnLoading(true)
-    console.log(data)
     const settingsPl: appSettingsPayload = {
       showMfaEnableBanner: String(data.showMfaEnableBanner),
       showQuoteOfTheDay: String(data.showQuoteOfTheDay),
